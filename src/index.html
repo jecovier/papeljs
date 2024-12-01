@@ -12,14 +12,14 @@
       class="flex flex-col sm:flex-row items-center sm:justify-between py-1 px-6 border-b"
     >
       <h1>
-        <a href="/papeljs/" class="text-2xl font-bold py-2 block" p-boost>
+        <a href="/papeljs/" class="text-2xl font-bold py-2 block" pl-boost>
           PapelJS
         </a>
       </h1>
       <nav class="sm:flex gap-1">
-        <a href="/papeljs/" p-boost p-prefetch>Home</a>
-        <a href="/papeljs/about.html" p-boost p-prefetch>About</a>
-        <a href="/papeljs/docs/" p-boost p-prefetch>Docs</a>
+        <a href="/papeljs/" pl-boost pl-prefetch>Home</a>
+        <a href="/papeljs/about.html" pl-boost pl-prefetch>About</a>
+        <a href="/papeljs/docs/" pl-boost pl-prefetch>Docs</a>
         <a href="https://github.com/jecovier/papeljs">Code</a>
       </nav>
     </header>
@@ -40,7 +40,8 @@
               </p>
               <nav class="flex gap-4">
                 <a
-                  href="https://github.com/jecovier/papeljs"
+                  href="/index.ts"
+                  download="papel.js"
                   class="btn btn-primary mx-auto flex items-center"
                 >
                   <img
@@ -95,7 +96,7 @@
                   about.html
                 </div>
                 <pre><code class="text-orange-300/85 text-xs">   &lt;html&gt;
-      &lt;body <span class="highlight">p-layout="/index.html"</span>&gt;
+      &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
         &lt;div <span class="highlight">slot</span>&gt;
           &lt;h2&gt; About page &lt;/h2&gt;

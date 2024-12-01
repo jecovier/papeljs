@@ -1,11 +1,11 @@
-export const LAYOUT_ATTR_NAME = "p-layout";
-export const SLOT_ATTR_NAME = "p-slot";
+export const LAYOUT_ATTR_NAME = "pl-layout";
+export const SLOT_ATTR_NAME = "pl-slot";
 
-export const BOOST_ATTR_NAME = "p-boost";
-export const INTERCEPTED_ATTR_NAME = "p-intercepted";
+export const BOOST_ATTR_NAME = "pl-boost";
+export const INTERCEPTED_ATTR_NAME = "pl-intercepted";
 
-export const PREFETCHED_ATTR_NAME = "p-prefetched";
-export const PREFETCH_ATTR_NAME = "p-prefetch";
+export const PREFETCH_ATTR_NAME = "pl-prefetch";
+export const PREFETCHED_ATTR_NAME = "pl-prefetched";
 
 export enum FetchMethod {
   "GET" = "GET",
