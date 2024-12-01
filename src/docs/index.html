@@ -1,0 +1,18 @@
+<body qrk-layout="/papeljs/index.html">
+  <script type="module" src="/index.ts" defer></script>
+  <div slot="page">
+    <div class="flex">
+      <nav class="w-32 px-4 py-6 [&>a]:text-xs flex flex-col gap-4">
+        <a href="/papeljs/docs/index.html" qrk-boost>Get started</a>
+        <a href="/papeljs/docs/layout.html" qrk-boost>Layouts</a>
+      </nav>
+      <div class="flex-grow py-6">
+        <main class="w-[90%] max-w-xl mx-auto">
+          <slot>
+            <h1>Getting started</h1>
+          </slot>
+        </main>
+      </div>
+    </div>
+  </div>
+</body>

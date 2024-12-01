@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PapelJS - a minimalist pseudo framework</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/index.ts" defer></script>
+  </head>
+  <body>
+    <header
+      class="flex flex-col sm:flex-row items-center sm:justify-between py-1 px-6 border-b"
+    >
+      <h1>
+        <a href="/papeljs/" class="text-2xl font-bold py-2 block" qrk-boost>
+          PapelJS
+        </a>
+      </h1>
+      <nav
+        class="sm:flex gap-2 [&>a]:rounded [&>a]:px-2 [&>a]:py-1 [&>a]:text-sm [&>a]:font-normal [&>a]:text-gray-600 hover:[&>a]:bg-purple-600 hover:[&>a]:text-white"
+      >
+        <a href="/papeljs/" qrk-boost qrk-prefetch>Home</a>
+        <a href="/papeljs/about.html" qrk-boost qrk-prefetch>About</a>
+        <a href="/papeljs/docs/" qrk-boost qrk-prefetch>Docs</a>
+        <a href="https://github.com/jecovier/quark">Code</a>
+      </nav>
+    </header>
+    <slot name="page">
+      <main class="pt-6 pb-6 w-[90%] max-w-xl mx-auto">
+        <slot>
+          <!-- HERO section-->
+          <div class="flex items-center justify-center pb-16 pt-8">
+            <div class="flex flex-col gap-3 items-center text-center">
+              <h2 class="text-3xl max-w-[24rem] w-[90%] mx-auto text-balance">
+                Build your website using only HTML
+              </h2>
+              <p
+                class="text-sm text-gray-700 max-w-[24rem] w-[90%] mx-auto text-balance"
+              >
+                Only ~5kb library to add templates, navigation, prefetching and
+                more.
+              </p>
+              <a
+                href="https://github.com/jecovier/quark"
+                class="text-xs bg-purple-700 text-white py-1 px-2 rounded-md mx-auto"
+              >
+                quark.min.js
+              </a>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-8">
+            <div>
+              <h3 class="text-lg mb-3">
+                Step 1 - Add Quark to your index.html
+              </h3>
+              <div class="bg-gray-800 text-gray-300 rounded-lg p-0">
+                <div
+                  class="px-5 py-2 mb-2 text-sm rounded-t-lg bg-gray-600 text-gray-200"
+                >
+                  index.html
+                </div>
+                <pre><code class="text-orange-300/85 text-xs">   &lt;html&gt;
+      &lt;head&gt;
+        &lt;script <span class="highlight">src="quark.min.js"</span> defer&gt;&lt;/script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;header&gt;
+          &lt;nav&gt;
+            &lt;a href="/"&gt; Home &lt;/a&gt;
+            &lt;a href="about.html"&gt; About &lt;/a&gt;
+          &lt;/nav&gt;
+        &lt;/header&gt;
+        &lt;main id="content"&gt;
+          <span class="highlight">&lt;slot&gt;</span>
+            &lt;h2&gt; Hello World &lt;/h2&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;</code>
+          </pre>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg mb-3">Step 2 - create a partial page</h3>
+              <div class="bg-gray-800 text-gray-300 rounded-lg p-0">
+                <div
+                  class="px-5 py-2 mb-2 text-sm rounded-t-lg bg-gray-600 text-gray-200"
+                >
+                  about.html
+                </div>
+                <pre><code class="text-orange-300/85 text-xs">   &lt;html&gt;
+      &lt;body <span class="highlight">qrk-layout="/index.html"</span>&gt;
+        &lt;script <span class="highlight">src="quark.min.js"</span> defer&gt;&lt;/script&gt;
+        &lt;div <span class="highlight">slot</span>&gt;
+          &lt;h2&gt; About page &lt;/h2&gt;
+        &lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;</code>
+          </pre>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg mb-3">Step 3 - Enjoy! 😎</h3>
+              <p>
+                Read the documentation to learn more about all the features
+                included in QuarkJS and enjoy the simplicity of creating static
+                websites with pure HTML.
+              </p>
+            </div>
+          </div>
+        </slot>
+      </main>
+    </slot>
+    <footer>
+      <p class="text-center py-6 text-gray-500 text-sm">PapelJS by Jecovier</p>
+    </footer>
+  </body>
+</html>

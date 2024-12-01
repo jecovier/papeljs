@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.highlight {
+  @apply bg-purple-800/30 border-purple-500 text-white border text-sm rounded;
+  padding: 0.12rem 0.3rem;
+}
+
+.btn {
+  @apply text-sm rounded px-3 py-1;
+
+  &:hover {
+    @apply bg-purple-600 text-white;
+  }
+}
