@@ -7,10 +7,35 @@
   padding: 0.12rem 0.3rem;
 }
 
-.btn {
-  @apply text-sm rounded px-3 py-1;
+header nav a,
+.ghost {
+  @apply text-sm rounded px-4 py-[0.35rem] text-gray-700 transition-colors;
 
   &:hover {
-    @apply bg-purple-600 text-white;
+    @apply bg-primary-500 text-white;
+  }
+  &:active {
+    @apply bg-primary-700;
+  }
+}
+
+button,
+.btn {
+  @apply text-sm rounded px-4 py-[0.35rem] border border-gray-400 transition-colors;
+
+  &.btn-primary {
+    @apply bg-primary-600 border-primary-500 text-white;
+  }
+
+  &.btn-outline {
+    @apply border-primary-500 text-primary-500;
+  }
+
+  &:hover {
+    @apply bg-primary-500 border-primary-500 text-white;
+  }
+
+  &.btn-primary:hover {
+    @apply bg-primary-700;
   }
 }

@@ -1,8 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+import colors from "tailwindcss/colors";
+
 export default {
   content: ["src/**/*.{html,js,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: colors.purple,
+      },
+    },
   },
   plugins: [],
 };
