@@ -1,14 +1,11 @@
-export const LAYOUT_ATTR_NAME = "qrk-layout";
-export const TARGET_ATTR_NAME = "qrk-target";
-export const POSITION_ATTR_NAME = "qrk-position";
-export const PARAMS_ATTR_NAME = "qrk-params";
-export const OPTIONS_ATTR_NAME = "qrk-options";
+export const LAYOUT_ATTR_NAME = "p-layout";
+export const SLOT_ATTR_NAME = "p-slot";
 
-export const BOOST_ATTR_NAME = "qrk-boost";
-export const INTERCEPTED_ATTR_NAME = "qrk-intercepted";
+export const BOOST_ATTR_NAME = "p-boost";
+export const INTERCEPTED_ATTR_NAME = "p-intercepted";
 
-export const PREFETCHED_ATTR_NAME = "qrk-prefetched";
-export const PREFETCH_ATTR_NAME = "qrk-prefetch";
+export const PREFETCHED_ATTR_NAME = "p-prefetched";
+export const PREFETCH_ATTR_NAME = "p-prefetch";
 
 export enum FetchMethod {
   "GET" = "GET",

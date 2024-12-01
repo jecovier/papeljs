@@ -34,16 +34,16 @@ export default class HtmlLoader {
 
       const text = await response.text();
 
-      return this._removeQuarkScripts(text);
+      return this._removeSelfScript(text);
     } catch (error) {
       console.error("Error loading HTML: ", error);
       return "";
     }
   }
 
-  private _removeQuarkScripts(text: string): string {
+  private _removeSelfScript(text: string): string {
     return text.replace(
-      /<script[^>]*src=["'][^"']*dist\/[^"']*["'][^>]*><\/script>/gi,
+      /<script[^>]*src=["'][^"']*papel[^"']*["'][^>]*><\/script>/gi,
       ""
     );
   }

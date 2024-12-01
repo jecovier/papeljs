@@ -1,3 +1,5 @@
+import { SLOT_ATTR_NAME } from "./constants";
+
 class LayoutManager {
   private layouts: { [key: string]: string } = {};
   private currentLayout: string | null = null;
@@ -53,12 +55,14 @@ class LayoutManager {
     target: Document | DocumentFragment | Element
   ): { slot: string; content: string }[] {
     const slotContents: { slot: string; content: string }[] = [];
-    const availableSlots = target.querySelectorAll("slot, [slot], [qrk-slot]");
+    const availableSlots = target.querySelectorAll(
+      `slot, [slot], [${SLOT_ATTR_NAME}]`
+    );
 
     availableSlots.forEach((slotElement) => {
       const slotName =
         slotElement.getAttribute("slot") ||
-        slotElement.getAttribute("qrk-slot") ||
+        slotElement.getAttribute(SLOT_ATTR_NAME) ||
         "default";
 
       slotContents.push({ slot: slotName, content: slotElement.innerHTML });
