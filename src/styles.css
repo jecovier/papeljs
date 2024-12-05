@@ -2,14 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-.highlight {
-  @apply bg-purple-800/30 border-purple-500 text-white border text-sm rounded;
-  padding: 0.12rem 0.3rem;
+html {
+  @apply antialiased text-gray-700;
+}
+
+a {
+  @apply text-primary-500 underline;
+}
+
+header {
+  @apply flex flex-col sm:flex-row items-center sm:justify-between py-2 px-6 border-b;
+
+  h1,
+  h1 a {
+    @apply text-2xl font-bold text-gray-700 no-underline;
+  }
+}
+
+main {
+  article {
+    @apply py-6 w-[90%] max-w-xl mx-auto;
+
+    h1 {
+      @apply text-2xl mb-2 text-balance;
+    }
+
+    h2 {
+      @apply text-xl mb-2 text-balance;
+    }
+
+    h3 {
+      @apply text-lg mb-2 text-balance;
+    }
+
+    p {
+      @apply mb-6 text-pretty;
+    }
+  }
 }
 
 header nav a,
 .ghost {
-  @apply text-sm rounded px-4 py-[0.35rem] text-gray-700 transition-colors;
+  @apply text-sm rounded px-4 py-[0.35rem] transition-colors no-underline text-gray-700;
 
   &:hover {
     @apply bg-primary-500 text-white;
@@ -19,9 +53,32 @@ header nav a,
   }
 }
 
+figure.code-snippet {
+  @apply rounded-lg p-0 mb-8 shadow-lg;
+
+  figcaption {
+    @apply bg-gray-600 text-gray-200 px-3 py-2 text-sm rounded-t-lg;
+  }
+
+  pre {
+    @apply bg-gray-800 text-accent-300/90 text-xs rounded-b-lg py-1 leading-relaxed;
+  }
+}
+
+aside nav {
+  @apply flex flex-col mt-6;
+  a {
+    @apply text-sm text-gray-700 no-underline w-full py-2 px-4 rounded-r-lg;
+
+    &:hover {
+      @apply text-primary-500 bg-primary-100;
+    }
+  }
+}
+
 button,
 .btn {
-  @apply text-sm rounded px-4 py-[0.35rem] border border-gray-400 transition-colors;
+  @apply text-sm text-gray-800 flex items-center gap-1 rounded px-4 py-[0.35rem] border border-gray-400 transition-colors no-underline;
 
   &.btn-primary {
     @apply bg-primary-600 border-primary-500 text-white;
@@ -38,4 +95,9 @@ button,
   &.btn-primary:hover {
     @apply bg-primary-700;
   }
+}
+
+.highlight {
+  @apply bg-primary-800/30 border-primary-500 text-white border rounded;
+  padding: 0.1rem 0.3rem;
 }

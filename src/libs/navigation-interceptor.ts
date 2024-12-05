@@ -1,10 +1,23 @@
 import { BOOST_ATTR_NAME, INTERCEPTED_ATTR_NAME } from "@/libs/constants";
 
+type ScrollPosition = {
+  x: number;
+  y: number;
+};
+
 export default class NavigationInterceptor {
   private navigationCallback: (url: URL, event: Event) => Promise<void>;
+  private scrollPositions: Map<string, ScrollPosition>;
 
   constructor() {
     this.navigationCallback = async () => {};
+    this.scrollPositions = new Map();
+
+    // Listen to popstate event to handle back/forward navigation
+    window.addEventListener("popstate", (event) => {
+      const url = new URL(location.href);
+      this._handlePopState(url, event);
+    });
   }
 
   public onNavigate(callback: (url: URL, event: Event) => Promise<void>): void {
@@ -54,6 +67,12 @@ export default class NavigationInterceptor {
       return;
     }
 
+    // Save current scroll position before navigating away
+    this.scrollPositions.set(location.href, {
+      x: window.scrollX,
+      y: window.scrollY,
+    });
+
     event.preventDefault();
     this._fallbackBrowserNavigation(url);
 
@@ -71,5 +90,36 @@ export default class NavigationInterceptor {
 
   private async _handleNavigation(url: URL, event: Event): Promise<void> {
     await this.navigationCallback(url, event);
+    this._restoreScrollPosition(url);
+  }
+
+  private _handlePopState(url: URL, event: PopStateEvent): void {
+    if (this._shouldIntercept(url)) {
+      event.preventDefault();
+
+      if (this._isNavigationAvailable()) {
+        document.startViewTransition(() => this._handleNavigation(url, event));
+        return;
+      }
+
+      this._handleNavigation(url, event);
+    }
+  }
+
+  private _restoreScrollPosition(url: URL): void {
+    window.scrollTo(0, 0);
+    return;
+    /**
+     * TODO:
+     * This is a temporary solution to restore scroll position.
+     * It should be improved to restore scroll position based on the URL
+     * or with some attributes on the elements.
+     */
+    /* const position = this.scrollPositions.get(url.href);
+    if (position) {
+      window.scrollTo(position.x, position.y);
+    } else {
+      window.scrollTo(0, 0);
+    } */
   }
 }

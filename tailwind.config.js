@@ -7,6 +7,8 @@ export default {
     extend: {
       colors: {
         primary: colors.purple,
+        accent: colors.orange,
+        gray: colors.zinc,
       },
     },
   },
