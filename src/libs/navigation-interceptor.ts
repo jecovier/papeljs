@@ -106,7 +106,7 @@ export default class NavigationInterceptor {
     }
   }
 
-  private _restoreScrollPosition(url: URL): void {
+  private _restoreScrollPosition(_url: URL): void {
     window.scrollTo(0, 0);
     return;
     /**

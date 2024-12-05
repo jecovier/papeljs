@@ -1,0 +1,70 @@
+<script type="module" crossorigin src="/papeljs/assets/index-D93ET1aN.js"></script>
+
+<body pl-layout="/papeljs/docs/index.html">
+  <main slot>
+    <article>
+      <h1>Navigation Boost</h1>
+      <p>
+        by default PapelJS will fully render normal and partial pages. To
+        improve the navigation experience, you can use the pl-boost attribute in
+        links to load only the partial content of the page. This will perform an
+        xhr call to the partial page and load only the content of the page into
+        the slots.
+      </p>
+
+      <figure class="code-snippet">
+        <figcaption>docs/index.html</figcaption>
+        <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" <span class="highlight">pl-boost</span>&gt;Chapter 1&lt;/a&gt;
+        &lt;a href="/docs/chapter-2.html" <span class="highlight">pl-boost</span>&gt;Chapter 2&lt;/a&gt;
+        &lt;a href="/docs/chapter-3.html" <span class="highlight">pl-boost</span>&gt;Chapter 3&lt;/a&gt;
+      &lt;/nav&gt;
+        </code></pre>
+      </figure>
+
+      <h2>Prefetching</h2>
+      <p>
+        To improve the loading time of the pages, you can use the pl-prefetch to
+        load the partial page into the cache of the browser. This will add an
+        event listener to the link and load the partial page into the cache as
+        soon as the link is visible in the viewport.
+      </p>
+
+      <figure class="code-snippet">
+        <figcaption>docs/index.html</figcaption>
+        <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 1&lt;/a&gt;
+        &lt;a href="/docs/chapter-2.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 2&lt;/a&gt;
+        &lt;a href="/docs/chapter-3.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 3&lt;/a&gt;
+      &lt;/nav&gt;
+        </code></pre>
+      </figure>
+
+      <h2>Prefetchin "ALL"</h2>
+      <p>
+        If you want to prefetch all the images in the next partial page, you can
+        use the pl-prefetch="all" attribute. This will preload the next partial
+        page, get all the images in there and start loading them into the cache.
+      </p>
+
+      <figure class="code-snippet">
+        <figcaption>docs/index.html</figcaption>
+        <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" <span class="highlight">pl-prefetch="all"</span>&gt;Chapter 1&lt;/a&gt;
+        ...
+      &lt;/nav&gt;
+        </code></pre>
+      </figure>
+
+      <nav class="flex gap-4 justify-between">
+        <a href="/papeljs/docs/inherited-layouts.html" class="btn" pl-boost
+          ><span class="rotate-180 inline-block">&#10140;</span>Inherited
+          Layouts</a
+        >
+      </nav>
+    </article>
+  </main>
+</body>

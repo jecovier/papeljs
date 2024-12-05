@@ -4,28 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PapelJS - a minimalist pseudo framework</title>
-    <script type="module" crossorigin src="/papeljs/assets/index-mRbjw7YW.js"></script>
-    <link rel="stylesheet" crossorigin href="/papeljs/assets/index-DF__XFPS.css">
+    <script type="module" crossorigin src="/papeljs/assets/index-D93ET1aN.js"></script>
+    <link rel="stylesheet" crossorigin href="/papeljs/assets/index-bdcPRgqw.css">
   </head>
   <body>
-    <header
-      class="flex flex-col sm:flex-row items-center sm:justify-between py-1 px-6 border-b"
-    >
+    <header>
       <h1>
-        <a href="/papeljs/" class="text-2xl font-bold py-2 block" pl-boost>
-          PapelJS
-        </a>
+        <a href="/papeljs/" pl-boost> PapelJS </a>
       </h1>
       <nav class="sm:flex gap-1">
         <a href="/papeljs/" pl-boost pl-prefetch>Home</a>
-        <a href="/papeljs/about.html" pl-boost pl-prefetch>About</a>
+        <!-- <a href="/papeljs/about.html" pl-boost pl-prefetch>About</a> -->
         <a href="/papeljs/docs/" pl-boost pl-prefetch>Docs</a>
         <a href="https://github.com/jecovier/papeljs">Code</a>
       </nav>
     </header>
-    <slot name="page">
-      <main class="pt-6 pb-6 w-[90%] max-w-xl mx-auto">
-        <slot>
+    <main>
+      <slot>
+        <article>
           <!-- HERO section-->
           <div class="flex items-center justify-center pb-16 pt-8">
             <div class="flex flex-col gap-3 items-center text-center">
@@ -38,35 +34,28 @@
                 Only ~5kb library to add templates, navigation, prefetching and
                 more.
               </p>
-              <nav class="flex gap-4">
-                <a
-                  href="/index.ts"
-                  download="papel.js"
-                  class="btn btn-primary mx-auto flex items-center"
-                >
-                  <img
-                    src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='white'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%20class='lucide%20lucide-file-down'%3e%3cpath%20d='M15%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V7Z'/%3e%3cpath%20d='M14%202v4a2%202%200%200%200%202%202h4'/%3e%3cpath%20d='M12%2018v-6'/%3e%3cpath%20d='m9%2015%203%203%203-3'/%3e%3c/svg%3e"
-                    alt="download"
-                    class="w-4 h-4 mr-2"
-                  />
-                  papel.js
-                </a>
-              </nav>
+              <a
+                href="/index.ts"
+                download="papel.js"
+                class="btn btn-primary mx-auto flex items-center"
+              >
+                <img
+                  src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='white'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%20class='lucide%20lucide-file-down'%3e%3cpath%20d='M15%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V7Z'/%3e%3cpath%20d='M14%202v4a2%202%200%200%200%202%202h4'/%3e%3cpath%20d='M12%2018v-6'/%3e%3cpath%20d='m9%2015%203%203%203-3'/%3e%3c/svg%3e"
+                  alt="download"
+                  class="w-4 h-4 mr-2"
+                />
+                papel.js
+              </a>
             </div>
           </div>
 
-          <div class="flex flex-col gap-8">
+          <div class="flex flex-col gap-4">
             <div>
-              <h3 class="text-lg mb-3">
-                Step 1 - Add PapelJS to your index.html
-              </h3>
-              <div class="bg-gray-800 text-gray-300 rounded-lg p-0">
-                <div
-                  class="px-5 py-2 mb-2 text-sm rounded-t-lg bg-gray-600 text-gray-200"
-                >
-                  index.html
-                </div>
-                <pre><code class="text-orange-300/85 text-xs">   &lt;html&gt;
+              <h3>Step 1 - Add PapelJS to your index.html</h3>
+              <figure class="code-snippet">
+                <figcaption>index.html</figcaption>
+                <pre><code>
+    &lt;html&gt;
       &lt;head&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
       &lt;/head&gt;
@@ -83,19 +72,16 @@
           <span class="highlight">&lt;/slot&gt;</span>
         &lt;/main&gt;
       &lt;/body&gt;
-    &lt;/html&gt;</code>
-          </pre>
-              </div>
+    &lt;/html&gt;
+                </code></pre>
+              </figure>
             </div>
             <div>
-              <h3 class="text-lg mb-3">Step 2 - create a partial page</h3>
-              <div class="bg-gray-800 text-gray-300 rounded-lg p-0">
-                <div
-                  class="px-5 py-2 mb-2 text-sm rounded-t-lg bg-gray-600 text-gray-200"
-                >
-                  about.html
-                </div>
-                <pre><code class="text-orange-300/85 text-xs">   &lt;html&gt;
+              <h3>Step 2 - create a partial page</h3>
+              <figure class="code-snippet">
+                <figcaption>about.html</figcaption>
+                <pre><code>
+    &lt;html&gt;
       &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
         &lt;div <span class="highlight">slot</span>&gt;
@@ -103,11 +89,11 @@
         &lt;/div&gt;
       &lt;/body&gt;
     &lt;/html&gt;</code>
-          </pre>
-              </div>
+                </pre>
+              </figure>
             </div>
             <div>
-              <h3 class="text-lg mb-3">Step 3 - Enjoy! 😎</h3>
+              <h3>Step 3 - Enjoy! 😎</h3>
               <p>
                 Read the documentation to learn more about all the features
                 included in PapelJS and enjoy the simplicity of creating static
@@ -115,9 +101,9 @@
               </p>
             </div>
           </div>
-        </slot>
-      </main>
-    </slot>
+        </article>
+      </slot>
+    </main>
     <footer>
       <p class="text-center py-6 text-gray-500 text-sm">PapelJS by Jecovier</p>
     </footer>

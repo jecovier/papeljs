@@ -1,0 +1,68 @@
+<script type="module" crossorigin src="/papeljs/assets/index-D93ET1aN.js"></script>
+
+<body pl-layout="/papeljs/docs/index.html">
+  <main slot>
+    <article>
+      <h1>Partials Pages</h1>
+      <p>
+        When working with PapelJS, you can create partial pages that will be
+        loaded into the slots content areas of your layout. This allows you to
+        create reusable designs that can be used across multiple pages.
+      </p>
+
+      <p>
+        all partial pages needs to have the papel.js file included in the body
+        of the file and the pl-layout attribute pointing to the layout file to
+        render. This is required to render the layouts of the page when
+        accessing the partial page directly in the browser.
+      </p>
+
+      <figure class="code-snippet">
+        <figcaption>about.html</figcaption>
+        <pre><code>
+    &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
+      &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+      &lt;main <span class="highlight">slot</span>&gt;
+          &lt;p&gt; Hello World from About &lt;/p&gt;
+      &lt;/main&gt;
+    &lt;/body&gt;
+        </code></pre>
+      </figure>
+
+      <h2>Named Slots</h2>
+      <p>
+        You can create named slots by adding the <code>name</code> attribute to
+        any slot in your layout. This will create a named slot where you can
+        load partial contents with the same name.
+      </p>
+
+      <figure class="code-snippet">
+        <figcaption>index.html</figcaption>
+        <pre><code>
+      &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;header&gt;
+          &lt;slot <span class="highlight">name="header"</span>&gt;
+            &lt;h2&gt; Default Header &lt;/h2&gt;
+          &lt;/slot&gt;
+        &lt;/header&gt;
+        &lt;main&gt;
+          <span class="highlight">&lt;slot&gt;</span>
+            &lt;h2&gt; Hello World &lt;/h2&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/main&gt;
+      &lt;/body&gt;
+        </code></pre>
+      </figure>
+
+      <nav class="flex gap-4 justify-between">
+        <a href="/papeljs/docs/layouts.html" class="btn" pl-boost
+          ><span class="rotate-180 inline-block">&#10140;</span> Layouts</a
+        >
+        <a href="/papeljs/docs/inherited-layouts.html" class="btn" pl-boost
+          >Inherited layouts &#10140;</a
+        >
+      </nav>
+    </article>
+  </main>
+</body>
