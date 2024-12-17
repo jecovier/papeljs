@@ -45,9 +45,15 @@ header nav a,
 .ghost {
   @apply text-sm rounded px-4 py-[0.35rem] transition-colors no-underline text-gray-700;
 
+  &.pl-path-match:not(.is-home) {
+    @apply bg-primary-200 text-primary-600;
+  }
+
+  &.pl-path-match:hover,
   &:hover {
     @apply bg-primary-500 text-white;
   }
+
   &:active {
     @apply bg-primary-700;
   }
@@ -72,6 +78,10 @@ aside nav {
 
     &:hover {
       @apply text-primary-500 underline;
+    }
+
+    &.pl-path-match {
+      @apply bg-primary-100 text-primary-600;
     }
   }
 }
@@ -103,6 +113,6 @@ button,
 }
 
 code.highlight {
-  @apply bg-primary-800/30 border-primary-900 text-primary-950 border rounded text-sm;
+  @apply bg-primary-50 border-primary-500 text-primary-500 border rounded text-sm;
   padding: 0.05rem 0.3rem;
 }

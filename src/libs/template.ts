@@ -3,11 +3,13 @@ import HtmlLoader from "@/libs/html-loader";
 import LayoutManager from "@/libs/layout-manager";
 import NavigationInterceptor from "@/libs/navigation-interceptor";
 import NavigationPrefetch from "@/libs/navigation-prefetch";
+import { PathLinkMatcher } from "./path-link-matcher";
 
 const htmlLoader = new HtmlLoader();
 const layoutManager = new LayoutManager();
 const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
+const matcher = new PathLinkMatcher();
 
 export async function loadPage(): Promise<void> {
   const layoutUrl = getLayoutUrl(document) || location.pathname;
@@ -28,6 +30,7 @@ export async function loadPage(): Promise<void> {
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
+  matcher.highlightMatchingLinks();
 }
 
 async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
@@ -55,6 +58,7 @@ async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
+  matcher.highlightMatchingLinks();
 }
 
 function getLayoutUrl(target: Document): string {
