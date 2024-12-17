@@ -1,15 +1,19 @@
-<script type="module" crossorigin src="/papeljs/assets/index-D93ET1aN.js"></script>
+<script type="module" crossorigin src="/papeljs/assets/index-BIOWl6TB.js"></script>
 
 <body pl-layout="/papeljs/docs/index.html">
   <main slot>
     <article>
       <h1>Navigation Boost</h1>
       <p>
-        by default PapelJS will fully render normal and partial pages. To
-        improve the navigation experience, you can use the pl-boost attribute in
-        links to load only the partial content of the page. This will perform an
-        xhr call to the partial page and load only the content of the page into
-        the slots.
+        By default, PapelJS fully renders both normal and partial pages. To
+        enhance the navigation experience, you can use the
+        <code class="highlight">pl-boost</code> attribute on links to load only
+        the partial content of a page.
+      </p>
+      <p>
+        With PapelJS performs an XHR call to fetch the partial page and loads
+        its content into the appropriate slots, without reloading the entire
+        page.
       </p>
 
       <figure class="code-snippet">
@@ -23,12 +27,29 @@
         </code></pre>
       </figure>
 
+      <h3>How It Works</h3>
+      <ul class="list-disc ml-8 mb-8">
+        <li>
+          When a link with the <code class="highlight">pl-boost</code> attribute
+          is clicked, PapelJS fetches the partial page content using an XHR
+          request.
+        </li>
+        <li>
+          The fetched content is loaded directly into the designated slots on
+          the current page.
+        </li>
+        <li>
+          This approach provides faster navigation by avoiding full page
+          reloads.
+        </li>
+      </ul>
+
       <h2>Prefetching</h2>
       <p>
-        To improve the loading time of the pages, you can use the pl-prefetch to
-        load the partial page into the cache of the browser. This will add an
-        event listener to the link and load the partial page into the cache as
-        soon as the link is visible in the viewport.
+        To improve page loading times, you can use the
+        <code class="highlight">pl-prefetch</code> attribute on links. This
+        attribute preloads the partial page into the browser's cache as soon as
+        the link becomes visible in the viewport.
       </p>
 
       <figure class="code-snippet">
@@ -36,18 +57,32 @@
         <pre><code>
       &lt;nav&gt;
         &lt;a href="/docs/chapter-1.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 1&lt;/a&gt;
-        &lt;a href="/docs/chapter-2.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 2&lt;/a&gt;
-        &lt;a href="/docs/chapter-3.html" <span class="highlight">pl-boost pl-prefetch</span>&gt;Chapter 3&lt;/a&gt;
+        &lt;a href="/docs/chapter-2.html" <span class="highlight">pl-prefetch</span>&gt;Chapter 2&lt;/a&gt;
+        &lt;a href="/docs/chapter-3.html" <span class="highlight">pl-prefetch</span>&gt;Chapter 3&lt;/a&gt;
       &lt;/nav&gt;
         </code></pre>
       </figure>
 
+      <h3>How It Works</h3>
+      <ul class="list-disc ml-8 mb-8">
+        <li>pl-prefetch adds an event listener to the link.</li>
+        <li>
+          When the link enters the viewport, PapelJS automatically fetches the
+          partial page content and stores it in the browser's cache.
+        </li>
+        <li>This ensures faster loading when the user clicks the link.</li>
+      </ul>
+
       <h2>Prefetchin "ALL"</h2>
       <p>
-        If you want to prefetch all the images in the next partial page, you can
-        use the pl-prefetch="all" attribute. This will preload the next partial
-        page, get all the images in there and start loading them into the cache.
+        If you want to prefetch all the images in the next partial page, use the
+        <code class="highlight">pl-prefetch="all"</code> attribute. This will:
       </p>
+      <ul class="list-disc ml-8 mb-8">
+        <li>Preload the next partial page.</li>
+        <li>Fetch all images within that page.</li>
+        <li>Start loading those images into the browser's cache.</li>
+      </ul>
 
       <figure class="code-snippet">
         <figcaption>docs/index.html</figcaption>

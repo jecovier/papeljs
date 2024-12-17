@@ -1,21 +1,27 @@
-<script type="module" crossorigin src="/papeljs/assets/index-D93ET1aN.js"></script>
+<script type="module" crossorigin src="/papeljs/assets/index-BIOWl6TB.js"></script>
 
 <body pl-layout="/papeljs/docs/index.html">
   <main slot>
     <article>
-      <h1>Inherited Layouts</h1>
+      <h1>Inherited Layouts in PapelJS</h1>
       <p>
-        Layouts can be divided into partial layouts to create reusable designs.
-        if you have a layout that is used across multiple pages, you can create
-        a partial layout and load it into the main layout of your website.
+        Layouts can be broken into partial layouts to create reusable and
+        flexible designs. If you have a layout shared across multiple pages, you
+        can define it as a partial layout and load it into your main layout.
       </p>
 
-      <p>
-        To create a partial layout, you need to create a layout file with the
-        slots where the partial pages will be loaded and you add to the same
-        file a pl-layout to define the layout where this current layout will
-        inherit.
-      </p>
+      <h2>Creating a Partial Layout</h2>
+      <p>To create a partial layout, follow these steps:</p>
+      <ul class="list-disc ml-8 mb-8">
+        <li>
+          Define Slots: Create a layout file with slots where partial pages will
+          be loaded.
+        </li>
+        <li>
+          Inherit a Layout: Use the pl-layout attribute to specify the parent
+          layout that this partial layout will inherit.
+        </li>
+      </ul>
 
       <figure class="code-snippet">
         <figcaption>docs/index.html</figcaption>
