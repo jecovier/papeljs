@@ -30,7 +30,7 @@ export async function loadPage(): Promise<void> {
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
-  matcher.highlightMatchingLinks();
+  matcher.highlightMatchingLinks(document);
 }
 
 async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
@@ -58,7 +58,20 @@ async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
-  matcher.highlightMatchingLinks();
+  matcher.highlightMatchingLinks(document);
+}
+
+export function interceptLinks(document: Document | Element): void {
+  navigationInterceptor.startInterception(document);
+  navigationInterceptor.onNavigate(loadFetchedPage);
+}
+
+export function prefetchLinks(document: Document | Element): void {
+  navigationPrefetch.startPrefetch(document);
+}
+
+export function highlightMatchingLinks(document: Document | Element): void {
+  matcher.highlightMatchingLinks(document);
 }
 
 function getLayoutUrl(target: Document): string {

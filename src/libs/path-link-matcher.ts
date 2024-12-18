@@ -55,10 +55,10 @@ export class PathLinkMatcher {
   }
 
   // Agregar clase a los enlaces coincidentes
-  public highlightMatchingLinks(): void {
+  public highlightMatchingLinks(target: Document | Element): void {
     this.currentPath = this.normalizePath(window.location.pathname);
     this.cumulativePaths = this.getCumulativePaths();
-    this.allLinks = document.querySelectorAll("a");
+    this.allLinks = target.querySelectorAll("a");
 
     this.clearPreviousMatches();
     const matchingLinks = this.getMatchingLinks();
