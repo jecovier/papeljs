@@ -66,9 +66,8 @@ export class LayoutManager {
   ): void {
     if (target instanceof Document) {
       const contentDocument = this.parseStringToDocument(content);
-      target.head.innerHTML = contentDocument.head.innerHTML;
       target.body.innerHTML = contentDocument.body.innerHTML;
-
+      this._mergeHeads(contentDocument, target);
       this._copyAttributes(contentDocument, target);
     } else {
       target.outerHTML = content;
@@ -78,6 +77,31 @@ export class LayoutManager {
   private _copyAttributes(source: Document, target: Document): void {
     Array.from(source.body.attributes).forEach((attr) => {
       target.body.setAttribute(attr.name, attr.value);
+    });
+  }
+
+  private _mergeHeads(source: Document, target: Document): void {
+    const sourceHead = source.head;
+    const targetHead = target.head;
+
+    if (!sourceHead.innerHTML) {
+      return;
+    }
+
+    if (sourceHead.innerHTML && !targetHead.innerHTML) {
+      // @ts-ignore
+      target.head.innerHTML = source.head.innerHTML;
+      return;
+    }
+
+    const targetHeadHtml = targetHead.innerHTML;
+
+    Array.from(sourceHead.children).forEach((element) => {
+      const elementHtml = element.outerHTML;
+
+      if (!targetHeadHtml.includes(elementHtml)) {
+        targetHead.appendChild(element);
+      }
     });
   }
 

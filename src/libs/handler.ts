@@ -19,9 +19,10 @@ export async function loadPage(): Promise<void> {
   const slotContents = layoutManager.getSlotsContents(document);
   const layout = await htmlLoader.load(layoutUrl);
 
+  layoutManager.render(document, layoutUrl, layout);
+  layoutManager.replaceSlotContents(slotContents);
+
   if (!isFullHTML(document)) {
-    layoutManager.render(document, layoutUrl, layout);
-    layoutManager.replaceSlotContents(slotContents);
     const partialDocument = layoutManager.parseStringToDocument(layout);
     recursiveLoadPage(partialDocument);
   }
@@ -95,6 +96,7 @@ function shouldRenderLayout(target: Document, layoutURL: string): boolean {
 
 async function recursiveLoadPage(target: Document): Promise<void> {
   const nestedLayoutUrl = getLayoutUrl(target);
+
   if (nestedLayoutUrl) {
     await loadPage();
   }
