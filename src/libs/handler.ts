@@ -16,27 +16,18 @@ const loadIndicator = new LoadIndicator();
 export async function loadPage(): Promise<void> {
   loadIndicator.startLoadingAnimation();
   const layoutUrl = getLayoutUrl(document) || location.pathname;
-  console.log("layout", layoutUrl);
   const slotContents = layoutManager.getSlotsContents(document);
-  const layout = await getHtmlLayout(layoutUrl);
+  const layout = await htmlLoader.load(layoutUrl);
 
   if (!isFullHTML(document)) {
     layoutManager.render(document, layoutUrl, layout);
     layoutManager.replaceSlotContents(slotContents);
-
     const partialDocument = layoutManager.parseStringToDocument(layout);
-    const nestedLayoutUrl = getLayoutUrl(partialDocument);
-    console.log("nested layout", nestedLayoutUrl);
-    if (nestedLayoutUrl) {
-      await loadPage();
-    }
+    recursiveLoadPage(partialDocument);
   }
 
+  enhanceRenderedContent(document);
   loadIndicator.stopLoadingAnimation();
-  navigationInterceptor.startInterception(document);
-  navigationInterceptor.onNavigate(loadFetchedPage);
-  navigationPrefetch.startPrefetch(document);
-  matcher.highlightMatchingLinks(document);
 }
 
 async function loadFetchedPage(url: URL): Promise<void> {
@@ -45,28 +36,20 @@ async function loadFetchedPage(url: URL): Promise<void> {
   const partialDocument = layoutManager.parseStringToDocument(partials);
   const partialLayoutUrl = getLayoutUrl(partialDocument) || url.pathname;
   const slotContents = layoutManager.getSlotsContents(partialDocument);
-  const layout = await getHtmlLayout(partialLayoutUrl);
+  const layout = await htmlLoader.load(partialLayoutUrl);
 
-  if (
-    isFullHTML(partialDocument) ||
-    !layoutManager.isCurrentLayout(partialLayoutUrl)
-  ) {
+  if (shouldRenderLayout(partialDocument, partialLayoutUrl)) {
     layoutManager.render(document, partialLayoutUrl, layout);
   }
 
+  layoutManager.replaceSlotContents(slotContents);
+
   if (!isFullHTML(partialDocument)) {
-    layoutManager.replaceSlotContents(slotContents);
-    const nestedLayoutUrl = getLayoutUrl(document);
-    if (nestedLayoutUrl) {
-      await loadPage();
-    }
+    recursiveLoadPage(document);
   }
 
+  enhanceRenderedContent(document);
   loadIndicator.stopLoadingAnimation();
-  navigationInterceptor.startInterception(document);
-  navigationInterceptor.onNavigate(loadFetchedPage);
-  navigationPrefetch.startPrefetch(document);
-  matcher.highlightMatchingLinks(document);
 }
 
 export function interceptLinks(document: Document | Element): void {
@@ -102,14 +85,24 @@ function getLayoutUrl(target: Document): string {
   );
 }
 
-async function getHtmlLayout(url: string): Promise<string> {
-  return url && !layoutManager.isCurrentLayout(url)
-    ? !layoutManager.has(url)
-      ? await htmlLoader.load(url)
-      : ""
-    : "";
-}
-
 function isFullHTML(target: Document): boolean {
   return target.head.children.length > 1 && !!target.body;
+}
+
+function shouldRenderLayout(target: Document, layoutURL: string): boolean {
+  return isFullHTML(target) || !layoutManager.isCurrentLayout(layoutURL);
+}
+
+async function recursiveLoadPage(target: Document): Promise<void> {
+  const nestedLayoutUrl = getLayoutUrl(target);
+  if (nestedLayoutUrl) {
+    await loadPage();
+  }
+}
+
+function enhanceRenderedContent(target: Document | Element): void {
+  navigationInterceptor.startInterception(target);
+  navigationInterceptor.onNavigate(loadFetchedPage);
+  navigationPrefetch.startPrefetch(target);
+  matcher.highlightMatchingLinks(target);
 }

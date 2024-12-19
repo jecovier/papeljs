@@ -1,7 +1,6 @@
 import { SLOT_ATTR_NAME } from "./constants";
 
 export class LayoutManager {
-  private layoutsCache: { [key: string]: string } = {};
   private currentLayout: string | null = null;
 
   public render(
@@ -9,22 +8,21 @@ export class LayoutManager {
     tag: string,
     layout?: string
   ): void {
-    if (tag === this.currentLayout) {
+    if (!layout) {
+      throw new Error("layout is required");
+    }
+
+    const formatedTag = this._slugifyUrl(tag);
+    if (formatedTag === this.currentLayout) {
       return;
     }
 
-    const selectedLayout = this._getLayoutFromCache(tag, layout);
-
-    this.currentLayout = tag;
-    this._renderLayoutContetnIntoTarget(target, selectedLayout);
+    this.currentLayout = formatedTag;
+    this._renderLayoutContetnIntoTarget(target, layout);
   }
 
-  public has(tag: string): boolean {
-    return tag in this.layoutsCache;
-  }
-
-  public isCurrentLayout(layout: string): boolean {
-    return this.currentLayout === layout;
+  public isCurrentLayout(tag: string): boolean {
+    return this.currentLayout === this._slugifyUrl(tag);
   }
 
   public replaceSlotContents(
@@ -41,14 +39,6 @@ export class LayoutManager {
 
       slotElement.innerHTML = replacement.content;
     });
-  }
-
-  private _getLayoutFromCache(tag: string, layout?: string): string {
-    if (!(tag in this.layoutsCache)) {
-      this._addLayoutToCache(tag, layout);
-    }
-
-    return this.layoutsCache[tag];
   }
 
   public getSlotsContents(
@@ -70,13 +60,6 @@ export class LayoutManager {
     return slotContents;
   }
 
-  private _addLayoutToCache(tag: string, layout?: string): void {
-    if (!layout) {
-      throw new Error("layout is required");
-    }
-    this.layoutsCache[tag] = layout;
-  }
-
   private _renderLayoutContetnIntoTarget(
     target: Document | Element,
     content: string
@@ -96,6 +79,18 @@ export class LayoutManager {
     Array.from(source.body.attributes).forEach((attr) => {
       target.body.setAttribute(attr.name, attr.value);
     });
+  }
+
+  private _slugifyUrl(tag: string): string {
+    let formattedTag = tag
+      .toLowerCase()
+      .trim()
+      .replace(/^\/+|\/+$/g, "");
+    if (!formattedTag.endsWith(".html")) {
+      formattedTag += "/index.html";
+    }
+    formattedTag = formattedTag.replace(/\//g, "-");
+    return formattedTag;
   }
 
   public parseStringToDocument(html: string): Document {
