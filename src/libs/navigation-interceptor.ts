@@ -5,8 +5,8 @@ type ScrollPosition = {
   y: number;
 };
 
-export default class NavigationInterceptor {
-  private navigationCallback: (url: URL, event: Event) => Promise<void>;
+export class NavigationInterceptor {
+  private navigationCallback: (url: URL) => Promise<void>;
   private scrollPositions: Map<string, ScrollPosition>;
 
   constructor() {
@@ -20,7 +20,7 @@ export default class NavigationInterceptor {
     });
   }
 
-  public onNavigate(callback: (url: URL, event: Event) => Promise<void>): void {
+  public onNavigate(callback: (url: URL) => Promise<void>): void {
     this.navigationCallback = callback;
   }
 
@@ -61,7 +61,11 @@ export default class NavigationInterceptor {
     link: HTMLAnchorElement
   ): Promise<void> {
     event.preventDefault();
-    const url = new URL(link.href);
+    this.navigate(link.href);
+  }
+
+  public navigate(href: string): void {
+    const url = new URL(href);
 
     if (!this._shouldIntercept(url)) {
       return;
@@ -73,23 +77,22 @@ export default class NavigationInterceptor {
       y: window.scrollY,
     });
 
-    event.preventDefault();
     this._fallbackBrowserNavigation(url);
 
     if (this._isNavigationAvailable()) {
-      document.startViewTransition(() => this._handleNavigation(url, event));
+      document.startViewTransition(() => this._handleNavigation(url));
       return;
     }
 
-    this._handleNavigation(url, event);
+    this._handleNavigation(url);
   }
 
   private _fallbackBrowserNavigation(url: URL): void {
     window.history.pushState({}, "", url);
   }
 
-  private async _handleNavigation(url: URL, event: Event): Promise<void> {
-    await this.navigationCallback(url, event);
+  private async _handleNavigation(url: URL): Promise<void> {
+    await this.navigationCallback(url);
     this._restoreScrollPosition(url);
   }
 
@@ -98,11 +101,11 @@ export default class NavigationInterceptor {
       event.preventDefault();
 
       if (this._isNavigationAvailable()) {
-        document.startViewTransition(() => this._handleNavigation(url, event));
+        document.startViewTransition(() => this._handleNavigation(url));
         return;
       }
 
-      this._handleNavigation(url, event);
+      this._handleNavigation(url);
     }
   }
 

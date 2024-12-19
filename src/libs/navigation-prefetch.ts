@@ -3,9 +3,9 @@ import {
   PREFETCH_ATTR_NAME,
   PREFETCHED_ATTR_NAME,
 } from "@/libs/constants";
-import HtmlLoader from "@/libs/html-loader";
+import { HtmlLoader } from "@/libs/html-loader";
 
-export default class NavigationPrefetch {
+export class NavigationPrefetch {
   private loadedUrls: string[] = [];
   constructor(private htmlLoader: HtmlLoader) {}
 

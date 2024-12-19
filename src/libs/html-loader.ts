@@ -6,7 +6,7 @@ export enum HtmlLoaderContentType {
   "TEXT" = "text/plain",
 }
 
-export default class HtmlLoader {
+export class HtmlLoader {
   async load(
     url: string,
     method: FetchMethod = FetchMethod.GET,

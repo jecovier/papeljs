@@ -1,18 +1,22 @@
 import { LAYOUT_ATTR_NAME } from "@/libs/constants";
-import HtmlLoader from "@/libs/html-loader";
-import LayoutManager from "@/libs/layout-manager";
-import NavigationInterceptor from "@/libs/navigation-interceptor";
-import NavigationPrefetch from "@/libs/navigation-prefetch";
+import { HtmlLoader } from "@/libs/html-loader";
+import { LayoutManager } from "@/libs/layout-manager";
+import { NavigationInterceptor } from "@/libs/navigation-interceptor";
+import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
+import { LoadIndicator } from "./load-indicator";
 
 const htmlLoader = new HtmlLoader();
 const layoutManager = new LayoutManager();
 const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
 const matcher = new PathLinkMatcher();
+const loadIndicator = new LoadIndicator();
 
 export async function loadPage(): Promise<void> {
+  loadIndicator.startLoadingAnimation();
   const layoutUrl = getLayoutUrl(document) || location.pathname;
+  console.log("layout", layoutUrl);
   const slotContents = layoutManager.getSlotsContents(document);
   const layout = await getHtmlLayout(layoutUrl);
 
@@ -22,18 +26,21 @@ export async function loadPage(): Promise<void> {
 
     const partialDocument = layoutManager.parseStringToDocument(layout);
     const nestedLayoutUrl = getLayoutUrl(partialDocument);
+    console.log("nested layout", nestedLayoutUrl);
     if (nestedLayoutUrl) {
       await loadPage();
     }
   }
 
+  loadIndicator.stopLoadingAnimation();
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
   matcher.highlightMatchingLinks(document);
 }
 
-async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
+async function loadFetchedPage(url: URL): Promise<void> {
+  loadIndicator.startLoadingAnimation();
   const partials = await htmlLoader.load(url.toString());
   const partialDocument = layoutManager.parseStringToDocument(partials);
   const partialLayoutUrl = getLayoutUrl(partialDocument) || url.pathname;
@@ -55,6 +62,7 @@ async function loadFetchedPage(url: URL, _event: Event): Promise<void> {
     }
   }
 
+  loadIndicator.stopLoadingAnimation();
   navigationInterceptor.startInterception(document);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(document);
@@ -72,6 +80,18 @@ export function prefetchLinks(document: Document | Element): void {
 
 export function highlightMatchingLinks(document: Document | Element): void {
   matcher.highlightMatchingLinks(document);
+}
+
+export function navigate(url: string): void {
+  navigationInterceptor.navigate(url);
+}
+
+export function startLoading(): void {
+  loadIndicator.startLoadingAnimation();
+}
+
+export function stopLoading(): void {
+  loadIndicator.stopLoadingAnimation();
 }
 
 function getLayoutUrl(target: Document): string {

@@ -1,7 +1,7 @@
 import { SLOT_ATTR_NAME } from "./constants";
 
-class LayoutManager {
-  private layouts: { [key: string]: string } = {};
+export class LayoutManager {
+  private layoutsCache: { [key: string]: string } = {};
   private currentLayout: string | null = null;
 
   public render(
@@ -13,14 +13,14 @@ class LayoutManager {
       return;
     }
 
-    const selectedLayout = this._getLayout(tag, layout);
+    const selectedLayout = this._getLayoutFromCache(tag, layout);
 
-    this.currentLayout = selectedLayout;
-    this._setTargetContent(target, selectedLayout);
+    this.currentLayout = tag;
+    this._renderLayoutContetnIntoTarget(target, selectedLayout);
   }
 
   public has(tag: string): boolean {
-    return tag in this.layouts;
+    return tag in this.layoutsCache;
   }
 
   public isCurrentLayout(layout: string): boolean {
@@ -43,12 +43,12 @@ class LayoutManager {
     });
   }
 
-  private _getLayout(tag: string, layout?: string): string {
-    if (!(tag in this.layouts)) {
-      this._addLayout(tag, layout);
+  private _getLayoutFromCache(tag: string, layout?: string): string {
+    if (!(tag in this.layoutsCache)) {
+      this._addLayoutToCache(tag, layout);
     }
 
-    return this.layouts[tag];
+    return this.layoutsCache[tag];
   }
 
   public getSlotsContents(
@@ -70,21 +70,32 @@ class LayoutManager {
     return slotContents;
   }
 
-  private _addLayout(tag: string, layout?: string): void {
+  private _addLayoutToCache(tag: string, layout?: string): void {
     if (!layout) {
       throw new Error("layout is required");
     }
-    this.layouts[tag] = layout;
+    this.layoutsCache[tag] = layout;
   }
 
-  private _setTargetContent(target: Document | Element, content: string): void {
+  private _renderLayoutContetnIntoTarget(
+    target: Document | Element,
+    content: string
+  ): void {
     if (target instanceof Document) {
       const contentDocument = this.parseStringToDocument(content);
       target.head.innerHTML = contentDocument.head.innerHTML;
-      target.body = contentDocument.body;
+      target.body.innerHTML = contentDocument.body.innerHTML;
+
+      this._copyAttributes(contentDocument, target);
     } else {
       target.outerHTML = content;
     }
+  }
+
+  private _copyAttributes(source: Document, target: Document): void {
+    Array.from(source.body.attributes).forEach((attr) => {
+      target.body.setAttribute(attr.name, attr.value);
+    });
   }
 
   public parseStringToDocument(html: string): Document {
@@ -93,5 +104,3 @@ class LayoutManager {
     return doc;
   }
 }
-
-export default LayoutManager;
