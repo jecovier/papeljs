@@ -13,12 +13,12 @@ export class LayoutManager {
       throw new Error("layout is required");
     }
 
-    const contentDocument = this.parseStringToDocument(layout);
+    const layoutDocument = this.parseStringToDocument(layout);
 
     this.currentLayout = formatedTag;
-    this._mergeHeads(contentDocument, target);
-    this._copyElementAttributes(contentDocument.body, target.body);
-    this._replaceContent(contentDocument.body, target.body);
+    this._mergeHeads(layoutDocument, target);
+    this._copyElementAttributes(layoutDocument.body, target.body);
+    this._replaceContent(layoutDocument.body, target.body);
   }
 
   public isCurrentLayout(tag: string): boolean {

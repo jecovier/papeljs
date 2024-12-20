@@ -15,14 +15,15 @@ const loadIndicator = new LoadIndicator();
 
 export async function loadPage(): Promise<void> {
   loadIndicator.startLoadingAnimation();
-  const layoutUrl = getLayoutUrl(document) || location.pathname;
   const slotContents = layoutManager.getSlotsContents(document);
+  const layoutUrl = getLayoutUrl(document, htmlLoader.config, location);
   const layout = await htmlLoader.load(layoutUrl);
+  const isPartialHTML = !!layoutUrl;
 
   layoutManager.render(document, layoutUrl, layout);
   layoutManager.replaceSlotContents(slotContents);
 
-  if (!isFullHTML(document)) {
+  if (isPartialHTML) {
     const partialDocument = layoutManager.parseStringToDocument(layout);
     recursiveLoadPage(partialDocument);
   }
@@ -35,17 +36,18 @@ async function loadFetchedPage(url: URL): Promise<void> {
   loadIndicator.startLoadingAnimation();
   const partials = await htmlLoader.load(url.toString());
   const partialDocument = layoutManager.parseStringToDocument(partials);
-  const partialLayoutUrl = getLayoutUrl(partialDocument) || url.pathname;
   const slotContents = layoutManager.getSlotsContents(partialDocument);
-  const layout = await htmlLoader.load(partialLayoutUrl);
+  const layoutUrl = getLayoutUrl(partialDocument, htmlLoader.config, url);
+  const layout = await htmlLoader.load(layoutUrl);
+  const isPartialHTML = !!layoutUrl;
 
-  if (shouldRenderLayout(partialDocument, partialLayoutUrl)) {
-    layoutManager.render(document, partialLayoutUrl, layout);
+  if (shouldRenderLayout(layoutUrl)) {
+    layoutManager.render(document, layoutUrl, layout);
   }
 
   layoutManager.replaceSlotContents(slotContents);
 
-  if (!isFullHTML(partialDocument)) {
+  if (isPartialHTML) {
     recursiveLoadPage(document);
   }
 
@@ -78,24 +80,28 @@ export function stopLoading(): void {
   loadIndicator.stopLoadingAnimation();
 }
 
-function getLayoutUrl(target: Document): string {
-  return (
-    target
-      .querySelector(`[${LAYOUT_ATTR_NAME}]`)
-      ?.getAttribute(LAYOUT_ATTR_NAME) ?? ""
-  );
+function getLayoutUrl(
+  target: Document,
+  config: Record<string, string>,
+  location: Location | URL | null
+): string {
+  if (config?.[LAYOUT_ATTR_NAME]) {
+    return config[LAYOUT_ATTR_NAME];
+  }
+
+  const attributeLayout = target
+    .querySelector(`[${LAYOUT_ATTR_NAME}]`)
+    ?.getAttribute(LAYOUT_ATTR_NAME);
+
+  return attributeLayout ?? location?.pathname ?? "";
 }
 
-function isFullHTML(target: Document): boolean {
-  return target.head.children.length > 1 && !!target.body;
-}
-
-function shouldRenderLayout(target: Document, layoutURL: string): boolean {
-  return isFullHTML(target) || !layoutManager.isCurrentLayout(layoutURL);
+function shouldRenderLayout(layoutURL: string): boolean {
+  return !layoutURL || !layoutManager.isCurrentLayout(layoutURL);
 }
 
 async function recursiveLoadPage(target: Document): Promise<void> {
-  const nestedLayoutUrl = getLayoutUrl(target);
+  const nestedLayoutUrl = getLayoutUrl(target, {}, null);
 
   if (nestedLayoutUrl) {
     await loadPage();

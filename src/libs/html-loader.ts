@@ -1,6 +1,8 @@
 import { FetchMethod, HtmlLoaderContentType } from "@/libs/constants";
 
 export class HtmlLoader {
+  config: { [key: string]: string } = {};
+
   async load(
     url: string,
     method: FetchMethod = FetchMethod.GET,
@@ -28,6 +30,8 @@ export class HtmlLoader {
 
       const text = await response.text();
 
+      this.config = this._extractConfigFromHtml(text);
+
       return this._removeSelfScript(text);
     } catch (error) {
       console.error("Error loading HTML: ", error);
@@ -40,6 +44,16 @@ export class HtmlLoader {
       /<script[^>]*src=["'][^"']*papel[^"']*["'][^>]*><\/script>/gi,
       ""
     );
+  }
+
+  private _extractConfigFromHtml(text: string): { [key: string]: string } {
+    const documentContent = new DOMParser().parseFromString(text, "text/html");
+    const papelJsScript = documentContent.querySelector("script[pl-layout]");
+    const configFromAttributes = Array.from(papelJsScript?.attributes || []);
+    return configFromAttributes.reduce<Record<string, string>>((acc, attr) => {
+      acc[attr.name] = attr.value;
+      return acc;
+    }, {});
   }
 
   public async firstToMatch(
