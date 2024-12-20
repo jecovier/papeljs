@@ -1,4 +1,4 @@
-import { SLOT_ATTR_NAME } from "./constants";
+import { SLOT_ATTR_NAME, PRESERVE_ATTR_NAME } from "./constants";
 
 export class LayoutManager {
   private currentLayout: string | null = null;
@@ -104,11 +104,11 @@ export class LayoutManager {
   }
 
   private _replaceContent(source: Element, target: Element): void {
-    const preserveElements = target.querySelectorAll("[pl-preserve]");
+    const preserveElements = target.querySelectorAll(`[${PRESERVE_ATTR_NAME}]`);
     const preserveMap = new Map<string, Element>();
 
     preserveElements.forEach((el, index) => {
-      const name = el.getAttribute("pl-preserve") ?? `preserve-${index}`;
+      const name = el.getAttribute(PRESERVE_ATTR_NAME) ?? `preserve-${index}`;
       preserveMap.set(name, el);
     });
 
@@ -116,7 +116,7 @@ export class LayoutManager {
 
     preserveMap.forEach((el, name) => {
       const placeholderElement = target.querySelector(
-        `[pl-preserve="${name}"]`
+        `[${PRESERVE_ATTR_NAME}="${name}"]`
       );
       if (placeholderElement) {
         placeholderElement.replaceWith(el);

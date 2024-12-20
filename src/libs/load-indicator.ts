@@ -1,9 +1,4 @@
-enum LoadState {
-  IsLoading = "is-loading",
-  IsIndeterminate = "is-indeterminate",
-  BeforeLoading = "before-loading",
-  AfterLoading = "after-loading",
-}
+import { LoadState } from "./constants";
 
 export class LoadIndicator {
   private startAnimationTimeout: number | null = null;

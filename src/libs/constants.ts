@@ -1,5 +1,6 @@
 export const LAYOUT_ATTR_NAME = "pl-layout";
 export const SLOT_ATTR_NAME = "pl-slot";
+export const PRESERVE_ATTR_NAME = "pl-preserve";
 
 export const BOOST_ATTR_NAME = "pl-boost";
 export const INTERCEPTED_ATTR_NAME = "pl-intercepted";
@@ -42,4 +43,17 @@ export enum EventTrigger {
   "DRAGEXIT" = "dragexit",
   "DRAGOUT" = "dragout",
   "INPUT" = "input",
+}
+
+export enum HtmlLoaderContentType {
+  "HTML" = "text/html",
+  "JSON" = "application/json",
+  "TEXT" = "text/plain",
+}
+
+export enum LoadState {
+  IsLoading = "is-loading",
+  IsIndeterminate = "is-indeterminate",
+  BeforeLoading = "before-loading",
+  AfterLoading = "after-loading",
 }

@@ -1,10 +1,4 @@
-import { FetchMethod } from "@/libs/constants";
-
-export enum HtmlLoaderContentType {
-  "HTML" = "text/html",
-  "JSON" = "application/json",
-  "TEXT" = "text/plain",
-}
+import { FetchMethod, HtmlLoaderContentType } from "@/libs/constants";
 
 export class HtmlLoader {
   async load(
