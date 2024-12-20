@@ -3,22 +3,22 @@ import { SLOT_ATTR_NAME } from "./constants";
 export class LayoutManager {
   private currentLayout: string | null = null;
 
-  public render(
-    target: Document | Element,
-    tag: string,
-    layout?: string
-  ): void {
-    if (!layout) {
-      throw new Error("layout is required");
-    }
-
+  public render(target: Document, tag: string, layout?: string): void {
     const formatedTag = this._slugifyUrl(tag);
     if (formatedTag === this.currentLayout) {
       return;
     }
 
+    if (!layout) {
+      throw new Error("layout is required");
+    }
+
+    const contentDocument = this.parseStringToDocument(layout);
+
     this.currentLayout = formatedTag;
-    this._renderLayoutContetnIntoTarget(target, layout);
+    this._mergeHeads(contentDocument, target);
+    this._copyElementAttributes(contentDocument.body, target.body);
+    this._replaceContent(contentDocument.body, target.body);
   }
 
   public isCurrentLayout(tag: string): boolean {
@@ -60,23 +60,9 @@ export class LayoutManager {
     return slotContents;
   }
 
-  private _renderLayoutContetnIntoTarget(
-    target: Document | Element,
-    content: string
-  ): void {
-    if (target instanceof Document) {
-      const contentDocument = this.parseStringToDocument(content);
-      target.body.innerHTML = contentDocument.body.innerHTML;
-      this._mergeHeads(contentDocument, target);
-      this._copyAttributes(contentDocument, target);
-    } else {
-      target.outerHTML = content;
-    }
-  }
-
-  private _copyAttributes(source: Document, target: Document): void {
-    Array.from(source.body.attributes).forEach((attr) => {
-      target.body.setAttribute(attr.name, attr.value);
+  private _copyElementAttributes(source: Element, target: Element): void {
+    Array.from(source.attributes).forEach((attr) => {
+      target.setAttribute(attr.name, attr.value);
     });
   }
 
@@ -115,6 +101,29 @@ export class LayoutManager {
     }
     formattedTag = formattedTag.replace(/\//g, "-");
     return formattedTag;
+  }
+
+  private _replaceContent(source: Element, target: Element): void {
+    const preserveElements = target.querySelectorAll("[pl-preserve]");
+    const preserveMap = new Map<string, Element>();
+
+    preserveElements.forEach((el, index) => {
+      const name = el.getAttribute("pl-preserve") ?? `preserve-${index}`;
+      preserveMap.set(name, el);
+    });
+
+    target.innerHTML = source.innerHTML;
+
+    preserveMap.forEach((el, name) => {
+      const placeholderElement = target.querySelector(
+        `[pl-preserve="${name}"]`
+      );
+      if (placeholderElement) {
+        placeholderElement.replaceWith(el);
+      } else {
+        target.insertBefore(el, target.firstChild);
+      }
+    });
   }
 
   public parseStringToDocument(html: string): Document {
