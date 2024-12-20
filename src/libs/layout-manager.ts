@@ -2,10 +2,12 @@ import { SLOT_ATTR_NAME, PRESERVE_ATTR_NAME } from "./constants";
 
 export class LayoutManager {
   private currentLayout: string | null = null;
+  private config: { [key: string]: string } = {};
 
   public render(target: Document, tag: string, layout?: string): void {
     const formatedTag = this._slugifyUrl(tag);
     if (formatedTag === this.currentLayout) {
+      console.warn("Layout already rendered");
       return;
     }
 
@@ -23,6 +25,10 @@ export class LayoutManager {
 
   public isCurrentLayout(tag: string): boolean {
     return this.currentLayout === this._slugifyUrl(tag);
+  }
+
+  public getConfig(): { [key: string]: string } {
+    return this.config;
   }
 
   public replaceSlotContents(
@@ -83,6 +89,11 @@ export class LayoutManager {
     const targetHeadHtml = targetHead.innerHTML;
 
     Array.from(sourceHead.children).forEach((element) => {
+      if (this._elementIsPapelScript(element)) {
+        this.config = this._extractPapelConfig(element);
+        return;
+      }
+
       const elementHtml = element.outerHTML;
 
       if (!targetHeadHtml.includes(elementHtml)) {
@@ -130,5 +141,24 @@ export class LayoutManager {
     const doc = document.implementation.createHTMLDocument("");
     doc.documentElement.innerHTML = html;
     return doc;
+  }
+
+  private _elementIsPapelScript(element: Element): boolean {
+    return (
+      element.tagName === "SCRIPT" &&
+      !!element.getAttribute("src")?.includes("papel")
+    );
+  }
+
+  private _extractPapelConfig(element: Element): { [key: string]: string } {
+    const configFromAttributes = Array.from(element?.attributes || []);
+
+    return configFromAttributes.reduce<Record<string, string>>((acc, attr) => {
+      if (attr.name.startsWith("pl-")) {
+        acc[attr.name] = attr.value;
+        element.removeAttribute(attr.name);
+      }
+      return acc;
+    }, {});
   }
 }

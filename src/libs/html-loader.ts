@@ -28,32 +28,11 @@ export class HtmlLoader {
         throw new Error(`Failed to load ${url}: ${response.statusText}`);
       }
 
-      const text = await response.text();
-
-      this.config = this._extractConfigFromHtml(text);
-
-      return this._removeSelfScript(text);
+      return await response.text();
     } catch (error) {
       console.error("Error loading HTML: ", error);
       return "";
     }
-  }
-
-  private _removeSelfScript(text: string): string {
-    return text.replace(
-      /<script[^>]*src=["'][^"']*papel[^"']*["'][^>]*><\/script>/gi,
-      ""
-    );
-  }
-
-  private _extractConfigFromHtml(text: string): { [key: string]: string } {
-    const documentContent = new DOMParser().parseFromString(text, "text/html");
-    const papelJsScript = documentContent.querySelector("script[pl-layout]");
-    const configFromAttributes = Array.from(papelJsScript?.attributes || []);
-    return configFromAttributes.reduce<Record<string, string>>((acc, attr) => {
-      acc[attr.name] = attr.value;
-      return acc;
-    }, {});
   }
 
   public async firstToMatch(
