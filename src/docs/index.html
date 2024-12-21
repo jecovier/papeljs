@@ -1,97 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/index.html" />
+    <link rel="layout" href="/layout-doc.html" />
     <script src="/index.ts" type="module" defer></script>
   </head>
   <body>
-    <div slot>
-      <div class="flex">
-        <aside>
-          <nav>
-            <a href="/papeljs/docs/index.html" pl-boost>Get started</a>
-            <a href="/papeljs/docs/layouts.html" pl-boost>Layouts</a>
-            <a href="/papeljs/docs/partial-pages.html" pl-boost
-              >Partials pages</a
-            >
-            <a href="/papeljs/docs/inherited-layouts.html" pl-boost
-              >Inherited Layouts</a
-            >
-            <a href="/papeljs/docs/navigation-boost.html" pl-boost
-              >Navigation boost</a
-            >
-            <a href="/papeljs/docs/highlight-links.html" pl-boost
-              >Highlight links</a
-            >
-            <a href="/papeljs/docs/programmatic-api.html" pl-boost
-              >Programmatic API</a
-            >
-          </nav>
-        </aside>
-        <div class="flex-grow">
-          <main>
-            <slot>
-              <article>
-                <h1>Get started</h1>
-                <p>
-                  <strong>PapelJS</strong> is a lightweight and easy-to-use
-                  JavaScript library that lets you manage layouts and partial
-                  pages using just HTML files. It runs entirely on the client
-                  side, so no server is needed.
-                </p>
-                <h2>Installation</h2>
-                <p>
-                  To start using PapelJS, you can choose one of the following
-                  methods:
-                </p>
-                <p>
-                  <strong>1. Download and Include Locally</strong>
-                  Download the latest version of
-                  <a href="/index.ts" download="papel.js"> PapelJS</a> and add
-                  it to your project. Then include it in your index.html file:
-                </p>
-                <figure class="code-snippet">
-                  <figcaption>index.html</figcaption>
-                  <pre><code>
-    &lt;html&gt;
-      &lt;head&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
-      &lt;/head&gt;
-      ...
-      </code></pre>
-                </figure>
-                <p>
-                  <strong>2. Use the CDN</strong> For a quicker setup, include
-                  PapelJS directly from the CDN:
-                  <a
-                    href="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"
-                    >https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js</a
-                  >
-                </p>
+    <main slot>
+      <article>
+        <h1>Get started</h1>
+        <p>
+          <strong>PapelJS</strong> is a lightweight and easy-to-use JavaScript
+          library that lets you manage layouts and partial pages using just HTML
+          files. It runs entirely on the client side, so no server is needed.
+        </p>
+        <h2>Installation</h2>
+        <p>
+          To start using PapelJS, you can choose one of the following methods:
+        </p>
+        <p>
+          <strong>1. Download and Include Locally</strong>
+          Download the latest version of
+          <a href="/index.ts" download="papel.js"> PapelJS</a> and add it to
+          your project. Then include it in your index.html file:
+        </p>
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
+&lt;html&gt;
+&lt;head&gt;
+&lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+...
+</code></pre>
+        </figure>
+        <p>
+          <strong>2. Use the CDN</strong> For a quicker setup, include PapelJS
+          directly from the CDN:
+          <a href="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"
+            >https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js</a
+          >
+        </p>
 
-                <figure class="code-snippet">
-                  <figcaption>index.html</figcaption>
-                  <pre><code>
-    &lt;html&gt;
-      &lt;head&gt;
-        &lt;script
-          <span class="highlight">src="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"</span>
-          defer
-        &gt;&lt;/script&gt;
-      &lt;/head&gt;
-      ...
-      </code></pre>
-                </figure>
-                <nav class="flex gap-4 justify-end">
-                  <a href="/papeljs/docs/layouts.html" class="btn" pl-boost
-                    >Layouts &#10140;</a
-                  >
-                </nav>
-              </article>
-            </slot>
-          </main>
-        </div>
-      </div>
-    </div>
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
+&lt;html&gt;
+&lt;head&gt;
+&lt;script
+  <span class="highlight">src="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"</span>
+  defer
+&gt;&lt;/script&gt;
+&lt;/head&gt;
+...
+</code></pre>
+        </figure>
+        <nav class="flex gap-4 justify-end">
+          <a href="/papeljs/docs/layouts.html" class="btn" pl-boost
+            >Layouts &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
   </body>
 </html>
