@@ -4,6 +4,7 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
+import { ComponentManager } from "./component-manager";
 
 const htmlLoader = new HtmlLoader();
 const layoutManager = new LayoutManager();
@@ -11,6 +12,7 @@ const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
 const matcher = new PathLinkMatcher();
 const loadIndicator = new LoadIndicator();
+const componentManager = new ComponentManager();
 
 export async function loadPage(): Promise<void> {
   loadIndicator.startLoadingAnimation();
@@ -82,7 +84,7 @@ export function stopLoading(): void {
 }
 
 function getLayoutUrl(target: Document): string {
-  const layoutElement = target.querySelector(`[rel="layout"]`);
+  const layoutElement = target.querySelector(`link[rel="layout"]`);
 
   const layoutUrl = layoutElement?.getAttribute("href") || "";
 
@@ -98,4 +100,5 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
+  componentManager.autoloadComponents();
 }

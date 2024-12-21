@@ -1,4 +1,7 @@
-import { BOOST_ATTR_NAME, INTERCEPTED_ATTR_NAME } from "@/libs/constants";
+import {
+  INTERCEPTED_ATTR_NAME,
+  NOT_INTERCEPTED_ATTR_NAME,
+} from "@/libs/constants";
 
 type ScrollPosition = {
   x: number;
@@ -42,9 +45,16 @@ export class NavigationInterceptor {
 
   private _interceptLinks(target: Document | Element): void {
     target
-      .querySelectorAll(`a[${BOOST_ATTR_NAME}]:not([${INTERCEPTED_ATTR_NAME}])`)
+      .querySelectorAll(
+        `a:not([${INTERCEPTED_ATTR_NAME}]):not([${NOT_INTERCEPTED_ATTR_NAME}]):not([target])`
+      )
       .forEach((link: Element) => {
         if (!(link instanceof HTMLAnchorElement)) {
+          return;
+        }
+
+        if (!this._shouldIntercept(new URL(link.href))) {
+          link.setAttribute(NOT_INTERCEPTED_ATTR_NAME, "true");
           return;
         }
 
@@ -77,7 +87,7 @@ export class NavigationInterceptor {
       y: window.scrollY,
     });
 
-    this._fallbackBrowserNavigation(url);
+    this._addNavigationToBrowserHistory(url);
 
     if (this._isNavigationAvailable()) {
       document.startViewTransition(() => this._handleNavigation(url));
@@ -87,7 +97,7 @@ export class NavigationInterceptor {
     this._handleNavigation(url);
   }
 
-  private _fallbackBrowserNavigation(url: URL): void {
+  private _addNavigationToBrowserHistory(url: URL): void {
     window.history.pushState({}, "", url);
   }
 
@@ -97,16 +107,18 @@ export class NavigationInterceptor {
   }
 
   private _handlePopState(url: URL, event: PopStateEvent): void {
-    if (this._shouldIntercept(url)) {
-      event.preventDefault();
-
-      if (this._isNavigationAvailable()) {
-        document.startViewTransition(() => this._handleNavigation(url));
-        return;
-      }
-
-      this._handleNavigation(url);
+    if (!this._shouldIntercept(url)) {
+      return;
     }
+
+    event.preventDefault();
+
+    if (this._isNavigationAvailable()) {
+      document.startViewTransition(() => this._handleNavigation(url));
+      return;
+    }
+
+    this._handleNavigation(url);
   }
 
   private _restoreScrollPosition(_url: URL): void {

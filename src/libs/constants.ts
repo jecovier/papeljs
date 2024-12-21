@@ -1,9 +1,8 @@
-export const LAYOUT_ATTR_NAME = "pl-layout";
 export const SLOT_ATTR_NAME = "pl-slot";
 export const PRESERVE_ATTR_NAME = "pl-preserve";
 
-export const BOOST_ATTR_NAME = "pl-boost";
 export const INTERCEPTED_ATTR_NAME = "pl-intercepted";
+export const NOT_INTERCEPTED_ATTR_NAME = "pl-intercepted";
 
 export const PREFETCH_ATTR_NAME = "pl-prefetch";
 export const PREFETCHED_ATTR_NAME = "pl-prefetched";

@@ -7,7 +7,7 @@ export class LayoutManager {
   public render(target: Document, tag: string, layout?: string): void {
     const formatedTag = this._slugifyUrl(tag);
     if (formatedTag === this.currentLayout) {
-      console.warn("Layout already rendered");
+      console.log("Layout already rendered");
       return;
     }
 
@@ -90,7 +90,6 @@ export class LayoutManager {
 
     Array.from(sourceHead.children).forEach((element) => {
       if (this._elementIsPapelScript(element)) {
-        this.config = this._extractPapelConfig(element);
         return;
       }
 
@@ -148,17 +147,5 @@ export class LayoutManager {
       element.tagName === "SCRIPT" &&
       !!element.getAttribute("src")?.includes("papel")
     );
-  }
-
-  private _extractPapelConfig(element: Element): { [key: string]: string } {
-    const configFromAttributes = Array.from(element?.attributes || []);
-
-    return configFromAttributes.reduce<Record<string, string>>((acc, attr) => {
-      if (attr.name.startsWith("pl-")) {
-        acc[attr.name] = attr.value;
-        element.removeAttribute(attr.name);
-      }
-      return acc;
-    }, {});
   }
 }
