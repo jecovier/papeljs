@@ -1,4 +1,3 @@
-import { LAYOUT_ATTR_NAME } from "@/libs/constants";
 import { HtmlLoader } from "@/libs/html-loader";
 import { LayoutManager } from "@/libs/layout-manager";
 import { NavigationInterceptor } from "@/libs/navigation-interceptor";
@@ -83,15 +82,15 @@ export function stopLoading(): void {
 }
 
 function getLayoutUrl(target: Document): string {
-  const layoutElement = target.querySelector(`[${LAYOUT_ATTR_NAME}]`);
+  const layoutElement = target.querySelector(`[rel="layout"]`);
 
-  const layoutUrl = layoutElement?.getAttribute(LAYOUT_ATTR_NAME);
+  const layoutUrl = layoutElement?.getAttribute("href") || "";
 
   if (layoutUrl) {
-    layoutElement?.removeAttribute(LAYOUT_ATTR_NAME);
+    layoutElement?.remove();
   }
 
-  return layoutUrl || "";
+  return layoutUrl;
 }
 
 function enhanceRenderedContent(target: Document | Element): void {

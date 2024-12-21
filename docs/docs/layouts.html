@@ -1,38 +1,42 @@
-<script type="module" crossorigin src="/papeljs/assets/index-BeEVDEOt.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="layout" href="/papeljs/assets/index-Dk-ETTcK.html" />
+    <script type="module" crossorigin src="/papeljs/assets/index-CaYzakCH.js"></script>
+  </head>
+  <body>
+    <main slot>
+      <article>
+        <h1>Working with Layouts in PapelJS</h1>
+        <p>
+          By default your index.html file will be the main layout of your
+          website. This is where the partial pages will be loaded. you can
+          define different layouts for different pages by adding the
+          <code class="highlight">pl-layout</code>
+          attribute. but your index.html file will always be the main layout of
+          your website.
+        </p>
 
-<body pl-layout="/papeljs/docs/index.html">
-  <main slot>
-    <article>
-      <h1>Working with Layouts in PapelJS</h1>
-      <p>
-        By default your index.html file will be the main layout of your website.
-        This is where the partial pages will be loaded. you can define different
-        layouts for different pages by adding the
-        <code class="highlight">pl-layout</code>
-        attribute. but your index.html file will always be the main layout of
-        your website.
-      </p>
+        <h2>Adding Layout Capabilities</h2>
+        <p>
+          To enable layout functionality, you need to create slots where partial
+          pages will load. Here's how it works:
+        </p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>
+            You can create as many slots as needed to load different partial
+            pages into each one.
+          </li>
+          <li>
+            Your main content slot will always exist in the index.html file.
+            This is where partial pages load by default.
+          </li>
+          <li>The main content slot does not require a name.</li>
+        </ul>
 
-      <h2>Adding Layout Capabilities</h2>
-      <p>
-        To enable layout functionality, you need to create slots where partial
-        pages will load. Here's how it works:
-      </p>
-      <ul class="list-disc ml-8 mb-8">
-        <li>
-          You can create as many slots as needed to load different partial pages
-          into each one.
-        </li>
-        <li>
-          Your main content slot will always exist in the index.html file. This
-          is where partial pages load by default.
-        </li>
-        <li>The main content slot does not require a name.</li>
-      </ul>
-
-      <figure class="code-snippet">
-        <figcaption>index.html</figcaption>
-        <pre><code>
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
     &lt;html&gt;
       &lt;head&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
@@ -46,23 +50,23 @@
       &lt;/body&gt;
     &lt;/html&gt;
         </code></pre>
-      </figure>
+        </figure>
 
-      <p>
-        With this setup, you can load partial pages into the default content
-        slot or into specific named slots as needed.
-      </p>
+        <p>
+          With this setup, you can load partial pages into the default content
+          slot or into specific named slots as needed.
+        </p>
 
-      <h2>Named Slots in PapelJS</h2>
-      <p>
-        You can create named slots in your layout by adding the name attribute
-        to any slot. Named slots allow you to load partial content that matches
-        the slot's name.
-      </p>
+        <h2>Named Slots in PapelJS</h2>
+        <p>
+          You can create named slots in your layout by adding the name attribute
+          to any slot. Named slots allow you to load partial content that
+          matches the slot's name.
+        </p>
 
-      <figure class="code-snippet">
-        <figcaption>index.html</figcaption>
-        <pre><code>
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
     &lt;html&gt;
       &lt;head&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
@@ -81,31 +85,33 @@
       &lt;/body&gt;
     &lt;/html&gt;
         </code></pre>
-      </figure>
+        </figure>
 
-      <p>In this example:</p>
-      <ul class="list-disc ml-8 mb-8">
-        <li>
-          The <code class="highlight">&lt;slot name="header"&gt;</code> is a
-          named slot.
-        </li>
-        <li>
-          You can load partial content specifically into the "header" slot.
-        </li>
-      </ul>
-      <p>
-        This makes it easy to organize your layout and target specific areas
-        with partial content.
-      </p>
+        <p>In this example:</p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>
+            The <code class="highlight">&lt;slot name="header"&gt;</code> is a
+            named slot.
+          </li>
+          <li>
+            You can load partial content specifically into the "header" slot.
+          </li>
+        </ul>
+        <p>
+          This makes it easy to organize your layout and target specific areas
+          with partial content.
+        </p>
 
-      <nav class="flex gap-4 justify-between">
-        <a href="/papeljs/docs/index.html" class="btn" pl-boost
-          ><span class="rotate-180 inline-block">&#10140;</span> Installation</a
-        >
-        <a href="/papeljs/docs/partial-pages.html" class="btn" pl-boost
-          >Partial pages &#10140;</a
-        >
-      </nav>
-    </article>
-  </main>
-</body>
+        <nav class="flex gap-4 justify-between">
+          <a href="/papeljs/docs/index.html" class="btn" pl-boost
+            ><span class="rotate-180 inline-block">&#10140;</span>
+            Installation</a
+          >
+          <a href="/papeljs/docs/partial-pages.html" class="btn" pl-boost
+            >Partial pages &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>
