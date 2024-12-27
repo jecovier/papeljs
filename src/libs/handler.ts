@@ -4,8 +4,7 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
-import { ComponentManager } from "./component-manager";
-import { parseStringToDocument } from "./utils";
+import { dispatchCustomEvent, parseStringToDocument } from "./utils";
 
 const htmlLoader = new HtmlLoader();
 const layoutManager = new LayoutManager();
@@ -13,7 +12,6 @@ const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
 const matcher = new PathLinkMatcher();
 const loadIndicator = new LoadIndicator();
-const componentManager = new ComponentManager();
 
 export async function loadPage(): Promise<void> {
   loadIndicator.startLoadingAnimation();
@@ -22,9 +20,7 @@ export async function loadPage(): Promise<void> {
   const isPartialHTML = !!layoutUrl;
 
   if (isPartialHTML) {
-    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
-    layoutManager.render(document, layoutUrl, layout);
-    layoutManager.mergeHeads(layout, document);
+    await renderLayout(layoutUrl);
   }
 
   layoutManager.replaceSlotContents(slotContents);
@@ -40,17 +36,14 @@ export async function loadPage(): Promise<void> {
 export async function loadFetchedPage(url: URL): Promise<void> {
   loadIndicator.startLoadingAnimation();
   layoutManager.resetLayouts();
-  const partials = await htmlLoader.load(url.toString());
-  const partialDocument = parseStringToDocument(partials);
+  const partialDocument = await fetchDocument(url);
   const slotContents = layoutManager.getSlotsContents(partialDocument);
   const layoutUrl = getLayoutUrl(partialDocument);
   const isPartialHTML = !!layoutUrl;
 
   if (isPartialHTML) {
-    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
-    layoutManager.render(document, layoutUrl, layout);
     layoutManager.mergeHeads(partialDocument, document);
-    layoutManager.mergeHeads(layout, document);
+    await renderLayout(layoutUrl);
   }
 
   layoutManager.replaceSlotContents(slotContents);
@@ -62,6 +55,12 @@ export async function loadFetchedPage(url: URL): Promise<void> {
   layoutManager.consolidateLayouts();
   loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
+  dispatchCustomEvent("page-loaded");
+}
+
+async function fetchDocument(url: URL): Promise<Document> {
+  const partials = await htmlLoader.load(url.toString());
+  return parseStringToDocument(partials);
 }
 
 function getLayoutUrl(target: Document): string {
@@ -76,10 +75,16 @@ function getLayoutUrl(target: Document): string {
   return layoutUrl;
 }
 
+async function renderLayout(layoutUrl: string) {
+  const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
+  layoutManager.render(document, layoutUrl, layout);
+  layoutManager.mergeHeads(layout, document);
+  dispatchCustomEvent("layout-rendered", { layoutUrl });
+}
+
 function enhanceRenderedContent(target: Document | Element): void {
   navigationInterceptor.startInterception(target);
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
-  componentManager.autoloadComponents();
 }

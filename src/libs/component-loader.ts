@@ -1,5 +1,10 @@
-import { bindSignalToElement, createComputed, createSignal } from "./signals";
-import { getVariableReferences, parseTemplate } from "./template-system";
+import {
+  bindSignalToElement,
+  createComputed,
+  createState,
+  Signal,
+} from "./signals";
+import { parseTemplate } from "./template-system";
 
 export class ComponentLoader {
   componentName: string;
@@ -20,6 +25,7 @@ export class ComponentLoader {
     const textContent = parseTemplate(this.textContent, {});
     // Define the class for the custom element
     const componentClass = class extends HTMLElement {
+      [key: string]: unknown;
       shadowRoot: ShadowRoot | null;
       constructor() {
         super();
@@ -34,20 +40,55 @@ export class ComponentLoader {
           // Execute the script content with access to shadowRoot
           const scriptFunction = new Function(
             "template",
-            "signal",
-            "computed",
+            "$state",
+            "$computed",
             textScript
           );
-          const signal = createSignal;
-          const computed = createComputed;
-          scriptFunction.apply(this, [this.shadowRoot, signal, computed]);
-          this._addSignalEventListeners(textScript);
+          const $state = createState;
+          const $computed = createComputed;
+          scriptFunction.apply(this._createProxy(), [
+            this.shadowRoot,
+            $state,
+            $computed,
+          ]);
+          this._addSignalEventListeners();
         }
       }
 
-      private _addSignalEventListeners(textScript: string): void {
+      private _createProxy() {
+        return new Proxy(this, {
+          get(target, prop) {
+            if (!(prop in target)) {
+              return undefined;
+            }
+
+            // @ts-ignore
+            const property = target[prop];
+            if (property instanceof Signal) {
+              return property.value;
+            }
+
+            // @ts-ignore
+            return target[prop];
+          },
+          set(target, prop, value) {
+            // @ts-ignore
+            const property = target[prop];
+            if (property instanceof Signal) {
+              property.value = value;
+              return true;
+            }
+
+            // @ts-ignore
+            target[prop] = value;
+            return true;
+          },
+        });
+      }
+
+      private _addSignalEventListeners(): void {
         console.log("Adding signal event listeners");
-        const variables = getVariableReferences(textScript);
+        const variables = this._getSignalReferences();
 
         variables.forEach((variable) => {
           if (!this.shadowRoot) return;
@@ -61,6 +102,12 @@ export class ComponentLoader {
             bindSignalToElement(this[variable], element);
           });
         });
+      }
+
+      private _getSignalReferences(): string[] {
+        return Object.getOwnPropertyNames(this)
+          .filter((property) => property !== "shadowRoot")
+          .filter((property) => typeof this[property] !== "function");
       }
     };
 

@@ -1,4 +1,4 @@
-class Signal<T> {
+export class Signal<T> {
   private _value: T;
   private _subscribers: Set<() => void>;
 
@@ -32,7 +32,7 @@ class Signal<T> {
   static currentSubscribers: Array<() => void> = [];
 }
 
-export function createSignal<T>(initialValue: T): Signal<T> {
+export function createState<T>(initialValue: T): Signal<T> {
   return new Signal(initialValue);
 }
 

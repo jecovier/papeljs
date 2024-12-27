@@ -16,27 +16,3 @@ export function parseTemplate(
 
   return template;
 }
-
-export function getVariableReferences(text: string): string[] {
-  const variablePattern = /\b(\w+)\s*=\s*.*?signal\(/g;
-  const variables = [];
-  let match;
-
-  while ((match = variablePattern.exec(text)) !== null) {
-    variables.push(match[1]);
-  }
-
-  return variables;
-}
-
-export function getEventListenersFromTemplate(text: string): string[] {
-  const eventPattern = /on(\w+)\s*=\s*.*?;/g;
-  const events = [];
-  let match;
-
-  while ((match = eventPattern.exec(text)) !== null) {
-    events.push(match[1]);
-  }
-
-  return events;
-}

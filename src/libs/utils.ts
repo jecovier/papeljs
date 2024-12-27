@@ -24,3 +24,7 @@ export function slugifyUrl(tag: string): string {
   formattedTag = formattedTag.replace(/\//g, "-");
   return formattedTag;
 }
+
+export function dispatchCustomEvent(event: string, detail?: Object): void {
+  document.dispatchEvent(new CustomEvent(event, detail));
+}
