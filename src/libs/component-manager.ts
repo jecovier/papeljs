@@ -2,7 +2,6 @@ import { ComponentLoader } from "./component-loader";
 import { HtmlLoader } from "./html-loader";
 
 export class ComponentManager {
-  private components: { [key: string]: string } = {};
   private htmlLoader: HtmlLoader = new HtmlLoader();
 
   public constructor() {}
@@ -13,9 +12,15 @@ export class ComponentManager {
     components.forEach(async (component) => {
       const componentUrl = component.getAttribute("href") || "";
       const componentName = this._extractFileName(componentUrl);
+
+      if (this._isComponentRegistered(componentName)) {
+        return;
+      }
+
       const componentContent = await this.htmlLoader.load(componentUrl);
 
-      this.registerComponent(componentName, componentUrl, componentContent);
+      component.setAttribute("rel", "component-loaded");
+      this.registerComponent(componentName, componentContent);
     });
   }
 
@@ -27,14 +32,17 @@ export class ComponentManager {
     return name;
   }
 
-  public registerComponent(name: string, url: string, content: string): void {
+  private _isComponentRegistered(name: string): boolean {
+    return !!window.customElements.get(name);
+  }
+
+  public registerComponent(name: string, content: string): void {
     console.log(`Registering component ${name}`);
-    if (this.components[name]) {
-      console.log(`Component ${name} is already registered.`);
+
+    if (this._isComponentRegistered(name)) {
+      console.log(`Component ${name} already registered`);
       return;
     }
-
-    this.components[name] = url;
 
     const [template, script] = this._extractTemplateAndScript(content);
     const component = new ComponentLoader(name, template, script);
@@ -47,9 +55,5 @@ export class ComponentManager {
     const script = content.match(/<script>([\s\S]*)<\/script>/)?.[1] || "";
 
     return [template, script];
-  }
-
-  public getComponent(name: string): string {
-    return this.components[name];
   }
 }

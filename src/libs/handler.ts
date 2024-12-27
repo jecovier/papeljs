@@ -5,6 +5,7 @@ import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
 import { ComponentManager } from "./component-manager";
+import { parseStringToDocument } from "./utils";
 
 const htmlLoader = new HtmlLoader();
 const layoutManager = new LayoutManager();
@@ -32,13 +33,13 @@ export async function loadPage(): Promise<void> {
   }
 
   enhanceRenderedContent(document);
-  loadIndicator.stopLoadingAnimation();
 }
 
 async function loadFetchedPage(url: URL): Promise<void> {
   loadIndicator.startLoadingAnimation();
+  layoutManager.resetLayouts();
   const partials = await htmlLoader.load(url.toString());
-  const partialDocument = layoutManager.parseStringToDocument(partials);
+  const partialDocument = parseStringToDocument(partials);
   const slotContents = layoutManager.getSlotsContents(partialDocument);
   const layoutUrl = getLayoutUrl(partialDocument);
   const isPartialHTML = !!layoutUrl;
@@ -54,8 +55,8 @@ async function loadFetchedPage(url: URL): Promise<void> {
     await loadPage();
   }
 
+  layoutManager.consolidateLayouts();
   enhanceRenderedContent(document);
-  loadIndicator.stopLoadingAnimation();
 }
 
 export function interceptLinks(document: Document | Element): void {
@@ -101,4 +102,5 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
   componentManager.autoloadComponents();
+  loadIndicator.stopLoadingAnimation();
 }

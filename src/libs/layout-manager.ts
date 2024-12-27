@@ -1,38 +1,36 @@
 import { SLOT_ATTR_NAME, PRESERVE_ATTR_NAME } from "./constants";
+import { parseStringToDocument, replaceContent } from "./utils";
 
 export class LayoutManager {
-  private currentLayout: string | null = null;
-  private config: { [key: string]: string } = {};
+  private currentLayouts: string[] = [];
+  private loadedLayouts: string[] = [];
+
+  public resetLayouts(): void {
+    this.currentLayouts = [];
+  }
 
   public render(target: Document, tag: string, layout?: string): void {
-    const formatedTag = this._slugifyUrl(tag);
-    if (formatedTag === this.currentLayout) {
-      console.log("Layout already rendered");
-      return;
-    }
+    const formatedTag = tag;
 
     if (!layout) {
       throw new Error("layout is required");
     }
 
-    const layoutDocument = this.parseStringToDocument(layout);
+    this.currentLayouts.push(formatedTag);
+    if (this.isAlreadyRendered(formatedTag)) {
+      return;
+    }
 
-    this.currentLayout = formatedTag;
+    const layoutDocument = parseStringToDocument(layout);
+
+    this.loadedLayouts.push(formatedTag);
     this._mergeHeads(layoutDocument, target);
     this._copyElementAttributes(layoutDocument.body, target.body);
     this._replaceContent(layoutDocument.body, target.body);
   }
 
-  public isCurrentLayout(tag: string): boolean {
-    return this.currentLayout === this._slugifyUrl(tag);
-  }
-
-  public getConfig(): { [key: string]: string } {
-    return this.config;
-  }
-
   public replaceSlotContents(
-    replacements: { slot: string; content: string }[]
+    replacements: { slot: string; content: Element }[]
   ): void {
     const availableSlots = document.querySelectorAll("slot");
     availableSlots.forEach((slotElement) => {
@@ -43,14 +41,22 @@ export class LayoutManager {
         return;
       }
 
-      slotElement.innerHTML = replacement.content;
+      if (slotElement.innerHTML === replacement.content.innerHTML) {
+        return;
+      }
+
+      replaceContent(replacement.content, slotElement);
     });
+  }
+
+  public isAlreadyRendered(tag: string): boolean {
+    return this.loadedLayouts.includes(tag);
   }
 
   public getSlotsContents(
     target: Document | DocumentFragment | Element
-  ): { slot: string; content: string }[] {
-    const slotContents: { slot: string; content: string }[] = [];
+  ): { slot: string; content: Element }[] {
+    const slotContents: { slot: string; content: Element }[] = [];
     const availableSlots = target.querySelectorAll(
       `slot, [slot], [${SLOT_ATTR_NAME}]`
     );
@@ -61,7 +67,7 @@ export class LayoutManager {
         slotElement.getAttribute(SLOT_ATTR_NAME) ||
         "default";
 
-      slotContents.push({ slot: slotName, content: slotElement.innerHTML });
+      slotContents.push({ slot: slotName, content: slotElement });
     });
     return slotContents;
   }
@@ -81,8 +87,7 @@ export class LayoutManager {
     }
 
     if (sourceHead.innerHTML && !targetHead.innerHTML) {
-      // @ts-ignore
-      target.head.innerHTML = source.head.innerHTML;
+      replaceContent(sourceHead, targetHead);
       return;
     }
 
@@ -101,16 +106,21 @@ export class LayoutManager {
     });
   }
 
-  private _slugifyUrl(tag: string): string {
-    let formattedTag = tag
-      .toLowerCase()
-      .trim()
-      .replace(/^\/+|\/+$/g, "");
-    if (!formattedTag.endsWith(".html")) {
-      formattedTag += "/index.html";
-    }
-    formattedTag = formattedTag.replace(/\//g, "-");
-    return formattedTag;
+  public consolidateLayouts(): void {
+    const currentLayouts = new Set(this.currentLayouts);
+    const loadedLayouts = new Set(this.loadedLayouts);
+
+    const layoutsToUnload = this.currentLayouts.filter(
+      (layout) => !loadedLayouts.has(layout)
+    );
+
+    layoutsToUnload.forEach((layout) => {
+      const layoutElement = document.querySelector(`link[href$="${layout}"]`);
+      layoutElement?.remove();
+    });
+
+    this.loadedLayouts = Array.from(currentLayouts);
+    this.currentLayouts = [];
   }
 
   private _replaceContent(source: Element, target: Element): void {
@@ -122,7 +132,7 @@ export class LayoutManager {
       preserveMap.set(name, el);
     });
 
-    target.innerHTML = source.innerHTML;
+    replaceContent(source, target);
 
     preserveMap.forEach((el, name) => {
       const placeholderElement = target.querySelector(
@@ -134,12 +144,6 @@ export class LayoutManager {
         target.insertBefore(el, target.firstChild);
       }
     });
-  }
-
-  public parseStringToDocument(html: string): Document {
-    const doc = document.implementation.createHTMLDocument("");
-    doc.documentElement.innerHTML = html;
-    return doc;
   }
 
   private _elementIsPapelScript(element: Element): boolean {

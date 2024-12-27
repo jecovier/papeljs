@@ -16,16 +16,17 @@ export class ComponentLoader {
   }
 
   createWebComponent(): void {
-    // Define the template for the Web Component
-    const template = document.createElement("template");
-    template.innerHTML = parseTemplate(this.textContent, {});
-
     const textScript = this.textScript;
+    const textContent = parseTemplate(this.textContent, {});
     // Define the class for the custom element
     const componentClass = class extends HTMLElement {
       shadowRoot: ShadowRoot | null;
       constructor() {
         super();
+
+        const template = document.createElement("template");
+        template.innerHTML = textContent;
+
         this.shadowRoot = this.attachShadow({ mode: "open" });
         this.shadowRoot.appendChild(template.content);
 
