@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/index.html" />
+    <link rel="layout" href="/papeljs/index.html" />
     <script src="/index.ts" type="module" defer></script>
   </head>
   <body>
@@ -16,12 +16,13 @@
             <a href="/papeljs/docs/navigation-boost.html">Navigation boost</a>
             <a href="/papeljs/docs/highlight-links.html">Highlight links</a>
             <a href="/papeljs/docs/programmatic-api.html">Programmatic API</a>
+            <a href="/papeljs/docs/components.html">Components</a>
           </nav>
         </aside>
         <div class="flex-grow">
-          <main>
-            <slot></slot>
-          </main>
+          <section>
+            <slot name="docs"></slot>
+          </section>
         </div>
       </div>
     </div>

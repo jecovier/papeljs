@@ -1,38 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/papeljs/assets/index-C4jR7JIX.html" />
-
-    <script type="module" crossorigin src="/papeljs/assets/index-CaYzakCH.js"></script>
+    <link rel="layout" href="/papeljs/index.html" />
+    <script type="module" crossorigin src="/papeljs/assets/index-BtCUM1hL.js"></script>
   </head>
   <body>
     <div slot>
       <div class="flex">
         <aside>
-          <nav> 
-            <a href="/papeljs/docs/index.html" p et started</a>
-            <a href="/papeljs/docs/layouts.html" pl-bo ts</a>
-            <a href="/papeljs/docs/partial-pages.html" pl-boost
-              >Partials pages</a
-            > 
-            <a href="/papeljs/docs/inherited-layouts.html" pl-boost
-              >Inherited Layouts</a
-            > 
-            <a href="/papeljs/docs/navigation-boost.html" pl-boost
-              >Navigation boost</a
-            > 
-            <a href="/papeljs/docs/highlight-links.html" pl-boost
-              >Highlight links</a
-            > 
-            <a href="/papeljs/docs/programmatic-api.html" pl-boost
-              >Programmatic API</a
-            >
+          <nav>
+            <a href="/papeljs/docs/index.html">Get started</a>
+            <a href="/papeljs/docs/layouts.html">Layouts</a>
+            <a href="/papeljs/docs/partial-pages.html">Partials pages</a>
+            <a href="/papeljs/docs/inherited-layouts.html">Inherited Layouts</a>
+            <a href="/papeljs/docs/navigation-boost.html">Navigation boost</a>
+            <a href="/papeljs/docs/highlight-links.html">Highlight links</a>
+            <a href="/papeljs/docs/programmatic-api.html">Programmatic API</a>
+            <a href="/papeljs/docs/components.html">Components</a>
           </nav>
         </aside>
         <div class="flex-grow">
-          <main>
-            <slot></slot>
-          </main>
+          <section>
+            <slot name="docs"></slot>
+          </section>
         </div>
       </div>
     </div>

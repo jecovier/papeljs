@@ -1,0 +1,13 @@
+<template>
+  <button onclick="{sumValue(1)}">+</button>
+  <button onclick="{sumValue(-1)}">-</button>
+  <h2>Total: {count}</h2>
+</template>
+
+<script>
+  this.count = signal(0);
+
+  this.sumValue = (amount) => {
+    this.count.value += amount;
+  };
+</script>
