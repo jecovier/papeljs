@@ -31,6 +31,10 @@ export async function loadPage(): Promise<void> {
 
   loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
+
+  if (!isPartialHTML) {
+    dispatchCustomEvent("page-loaded");
+  }
 }
 
 export async function loadFetchedPage(url: URL): Promise<void> {
@@ -55,7 +59,10 @@ export async function loadFetchedPage(url: URL): Promise<void> {
   layoutManager.consolidateLayouts();
   loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
-  dispatchCustomEvent("page-loaded");
+
+  if (!isPartialHTML) {
+    dispatchCustomEvent("page-loaded");
+  }
 }
 
 async function fetchDocument(url: URL): Promise<Document> {
