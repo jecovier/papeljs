@@ -1,5 +1,5 @@
 import { SLOT_ATTR_NAME, PRESERVE_ATTR_NAME } from "./constants";
-import { parseStringToDocument, replaceContent } from "./utils";
+import { replaceContent } from "./utils";
 
 export class LayoutManager {
   private currentLayouts: string[] = [];
