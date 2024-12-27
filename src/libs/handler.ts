@@ -37,7 +37,7 @@ export async function loadPage(): Promise<void> {
   enhanceRenderedContent(document);
 }
 
-async function loadFetchedPage(url: URL): Promise<void> {
+export async function loadFetchedPage(url: URL): Promise<void> {
   loadIndicator.startLoadingAnimation();
   layoutManager.resetLayouts();
   const partials = await htmlLoader.load(url.toString());
@@ -62,31 +62,6 @@ async function loadFetchedPage(url: URL): Promise<void> {
   layoutManager.consolidateLayouts();
   loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
-}
-
-export function interceptLinks(document: Document | Element): void {
-  navigationInterceptor.startInterception(document);
-  navigationInterceptor.onNavigate(loadFetchedPage);
-}
-
-export function prefetchLinks(document: Document | Element): void {
-  navigationPrefetch.startPrefetch(document);
-}
-
-export function highlightMatchingLinks(document: Document | Element): void {
-  matcher.highlightMatchingLinks(document);
-}
-
-export function navigate(url: string): void {
-  navigationInterceptor.navigate(url);
-}
-
-export function startLoading(): void {
-  loadIndicator.startLoadingAnimation();
-}
-
-export function stopLoading(): void {
-  loadIndicator.stopLoadingAnimation();
 }
 
 function getLayoutUrl(target: Document): string {

@@ -78,8 +78,6 @@ export class LayoutManager {
   public mergeHeads(source: Document, target: Document): void {
     const sourceHead = source.head;
     const targetHead = target.head;
-    console.log("=====================================");
-    console.log("Merging heads", sourceHead, targetHead);
 
     if (!sourceHead.innerHTML) {
       return;
@@ -97,7 +95,6 @@ export class LayoutManager {
     const targetHeadHtml = target.innerHTML;
 
     Array.from(source.children).forEach((element) => {
-      console.log("Merging element", element);
       if (this._elementIsPapelScript(element)) {
         return;
       }

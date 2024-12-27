@@ -1,12 +1,5 @@
-import {
-  highlightMatchingLinks,
-  interceptLinks,
-  loadPage,
-  navigate,
-  prefetchLinks,
-  startLoading,
-  stopLoading,
-} from "@/libs/handler";
+import { loadPage } from "@/libs/handler";
+import { api } from "@/libs/api";
 
 window.addEventListener(
   "load",
@@ -17,11 +10,4 @@ window.addEventListener(
 );
 
 // @ts-ignore
-window.papel = {
-  interceptLinks,
-  prefetchLinks,
-  highlightMatchingLinks,
-  navigate,
-  startLoading,
-  stopLoading,
-};
+window.papel = api;
