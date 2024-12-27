@@ -5,6 +5,10 @@ export function replaceContent(source: Element, target: Element): void {
 }
 
 export function parseStringToDocument(html: string): Document {
+  if (!html) {
+    return document.implementation.createHTMLDocument();
+  }
+
   const parser = new DOMParser();
   return parser.parseFromString(html, "text/html");
 }

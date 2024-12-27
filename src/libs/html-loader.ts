@@ -1,4 +1,5 @@
 import { FetchMethod, HtmlLoaderContentType } from "@/libs/constants";
+import { parseStringToDocument } from "./utils";
 
 export class HtmlLoader {
   config: { [key: string]: string } = {};
@@ -33,6 +34,16 @@ export class HtmlLoader {
       console.error("Error loading HTML: ", error);
       return "";
     }
+  }
+
+  public async loadHTMLDocument(
+    url: string,
+    method: FetchMethod = FetchMethod.GET,
+    data?: Record<string, unknown> | null,
+    options?: RequestInit
+  ): Promise<Document> {
+    const html = await this.load(url, method, data, options);
+    return parseStringToDocument(html);
   }
 
   public async firstToMatch(

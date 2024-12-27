@@ -22,8 +22,9 @@ export async function loadPage(): Promise<void> {
   const isPartialHTML = !!layoutUrl;
 
   if (isPartialHTML) {
-    const layout = await htmlLoader.load(layoutUrl);
+    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
     layoutManager.render(document, layoutUrl, layout);
+    layoutManager.mergeHeads(layout, document);
   }
 
   layoutManager.replaceSlotContents(slotContents);
@@ -32,6 +33,7 @@ export async function loadPage(): Promise<void> {
     await loadPage();
   }
 
+  loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
 }
 
@@ -45,8 +47,10 @@ async function loadFetchedPage(url: URL): Promise<void> {
   const isPartialHTML = !!layoutUrl;
 
   if (isPartialHTML) {
-    const layout = await htmlLoader.load(layoutUrl);
+    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
     layoutManager.render(document, layoutUrl, layout);
+    layoutManager.mergeHeads(partialDocument, document);
+    layoutManager.mergeHeads(layout, document);
   }
 
   layoutManager.replaceSlotContents(slotContents);
@@ -56,6 +60,7 @@ async function loadFetchedPage(url: URL): Promise<void> {
   }
 
   layoutManager.consolidateLayouts();
+  loadIndicator.stopLoadingAnimation();
   enhanceRenderedContent(document);
 }
 
@@ -102,5 +107,4 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
   componentManager.autoloadComponents();
-  loadIndicator.stopLoadingAnimation();
 }

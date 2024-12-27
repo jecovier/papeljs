@@ -9,7 +9,7 @@ export class LayoutManager {
     this.currentLayouts = [];
   }
 
-  public render(target: Document, tag: string, layout?: string): void {
+  public render(target: Document, tag: string, layout?: Document): void {
     const formatedTag = tag;
 
     if (!layout) {
@@ -21,12 +21,9 @@ export class LayoutManager {
       return;
     }
 
-    const layoutDocument = parseStringToDocument(layout);
-
     this.loadedLayouts.push(formatedTag);
-    this._mergeHeads(layoutDocument, target);
-    this._copyElementAttributes(layoutDocument.body, target.body);
-    this._replaceContent(layoutDocument.body, target.body);
+    this._copyElementAttributes(layout.body, target.body);
+    this._replaceContent(layout.body, target.body);
   }
 
   public replaceSlotContents(
@@ -78,9 +75,11 @@ export class LayoutManager {
     });
   }
 
-  private _mergeHeads(source: Document, target: Document): void {
+  public mergeHeads(source: Document, target: Document): void {
     const sourceHead = source.head;
     const targetHead = target.head;
+    console.log("=====================================");
+    console.log("Merging heads", sourceHead, targetHead);
 
     if (!sourceHead.innerHTML) {
       return;
@@ -91,18 +90,25 @@ export class LayoutManager {
       return;
     }
 
-    const targetHeadHtml = targetHead.innerHTML;
+    this._mergeElements(sourceHead, targetHead);
+  }
 
-    Array.from(sourceHead.children).forEach((element) => {
+  private _mergeElements(source: Element, target: Element): void {
+    const targetHeadHtml = target.innerHTML;
+
+    Array.from(source.children).forEach((element) => {
+      console.log("Merging element", element);
       if (this._elementIsPapelScript(element)) {
         return;
       }
 
       const elementHtml = element.outerHTML;
 
-      if (!targetHeadHtml.includes(elementHtml)) {
-        targetHead.appendChild(element);
+      if (targetHeadHtml.includes(elementHtml)) {
+        return;
       }
+
+      target.appendChild(element);
     });
   }
 
