@@ -7,35 +7,29 @@
   <body>
     <main slot="docs">
       <article>
-        <h1>Working with Layouts in PapelJS</h1>
-        <p>
-          By default your index.html file will be the main layout of your
-          website. This is where the partial pages will be loaded. you can
-          define different layouts for different pages by adding the
-          <code class="highlight">pl-layout</code>
-          attribute. but your index.html file will always be the main layout of
-          your website.
-        </p>
-
-        <h2>Adding Layout Capabilities</h2>
+        <h1>Adding Layout Capabilities</h1>
         <p>
           To enable layout functionality, you need to create slots where partial
           pages will load. Here's how it works:
         </p>
         <ul class="list-disc ml-8 mb-8">
           <li>
-            You can create as many slots as needed to load different partial
-            pages into each one.
+            You can create multiple slots to load various sections of the
+            partial pages into each designated slot.
           </li>
           <li>
-            Your main content slot will always exist in the index.html file.
-            This is where partial pages load by default.
+            If a slot does not have a name, it will be considered the default
+            slot. Keep in mind that having multiple default slots in nested
+            layouts can cause rendering issues.
           </li>
-          <li>The main content slot does not require a name.</li>
+          <li>
+            Any file can be used as a layout as long as it has at least one slot
+            to load the content.
+          </li>
         </ul>
 
         <figure class="code-snippet">
-          <figcaption>index.html</figcaption>
+          <figcaption>Minimal layout</figcaption>
           <pre><code>
     &lt;html&gt;
       &lt;head&gt;
@@ -52,12 +46,7 @@
         </code></pre>
         </figure>
 
-        <p>
-          With this setup, you can load partial pages into the default content
-          slot or into specific named slots as needed.
-        </p>
-
-        <h2>Named Slots in PapelJS</h2>
+        <h2>Named Slots</h2>
         <p>
           You can create named slots in your layout by adding the name attribute
           to any slot. Named slots allow you to load partial content that
@@ -65,7 +54,7 @@
         </p>
 
         <figure class="code-snippet">
-          <figcaption>index.html</figcaption>
+          <figcaption>Named slots</figcaption>
           <pre><code>
     &lt;html&gt;
       &lt;head&gt;
@@ -73,9 +62,9 @@
       &lt;/head&gt;
       &lt;body&gt;
         &lt;header&gt;
-          &lt;slot <span class="highlight">name="header"</span>&gt;
+          <span class="highlight">&lt;slot name="header"&gt;</span>
             &lt;h2&gt; Default Header &lt;/h2&gt;
-          &lt;/slot&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
         &lt;/header&gt;
         &lt;main&gt;
           <span class="highlight">&lt;slot&gt;</span>
@@ -89,10 +78,7 @@
 
         <p>In this example:</p>
         <ul class="list-disc ml-8 mb-8">
-          <li>
-            The <code class="highlight">&lt;slot name="header"&gt;</code> is a
-            named slot.
-          </li>
+          <li>The <code>&lt;slot name="header"&gt;</code> is a named slot.</li>
           <li>
             You can load partial content specifically into the "header" slot.
           </li>

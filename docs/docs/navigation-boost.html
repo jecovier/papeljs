@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/papeljs/layout-doc.html" />
+    <link rel="layout" href="/papeljs/layout-doc.html" />
+
     <script type="module" crossorigin src="/papeljs/assets/index-BtCUM1hL.js"></script>
   </head>
   <body>
@@ -10,7 +11,7 @@
         <h1>Navigation Boost</h1>
         <p>
           By default, PapelJS fully renders both normal and partial pages. To
-          enhance the navigation experience, you can use the
+          <code>xperience, you can use the
           <code class="highlight">pl-boost</code> attribute on links to load
           only the partial content of a page.
         </p>
@@ -34,7 +35,7 @@
         <h3>How It Works</h3>
         <ul class="list-disc ml-8 mb-8">
           <li>
-            When a link with the
+            <code>
             <code class="highlight">pl-boost</code> attribute is clicked,
             PapelJS fetches the partial page content using an XHR request.
           </li>
@@ -50,7 +51,7 @@
 
         <h2>Prefetching</h2>
         <p>
-          To improve page loading times, you can use the
+          <code>times, you can use the
           <code class="highlight">pl-prefetch</code> attribute on links. This
           attribute preloads the partial page into the browser's cache as soon
           as the link becomes visible in the viewport.
@@ -80,7 +81,7 @@
         <h2>Prefetchin "ALL"</h2>
         <p>
           If you want to prefetch all the images in the next partial page, use
-          the
+          <code>
           <code class="highlight">pl-prefetch="all"</code> attribute. This will:
         </p>
         <ul class="list-disc ml-8 mb-8">

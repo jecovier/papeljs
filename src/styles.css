@@ -112,7 +112,8 @@ button,
   padding: 0.1rem 0.3rem;
 }
 
-code.highlight {
+li code,
+p code {
   @apply bg-primary-50 border-primary-500 text-primary-500 border rounded text-sm;
   padding: 0.05rem 0.3rem;
 }
