@@ -118,7 +118,7 @@ p code {
   @apply bg-primary-50 border-primary-500 text-primary-500 border rounded text-sm;
 }
 
-[pl-preserve] {
+[data-preserve] {
   position: fixed;
   top: 0;
   left: 0;
@@ -129,12 +129,12 @@ p code {
   @apply bg-primary-500;
 }
 
-body.is-loading [pl-preserve] {
+body.is-loading [data-preserve] {
   transition: width 3s ease-out;
   width: 90%;
 }
 
-body.after-loading [pl-preserve] {
+body.after-loading [data-preserve] {
   transition: opacity 0.2s 0.3s;
   width: 100%;
   opacity: 0;

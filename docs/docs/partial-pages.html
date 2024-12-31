@@ -2,58 +2,67 @@
 <html lang="en">
   <head>
     <link rel="layout" href="/papeljs/layout-doc.html" />
-    <script type="module" crossorigin src="/papeljs/assets/index-BtCUM1hL.js"></script>
+    <script type="module" crossorigin src="/papeljs/assets/index-D52MN_qA.js"></script>
   </head>
   <body>
     <main slot="docs">
       <article>
         <h1>Partials Pages</h1>
         <p>
-          When working with PapelJS, you can create partial pages that will be
-          loaded into the slots content areas of your layout. This allows you to
-          create reusable designs that can be used across multiple pages.
+          You can create partial pages that will be loaded into the slots
+          content areas of your layout. This allows you to create reusable
+          designs that can be used across multiple pages.
         </p>
 
         <p>
-          all partial pages needs to have the papel.js file included in the body
-          of the file and the pl-layout attribute pointing to the layout file to
-          render. This is required to render the layouts of the page when
-          accessing the partial page directly in the browser.
+          all partial pages needs to have the papel.js file included in the head
+          of the file and a
+          <code>&lt;link rel="layout"/&gt;</code>
+          tag pointing to the layout file you want to render.
         </p>
 
         <figure class="code-snippet">
-          <figcaption>about.html</figcaption>
+          <figcaption>using layouts</figcaption>
           <pre><code>
-    &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
-      &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
-      &lt;main <span class="highlight">slot</span>&gt;
-          &lt;p&gt; Hello World from About &lt;/p&gt;
-      &lt;/main&gt;
-    &lt;/body&gt;
+      &lt;head&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;main <span class="highlight">slot</span>&gt;
+            &lt;p&gt; Hello World from About &lt;/p&gt;
+        &lt;/main&gt;
+      &lt;/body&gt;
         </code></pre>
         </figure>
 
+        <p>
+          In the example above, the partial page is loaded into the slot content
+          area of the layout file. Notice the slot attribute in the main tag,
+          which specifies the content that will replace the default slot content
+          in the layout.
+        </p>
+
         <h2>Named Slots</h2>
         <p>
-          You can create named slots by adding the <code>name</code> attribute
-          to any slot in your layout. This will create a named slot where you
-          can load partial contents with the same name.
+          Named slots can be created by adding the <code>name</code> attribute
+          to any slot in your layout. This allows you to load partial content
+          into specific areas of your layout. To specify the slot in the partial
+          page, use the <code>slot</code> attribute with the corresponding slot
+          name.
         </p>
 
         <figure class="code-snippet">
-          <figcaption>index.html</figcaption>
+          <figcaption>Using named slots</figcaption>
           <pre><code>
-      &lt;body <span class="highlight">pl-layout="/index.html"</span>&gt;
+      &lt;head&gt;
         &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
-        &lt;header&gt;
-          &lt;slot <span class="highlight">name="header"</span>&gt;
-            &lt;h2&gt; Default Header &lt;/h2&gt;
-          &lt;/slot&gt;
-        &lt;/header&gt;
-        &lt;main&gt;
-          <span class="highlight">&lt;slot&gt;</span>
-            &lt;h2&gt; Hello World &lt;/h2&gt;
-          <span class="highlight">&lt;/slot&gt;</span>
+        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h2 <span class="highlight">slot="header"</span>&gt; Default Header &lt;/h2&gt;
+        &lt;main <span class="highlight">slot</span>&gt;
+          &lt;p&gt; Hello World from About &lt;/p&gt;
         &lt;/main&gt;
       &lt;/body&gt;
         </code></pre>
