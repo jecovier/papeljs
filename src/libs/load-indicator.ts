@@ -1,4 +1,9 @@
-import { LoadState } from "./constants";
+import {
+  LoadingFinishedEventName,
+  LoadingStartedEventName,
+  LoadState,
+} from "./constants";
+import { dispatchCustomEvent } from "./utils";
 
 export class LoadIndicator {
   private startAnimationTimeout: number | null = null;
@@ -22,6 +27,7 @@ export class LoadIndicator {
     document.body.classList.add(LoadState.BeforeLoading);
 
     this.startAnimationTimeout = setTimeout(() => {
+      dispatchCustomEvent(LoadingStartedEventName);
       this.triggerLoadingAnimation();
     }, 200);
   }
@@ -54,5 +60,6 @@ export class LoadIndicator {
     document.body.classList.remove(LoadState.IsLoading);
     document.body.classList.remove(LoadState.BeforeLoading);
     document.body.classList.remove(LoadState.IsIndeterminate);
+    dispatchCustomEvent(LoadingFinishedEventName);
   }
 }
