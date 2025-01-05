@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="layout" href="/layout-doc.html" />
+    <script src="/index.ts" type="module" defer></script>
+  </head>
+  <body>
+    <main slot="docs">
+      <article>
+        <h1>Navigation Boost</h1>
+        <p>
+          By default, all internal links will be intercepted to load the partial
+          page content into the layout using a fetch request. This allows you to
+          create a single-page application (SPA) experience without the need for
+          a full page reload.
+        </p>
+
+        <p>
+          To disable this behavior for specific links, add the
+          <code>target</code> attribute to the anchor tag. This will prevent the
+          link from being intercepted and the page from being loaded via XHR.
+          For example, using <code>target="_top"</code>
+          will force the link to open in the same tab.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>docs/index.html</figcaption>
+          <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" &gt;Intercepted&lt;/a&gt;
+        &lt;a href="/docs/chapter-2.html" <span class="highlight">target="_top"</span>&gt;Not intercepted&lt;/a&gt;
+      &lt;/nav&gt;
+        </code></pre>
+        </figure>
+
+        <h2>Prefetching</h2>
+        <p>
+          To improve page loading times, you can use the
+          <code>data-prefetch</code> attribute on links. This attribute preloads
+          the partial page into the browser's cache as soon as the link becomes
+          visible in the viewport.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>docs/index.html</figcaption>
+          <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" &gt;Chapter 1&lt;/a&gt;
+        &lt;a href="/docs/chapter-2.html" <span class="highlight">data-prefetch</span>&gt;Chapter 2&lt;/a&gt;
+      &lt;/nav&gt;
+        </code></pre>
+        </figure>
+
+        <h3>How It Works</h3>
+        <ul class="list-disc ml-8 mb-8">
+          <li>data-prefetch adds an event listener to the link.</li>
+          <li>
+            When the link enters the viewport, trazojs automatically fetches the
+            partial page content and stores it in the browser's cache.
+          </li>
+          <li>This ensures faster loading when the user clicks the link.</li>
+        </ul>
+
+        <h2>Prefetchin "ALL"</h2>
+        <p>
+          If you want to prefetch all the images in the next partial page, use
+          the
+          <code>data-prefetch="all"</code> attribute. This will:
+        </p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>Preload the next partial page.</li>
+          <li>Fetch all images within that page.</li>
+          <li>Start loading those images into the browser's cache.</li>
+        </ul>
+
+        <figure class="code-snippet">
+          <figcaption>docs/index.html</figcaption>
+          <pre><code>
+      &lt;nav&gt;
+        &lt;a href="/docs/chapter-1.html" <span class="highlight">data-prefetch="all"</span>&gt;Chapter 1&lt;/a&gt;
+        ...
+      &lt;/nav&gt;
+        </code></pre>
+        </figure>
+
+        <nav class="flex gap-4 justify-between">
+          <a href="/trazojs/docs/inherited-layouts.html" class="btn"
+            ><span class="rotate-180 inline-block">&#10140;</span>Inherited
+            Layouts</a
+          >
+          <a href="/trazojs/docs/highlight-links.html" class="btn"
+            >Highlight active link &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>

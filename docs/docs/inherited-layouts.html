@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="layout" href="/trazojs/layout-doc.html" />
+
+    <script
+      type="module"
+      crossorigin
+      src="/trazojs/assets/index-D52MN_qA.js"
+    ></script>
+  </head>
+
+  <body>
+    <main slot="docs">
+      <article>
+        <h1>Inherited Layouts</h1>
+        <p>
+          Layouts can be broken into partial layouts to create reusable and
+          flexible designs. If you have a layout shared across multiple pages,
+          you can define it as a partial layout and load it into your main
+          layout.
+        </p>
+
+        <h2>Creating a Partial Layout</h2>
+        <p>To create a partial layout, follow these steps:</p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>
+            Define Slots: Create a layout file with slots where partial pages
+            will be loaded.
+          </li>
+          <li>
+            Inherit a Layout: Use the
+            <code>&lt;link rel="layout" href="parent-layout.html"&gt;</code> tag
+            in the head section to specify the parent layout that this partial
+            layout will inherit.
+          </li>
+        </ul>
+
+        <figure class="code-snippet">
+          <figcaption>Using named slots</figcaption>
+          <pre><code>
+      &lt;head&gt;
+        &lt;script <span class="highlightrel="layout" href="/layout.html"t;&lt;/script&gt;
+        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h2 <span class="highlight">slot="header"</span>&gt; Default Header &lt;/h2&gt;
+        &lt;main <span class="highlight">slot</span>&gt;
+          &lt;p&gt; Hello World from About &lt;/p&gt;
+        &lt;/main&gt;
+      &lt;/body&gt;
+        </code></pre>
+        </figure>
+
+        <p>
+          then you can load the partial layout into the partial page, this will
+          load both layouts <code>docs/index.html</code> and
+          <code>index.html</code> into the partial page.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>docs/chapter-1.html</figcaption>
+          <pre><code>
+      &lt;body <span class="highlight">pl-layout="/docs/index.html"</span>&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;main&gt;
+          <span class="highlight">&lt;slot&gt;</span>
+            &lt;h2&gt; Chapter 1 &lt;/h2&gt;
+            ...
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/main&gt;
+      &lt;/body&gt;
+          </code></pre>
+        </figure>
+
+        <nav class="flex gap-4 justify-between">
+          <a href="/trazojs/docs/partial-pages.html" class="btn"
+            ><span class="rotate-180 inline-block">&#10140;</span> Partial
+            pages</a
+          >
+          <a href="/trazojs/docs/navigation-boost.html" class="btn"
+            >Navigation boost &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>

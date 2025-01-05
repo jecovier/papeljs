@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="layout" href="/layout-doc.html" />
+    <script src="/index.ts" type="module" defer></script>
+  </head>
+  <body>
+    <main slot="docs">
+      <article>
+        <h1>Adding Layout Capabilities</h1>
+        <p>
+          To enable layout functionality, you need to create slots where partial
+          pages will load. Here's how it works:
+        </p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>
+            You can create multiple slots to load various sections of the
+            partial pages into each designated slot.
+          </li>
+          <li>
+            If a slot does not have a name, it will be considered the default
+            slot. Keep in mind that having multiple default slots in nested
+            layouts can cause rendering issues.
+          </li>
+          <li>
+            Any file can be used as a layout as long as it has at least one slot
+            to load the content.
+          </li>
+        </ul>
+
+        <figure class="code-snippet">
+          <figcaption>Minimal layout</figcaption>
+          <pre><code>
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;main id="content"&gt;
+          <span class="highlight">&lt;slot&gt;</span>
+            &lt;h2&gt; Hello World &lt;/h2&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+        </code></pre>
+        </figure>
+
+        <h2>Named Slots</h2>
+        <p>
+          You can create named slots in your layout by adding the name attribute
+          to any slot. Named slots allow you to load partial content that
+          matches the slot's name.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>Named slots</figcaption>
+          <pre><code>
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;header&gt;
+          <span class="highlight">&lt;slot name="header"&gt;</span>
+            &lt;h2&gt; Default Header &lt;/h2&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/header&gt;
+        &lt;main&gt;
+          <span class="highlight">&lt;slot&gt;</span>
+            &lt;h2&gt; Hello World &lt;/h2&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
+        &lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+        </code></pre>
+        </figure>
+
+        <p>In this example:</p>
+        <ul class="list-disc ml-8 mb-8">
+          <li>The <code>&lt;slot name="header"&gt;</code> is a named slot.</li>
+          <li>
+            You can load partial content specifically into the "header" slot.
+          </li>
+        </ul>
+        <p>
+          This makes it easy to organize your layout and target specific areas
+          with partial content.
+        </p>
+
+        <nav class="flex gap-4 justify-between">
+          <a href="/trazojs/docs/index.html" class="btn"
+            ><span class="rotate-180 inline-block">&#10140;</span>
+            Installation</a
+          >
+          <a href="/trazojs/docs/partial-pages.html" class="btn"
+            >Partial pages &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>

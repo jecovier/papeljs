@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="layout" href="/trazojs/layout-doc.html" />
+    trazojs
+    <script
+      type="module"
+      crossorigin
+      src="/papeljs/assets/index-D52MN_qA.js"
+    ></script>
+  </head>
+  <body>
+    <main slot="docs">
+      <article>
+        <h1>Programmatic API</h1>
+        <section class="mt-6">
+          <h2>InterceptLinks</h2>
+          <p>
+            This function intercepts click events on all links with the
+            <code>pl-boost</code> attribute, allowing the page navigation to be
+            handled programmatically using the Fetch API.
+          </p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        const element = document.querySelector('div#new-added-content');
+        window.papel.interceptLinks(element);
+        </code></pre>
+          </figure>
+        </section>
+
+        <section>
+          <h2>PrefetchLinks</h2>
+          <p>
+            This function prefetches the content of all links marked with the
+            <code>data-prefetch</code> attribute as soon as they become visible
+            in the viewport.
+          </p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        const element = document.querySelector('div#new-added-content');
+        window.papel.prefetchLinks(element);
+        </code></pre>
+          </figure>
+        </section>
+
+        <section>
+          <h2>HighlightMatchingLinks</h2>
+          <p>
+            This function highlights all links on the page that partially or
+            completely match the current URL path.
+          </p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        const element = document.querySelector('div#new-added-content');
+        window.papel.highlightMatchingLinks(element);
+        </code></pre>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Navigate</h2>
+          <p>This function programmatically navigates to a specified URL.</p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        window.papel.navigate('/new-page');
+        </code></pre>
+          </figure>
+        </section>
+
+        <section>
+          <h2>StartLoading</h2>
+          <p>
+            This function starts a loading indicator, useful for indicating that
+            a background process is running.
+          </p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        window.papel.startLoading();
+        </code></pre>
+          </figure>
+        </section>
+
+        <section>
+          <h2>StopLoading</h2>
+          <p>
+            This function stops the loading indicator started by
+            <code>startLoading</code>.
+          </p>
+          <figure class="code-snippet">
+            <figcaption>js</figcaption>
+            <pre><code>
+        window.papel.stopLoading();
+        </code></pre>
+          </figure>
+        </section>
+
+        <nav class="trazojsp-4 justify-between">
+          <a href="/papeljs/docs/highlight-links.html" class="btn"
+            ><span class="rotate-180 inline-block">&#10140;</span> Highlight
+            links</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>
