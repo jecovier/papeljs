@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/trazojs/layout-doc.html" />
+    <link
+      rel="preload"
+      crossorigin
+      data-layout
+      href="/trazojs/layout-doc.html"
+    />
 
     <script
       type="module"
@@ -30,9 +35,9 @@
           </li>
           <li>
             Inherit a Layout: Use the
-            <code>&lt;link rel="layout" href="parent-layout.html"&gt;</code> tag
-            in the head section to specify the parent layout that this partial
-            layout will inherit.
+            <code>&lt;link rel="layout" href="parent-layout.html"&gt;</code>
+            tag in the head section to specify the parent layout that this
+            partial layout will inherit.
           </li>
         </ul>
 
@@ -40,7 +45,7 @@
           <figcaption>Using named slots</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlightrel="layout" href="/layout.html"t;&lt;/script&gt;
+        &lt;script <span class="highlightrel="preload" href="/layout.html"t;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
@@ -62,7 +67,7 @@
           <figcaption>docs/chapter-1.html</figcaption>
           <pre><code>
       &lt;body <span class="highlight">pl-layout="/docs/index.html"</span>&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
         &lt;main&gt;
           <span class="highlight">&lt;slot&gt;</span>
             &lt;h2&gt; Chapter 1 &lt;/h2&gt;

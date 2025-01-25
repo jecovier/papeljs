@@ -16,73 +16,69 @@ const loadIndicator = new LoadIndicator();
 export async function loadPage(): Promise<void> {
   loadIndicator.startLoadingAnimation();
   const slotContents = layoutManager.getSlotsContents(document);
-  const layoutUrl = getLayoutUrl(document);
-  const isPartialHTML = !!layoutUrl;
+  const layoutUrls = getLayoutUrls(document);
+  const baseLayoutUrl = layoutUrls.shift();
 
-  if (isPartialHTML) {
-    await renderLayout(layoutUrl);
+  if (baseLayoutUrl) {
+    await renderBaseLayout(baseLayoutUrl);
+  }
+
+  for (const layoutUrl of layoutUrls) {
+    await renderPartialLayout(layoutUrl);
   }
 
   layoutManager.replaceSlotContents(slotContents);
-
-  if (isPartialHTML) {
-    await loadPage();
-  }
-
   loadIndicator.stopLoadingAnimation();
+  layoutManager.consolidateLayouts();
   enhanceRenderedContent(document);
-
-  if (!isPartialHTML) {
-    dispatchCustomEvent("page-loaded");
-  }
+  dispatchCustomEvent("page-loaded");
 }
 
 export async function loadFetchedPage(url: URL): Promise<void> {
   loadIndicator.startLoadingAnimation();
   layoutManager.resetLayouts();
-  const partialDocument = await fetchDocument(url);
+  const partialDocument = await fetchDocument(url.toString());
   const slotContents = layoutManager.getSlotsContents(partialDocument);
-  const layoutUrl = getLayoutUrl(partialDocument);
-  const isPartialHTML = !!layoutUrl;
+  const layoutUrls = getLayoutUrls(partialDocument);
+  const baseLayoutUrl = layoutUrls.shift();
 
-  if (isPartialHTML) {
-    layoutManager.mergeHeads(partialDocument, document);
-    await renderLayout(layoutUrl);
-  }
+  await startViewTransition(async () => {
+    if (baseLayoutUrl) {
+      await renderBaseLayout(baseLayoutUrl);
+    }
 
-  startViewTransition(() => layoutManager.replaceSlotContents(slotContents));
+    for (const layoutUrl of layoutUrls) {
+      await renderPartialLayout(layoutUrl);
+    }
 
-  if (isPartialHTML) {
-    await loadPage();
-  }
-
-  layoutManager.consolidateLayouts();
-  loadIndicator.stopLoadingAnimation();
-  enhanceRenderedContent(document);
-
-  if (!isPartialHTML) {
+    layoutManager.replaceSlotContents(slotContents);
+    loadIndicator.stopLoadingAnimation();
+    layoutManager.consolidateLayouts();
+    enhanceRenderedContent(document);
     dispatchCustomEvent("page-loaded");
-  }
+  });
 }
 
-async function fetchDocument(url: URL): Promise<Document> {
-  const partials = await htmlLoader.load(url.toString());
+async function fetchDocument(url: string): Promise<Document> {
+  const partials = await htmlLoader.load(url);
   return parseStringToDocument(partials);
 }
 
-function getLayoutUrl(
+function getLayoutUrls(
   target: Document,
   removeLayoutTag: Boolean = true
-): string {
-  const layoutElement = target.querySelector(`link[rel="layout"]`);
+): string[] {
+  const layoutElements = target.querySelectorAll(`link[data-layout]`);
 
-  const layoutUrl = layoutElement?.getAttribute("href") || "";
+  const layoutUrls = Array.from(layoutElements)
+    .map((element) => element.getAttribute("href") ?? "")
+    .filter((element) => !!element);
 
-  if (layoutUrl && removeLayoutTag) {
-    layoutElement?.remove();
+  if (layoutUrls.length && removeLayoutTag) {
+    layoutElements.forEach((element) => element.remove());
   }
 
-  return layoutUrl;
+  return layoutUrls;
 }
 
 function startViewTransition(callback: () => void): void {
@@ -94,7 +90,7 @@ function startViewTransition(callback: () => void): void {
   callback();
 }
 
-async function renderLayout(layoutUrl: string) {
+async function renderBaseLayout(layoutUrl: string) {
   if (layoutManager.isAlreadyRendered(layoutUrl)) {
     layoutManager.markAsRendered(layoutUrl);
     return;
@@ -103,6 +99,21 @@ async function renderLayout(layoutUrl: string) {
   const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
 
   layoutManager.render(document, layoutUrl, layout);
+  layoutManager.mergeHeads(layout, document);
+  dispatchCustomEvent("layout-rendered", { layoutUrl });
+}
+
+async function renderPartialLayout(layoutUrl: string) {
+  if (layoutManager.isAlreadyRendered(layoutUrl)) {
+    layoutManager.markAsRendered(layoutUrl);
+    return;
+  }
+
+  const layout = await fetchDocument(layoutUrl);
+  const slotContents = layoutManager.getSlotsContents(layout);
+
+  layoutManager.markAsRendered(layoutUrl);
+  layoutManager.replaceSlotContents(slotContents);
   layoutManager.mergeHeads(layout, document);
   dispatchCustomEvent("layout-rendered", { layoutUrl });
 }

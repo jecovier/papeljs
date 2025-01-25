@@ -51,7 +51,6 @@ export class LayoutManager {
   }
 
   public isAlreadyRendered(tag: string): boolean {
-    console.log([...this.loadedLayouts]);
     return this.loadedLayouts.includes(tag);
   }
 

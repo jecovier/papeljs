@@ -1,7 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/layout-doc.html" />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/index.html"
+      crossorigin
+      data-layout
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/layout-doc.html"
+      crossorigin
+      data-layout
+    />
     <script src="/index.ts" type="module" defer></script>
   </head>
 
@@ -25,9 +40,9 @@
           </li>
           <li>
             Inherit a Layout: Use the
-            <code>&lt;link rel="layout" href="/layout.html"&gt;</code> tag in
-            the head section to specify the parent layout that this partial
-            layout will inherit.
+            <code>&lt;link rel="layout" href="/layout.html"&gt;</code>
+            tag in the head section to specify the parent layout that this
+            partial layout will inherit.
           </li>
         </ul>
 
@@ -35,7 +50,7 @@
           <figcaption>Partial layout</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
@@ -62,7 +77,7 @@
           <figcaption>using partial layouts</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="chapters/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;

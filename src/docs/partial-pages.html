@@ -1,7 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/layout-doc.html" />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/index.html"
+      crossorigin
+      data-layout
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/layout-doc.html"
+      crossorigin
+      data-layout
+    />
     <script src="/index.ts" type="module" defer></script>
   </head>
   <body>
@@ -15,8 +30,8 @@
         </p>
 
         <p>
-          all partial pages needs to have the papel.js file included in the head
-          of the file and a
+          all partial pages needs to have the trazos.js file included in the
+          head of the file and a
           <code>&lt;link rel="layout"/&gt;</code>
           tag pointing to the layout file you want to render.
         </p>
@@ -25,7 +40,7 @@
           <figcaption>using layouts</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
@@ -56,7 +71,7 @@
           <figcaption>Using named slots</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;

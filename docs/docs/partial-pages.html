@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="layout" href="/trazojs/layout-doc.html" />
+    <link
+      rel="preload"
+      crossorigin
+      data-layout
+      href="/trazojs/layout-doc.html"
+    />
 
     <script
       type="module"
@@ -20,8 +25,8 @@
         </p>
 
         <p>
-          all partial pages needs to have the papel.js file included in the head
-          of the file and a
+          all partial pages needs to have the trazos.js file included in the
+          head of the file and a
           <code>&lt;link rel="layout"/&gt;</code>
           tag pointing to the layout file you want to render.
         </p>
@@ -30,7 +35,7 @@
           <figcaption>using layouts</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlightrel="layout" href="/layout.html"t;&lt;/script&gt;
+        &lt;script <span class="highlight">rel="preload" href="/layout.html"t;&lt;/script&gt;
         <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
@@ -61,8 +66,6 @@
           <figcaption>Using named slots</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlightrel="layout" href="/layout.html"t;&lt;/script&gt;
-        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
         &lt;h2 <span class="highlight">slot="header"</span>&gt; Default Header &lt;/h2&gt;
