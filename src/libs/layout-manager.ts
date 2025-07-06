@@ -99,7 +99,7 @@ export class LayoutManager {
     const targetHeadHtml = target.innerHTML;
 
     Array.from(source.children).forEach((element) => {
-      if (this._elementIsPapelScript(element)) {
+      if (this._elementIspapelcript(element)) {
         return;
       }
 
@@ -153,7 +153,7 @@ export class LayoutManager {
     });
   }
 
-  private _elementIsPapelScript(element: Element): boolean {
+  private _elementIspapelcript(element: Element): boolean {
     return (
       element.tagName === "SCRIPT" &&
       !!element.getAttribute("src")?.includes("papel")

@@ -3,8 +3,8 @@ import fs from "fs";
 console.log("Copying JS files...");
 // Source and destination paths
 const sourceFilePattern = "index-";
-const distributionFile = "dist/trazos.js";
-const downloadFile = "pages/assets/trazos.js";
+const distributionFile = "dist/papel.js";
+const downloadFile = "pages/assets/papel.js";
 
 // Get the source file
 const sourceFile = fs
