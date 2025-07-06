@@ -3,16 +3,21 @@
   <head>
     <link
       rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/assets/index-CHyFqPwj.html"
       crossorigin
       data-layout
-      href="/trazojs/layout-doc.html"
     />
-
-    <script
-      type="module"
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/layout-doc.html"
       crossorigin
-      src="/trazojs/assets/index-D52MN_qA.js"
-    ></script>
+      data-layout
+    />
+    <script type="module" crossorigin src="/trazojs/assets/index-BZ7DoW49.js"></script>
   </head>
   <body>
     <main slot="docs">
@@ -35,8 +40,8 @@
           <figcaption>using layouts</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlight">rel="preload" href="/layout.html"t;&lt;/script&gt;
-        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
+        <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
         &lt;main <span class="highlight">slot</span>&gt;
@@ -66,6 +71,8 @@
           <figcaption>Using named slots</figcaption>
           <pre><code>
       &lt;head&gt;
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
+        <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
         &lt;h2 <span class="highlight">slot="header"</span>&gt; Default Header &lt;/h2&gt;

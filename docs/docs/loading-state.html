@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/assets/index-CHyFqPwj.html"
+      crossorigin
+      data-layout
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/layout-doc.html"
+      crossorigin
+      data-layout
+    />
+    <script type="module" crossorigin src="/trazojs/assets/index-BZ7DoW49.js"></script>
+  </head>
+  <body>
+    <main slot="docs">
+      <article>
+        <h1>Loading State</h1>
+        <p>
+          The loading state feature allows you to display a loading spinner
+          while content is being fetched. This is particularly useful for slow
+          network connections or when content takes a while to load. The loading
+          state does not calculate the loading time; instead, it simply notifies
+          the page when the loading process starts and finishes. To know when
+          the loading process starts and finishes, you can use two different
+          approaches.
+        </p>
+
+        <h2>Using the Loading State API</h2>
+        <p>
+          The loading state API provides two methods to handle the loading
+          process: <code>startLoading()</code> and <code>finishLoading()</code>.
+          These methods allow you to control the loading state of the page
+          manually.
+        </p>
+        <p>
+          Additionally, you can listen for the <code>loading-started</code> and
+          <code>loading-finished</code> events on the document to be notified
+          when the loading process begins and ends.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>Using the Loading State API</figcaption>
+          <pre><code>
+    trazojs.startLoading();
+    // Fetch content
+    trazojs.finishLoading();
+        </code></pre>
+        </figure>
+
+        <figure class="code-snippet">
+          <figcaption>Listening for loading events</figcaption>
+          <pre><code>
+    document.addEventListener('loading-started', () => {
+      console.log('Loading started');
+    });
+
+    document.addEventListener('loading-finished', () => {
+      console.log('Loading finished');
+    });
+        </code></pre>
+        </figure>
+
+        <h2>Using the Loading CSS classes</h2>
+        <p>
+          The loading state feature also provides two CSS classes that you can
+          use to style the loading spinner: <code>.before-loading</code>,
+          <code>.is-loading</code> and <code>.after-loading</code>. These
+          classes are added to the <code>&lt;body&gt;</code> element when the
+          loading process starts and finishes, respectively.
+        </p>
+        <p>
+          You can use these classes to display a loading spinner or any other
+          loading indicator on your page. For example, you can hide the spinner
+          when the loading process starts and show it when the loading process
+          finishes. the following CSS code shows how to use these classes to
+          display a loading spinner.
+        </p>
+
+        <figure class="code-snippet">
+          <figcaption>Using the Loading CSS classes</figcaption>
+          <pre><code>
+    .loading-spinner {
+      display: none;
+    }
+
+    .before-loading .loading-spinner {
+      display: block;
+      opacity: 0;
+    }
+
+    .is-loading .loading-spinner {
+      display: block;
+      opacity: 1;
+    }
+
+    .after-loading .loading-spinner {
+      display: block;
+      opacity: 0;
+    }
+        </code></pre>
+        </figure>
+
+        <h2>Using Third-Party Libraries</h2>
+        <p>
+          If you prefer to use a third-party library to handle the loading
+          state, you can do so by listening for the
+          <code>loading-started</code> and <code>loading-finished</code> events
+          on the document. This way, you can integrate any library that provides
+          a loading state feature with trazojs.
+        </p>
+        <p>
+          For example, you can use the popular library
+          <a href="https://codebyzach.github.io/pace/docs/">Pace</a> to display
+          a loading bar on your page.
+        </p>
+
+        <nav class="flex gap-4 justify-between">
+          <a href="/trazojs/docs/highlight-links.html" class="btn"
+            ><span class="rotate-180 inline-block">&#10140;</span> Highlight
+            links</a
+          >
+          <a href="/trazojs/docs/programmatic-api.html" class="btn"
+            >Programmatic API &#10140;</a
+          >
+        </nav>
+      </article>
+    </main>
+  </body>
+</html>

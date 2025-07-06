@@ -3,16 +3,21 @@
   <head>
     <link
       rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/assets/index-CHyFqPwj.html"
       crossorigin
       data-layout
-      href="/trazojs/layout-doc.html"
     />
-
-    <script
-      type="module"
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/trazojs/layout-doc.html"
       crossorigin
-      src="/trazojs/assets/index-D52MN_qA.js"
-    ></script>
+      data-layout
+    />
+    <script type="module" crossorigin src="/trazojs/assets/index-BZ7DoW49.js"></script>
   </head>
 
   <body>
@@ -35,47 +40,52 @@
           </li>
           <li>
             Inherit a Layout: Use the
-            <code>&lt;link rel="layout" href="parent-layout.html"&gt;</code>
+            <code>&lt;link rel="layout" href="/layout.html"&gt;</code>
             tag in the head section to specify the parent layout that this
             partial layout will inherit.
           </li>
         </ul>
 
         <figure class="code-snippet">
-          <figcaption>Using named slots</figcaption>
+          <figcaption>Partial layout</figcaption>
           <pre><code>
       &lt;head&gt;
-        &lt;script <span class="highlightrel="preload" href="/layout.html"t;&lt;/script&gt;
-        <span class="highlight">&lt;link rel="layout" href="/index.html" /&gt;</span>
+        &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
+        <span class="highlight">&lt;link rel="layout" href="/layout.html" /&gt;</span>
       &lt;/head&gt;
       &lt;body&gt;
-        &lt;h2 <span class="highlight">slot="header"</span>&gt; Default Header &lt;/h2&gt;
-        &lt;main <span class="highlight">slot</span>&gt;
-          &lt;p&gt; Hello World from About &lt;/p&gt;
-        &lt;/main&gt;
+        &lt;nav&gt;
+          &lt;a href="./chapter-1.html"&gt;Chapter 1&lt;/a&gt;
+          &lt;a href="./chapter-2.html"&gt;Chapter 2&lt;/a&gt;
+        &lt;/nav&gt;
+          <span class="highlight">&lt;slot name="chapter"&gt;</span>
+          &lt;main&gt;
+            &lt;p&gt; Chapter index &lt;/p&gt;
+          &lt;/main&gt;
+          <span class="highlight">&lt;/slot&gt;</span>
       &lt;/body&gt;
         </code></pre>
         </figure>
 
         <p>
           then you can load the partial layout into the partial page, this will
-          load both layouts <code>docs/index.html</code> and
-          <code>index.html</code> into the partial page.
+          load both layouts <code>chapters/layout.html</code> and
+          <code>/layout.html</code> into the partial page.
         </p>
 
         <figure class="code-snippet">
-          <figcaption>docs/chapter-1.html</figcaption>
+          <figcaption>using partial layouts</figcaption>
           <pre><code>
-      &lt;body <span class="highlight">pl-layout="/docs/index.html"</span>&gt;
+      &lt;head&gt;
         &lt;script <span class="highlight">src="trazos.js"</span> defer&gt;&lt;/script&gt;
-        &lt;main&gt;
-          <span class="highlight">&lt;slot&gt;</span>
-            &lt;h2&gt; Chapter 1 &lt;/h2&gt;
-            ...
-          <span class="highlight">&lt;/slot&gt;</span>
+        <span class="highlight">&lt;link rel="layout" href="chapters/layout.html" /&gt;</span>
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;main <span class="highlight">slot="chapter"</span>&gt;
+            &lt;p&gt; this is the chapter 1 &lt;/p&gt;
         &lt;/main&gt;
       &lt;/body&gt;
-          </code></pre>
+        </code></pre>
         </figure>
 
         <nav class="flex gap-4 justify-between">
