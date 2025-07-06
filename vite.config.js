@@ -38,7 +38,7 @@ export default defineConfig({
     open: true,
   },
   build: {
-    outDir: "../docs",
+    outDir: "../pages",
     emptyOutDir: true,
     rollupOptions: {
       input: htmlFiles,
