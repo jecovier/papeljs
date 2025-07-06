@@ -32,7 +32,7 @@ const htmlFiles = getAllHtmlFiles(path.resolve(__dirname, "src")).reduce(
 
 export default defineConfig({
   root: "src",
-  base: "/trazojs",
+  base: "/papeljs",
   server: {
     port: 3000,
     open: true,

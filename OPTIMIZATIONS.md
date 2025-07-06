@@ -1,8 +1,8 @@
-# Optimizaciones Implementadas en TrazoJS
+# Optimizaciones Implementadas en PapelJS
 
-## Resumen de Mejoras
+## Introducción
 
-Este documento describe las optimizaciones y mejoras implementadas en el sistema de layouts de TrazoJS para mejorar el rendimiento, la mantenibilidad y la experiencia del usuario.
+Este documento describe las optimizaciones y mejoras implementadas en el sistema de layouts de PapelJS para mejorar el rendimiento, la mantenibilidad y la experiencia del usuario.
 
 ## 1. Sistema de Cache Inteligente
 
