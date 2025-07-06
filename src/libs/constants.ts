@@ -43,7 +43,6 @@ export enum EventTrigger {
   "DRAGENTER" = "dragenter",
   "DRAGLEAVE" = "dragleave",
   "DRAGEXIT" = "dragexit",
-  "DRAGOUT" = "dragout",
   "INPUT" = "input",
 }
 

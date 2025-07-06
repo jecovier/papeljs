@@ -5,35 +5,94 @@ import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
 import { loadFetchedPage } from "./handler";
 
-const htmlLoader = new HtmlLoader();
-const navigationInterceptor = new NavigationInterceptor();
-const navigationPrefetch = new NavigationPrefetch(htmlLoader);
-const matcher = new PathLinkMatcher();
-const loadIndicator = new LoadIndicator();
+// Factory functions for dependency injection and testing
+export function createHtmlLoader(): HtmlLoader {
+  return new HtmlLoader();
+}
+
+export function createNavigationInterceptor(): NavigationInterceptor {
+  return new NavigationInterceptor();
+}
+
+export function createNavigationPrefetch(
+  loader: HtmlLoader
+): NavigationPrefetch {
+  return new NavigationPrefetch(loader);
+}
+
+export function createPathLinkMatcher(): PathLinkMatcher {
+  return new PathLinkMatcher();
+}
+
+export function createLoadIndicator(): LoadIndicator {
+  return new LoadIndicator();
+}
+
+// Create instances lazily to allow for proper mocking in tests
+let htmlLoader: HtmlLoader;
+let navigationInterceptor: NavigationInterceptor;
+let navigationPrefetch: NavigationPrefetch;
+let matcher: PathLinkMatcher;
+let loadIndicator: LoadIndicator;
+
+function getHtmlLoader(): HtmlLoader {
+  if (!htmlLoader) {
+    htmlLoader = createHtmlLoader();
+  }
+  return htmlLoader;
+}
+
+function getNavigationInterceptor(): NavigationInterceptor {
+  if (!navigationInterceptor) {
+    navigationInterceptor = createNavigationInterceptor();
+  }
+  return navigationInterceptor;
+}
+
+function getNavigationPrefetch(): NavigationPrefetch {
+  if (!navigationPrefetch) {
+    navigationPrefetch = createNavigationPrefetch(getHtmlLoader());
+  }
+  return navigationPrefetch;
+}
+
+function getMatcher(): PathLinkMatcher {
+  if (!matcher) {
+    matcher = createPathLinkMatcher();
+  }
+  return matcher;
+}
+
+function getLoadIndicator(): LoadIndicator {
+  if (!loadIndicator) {
+    loadIndicator = createLoadIndicator();
+  }
+  return loadIndicator;
+}
 
 export const api = {
   interceptLinks(document: Document | Element): void {
-    navigationInterceptor.startInterception(document);
-    navigationInterceptor.onNavigate(loadFetchedPage);
+    getNavigationInterceptor().startInterception(document);
+    getNavigationInterceptor().onNavigate(loadFetchedPage);
   },
 
   prefetchLinks(document: Document | Element): void {
-    navigationPrefetch.startPrefetch(document);
+    getNavigationPrefetch().startPrefetch(document);
   },
 
   highlightMatchingLinks(document: Document | Element): void {
-    matcher.highlightMatchingLinks(document);
+    getMatcher().highlightMatchingLinks(document);
   },
 
   navigate(url: string): void {
-    navigationInterceptor.navigate(url);
+    getNavigationInterceptor().navigate(url);
   },
 
   startLoading(): void {
-    loadIndicator.startLoadingAnimation();
+    getLoadIndicator().startLoadingAnimation();
   },
 
   stopLoading(): void {
-    loadIndicator.stopLoadingAnimation();
+    getLoadIndicator().stopLoadingAnimation();
   },
 };

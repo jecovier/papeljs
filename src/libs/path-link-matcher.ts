@@ -36,9 +36,13 @@ export class PathLinkMatcher {
     if (!this.allLinks) return [];
 
     return Array.from(this.allLinks).filter((link) => {
-      const linkPath = this.normalizePath(
-        new URL(link.href, window.location.origin).pathname
-      );
+      // Check if the link is external (different origin)
+      const linkUrl = new URL(link.href, window.location.origin);
+      if (linkUrl.origin !== window.location.origin) {
+        return false;
+      }
+
+      const linkPath = this.normalizePath(linkUrl.pathname);
 
       const normalizedLinkPath = this.ensureIndexPath(linkPath);
       const normalizedCurrentPath = this.ensureIndexPath(this.currentPath);

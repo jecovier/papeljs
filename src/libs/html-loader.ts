@@ -16,13 +16,15 @@ export class HtmlLoader {
     }
 
     try {
+      const { headers: customHeaders, ...otherOptions } = options || {};
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": HtmlLoaderContentType.HTML,
+          ...customHeaders,
         },
         ...(data ? { body: JSON.stringify(data) } : {}),
-        ...options,
+        ...otherOptions,
       });
 
       if (!response.ok) {
