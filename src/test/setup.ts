@@ -1,5 +1,5 @@
 // Test setup file for Vitest with jsdom
-import { beforeAll, afterEach, afterAll, vi } from "vitest";
+import { afterEach, vi } from "vitest";
 
 // Mock window.location
 Object.defineProperty(window, "location", {
