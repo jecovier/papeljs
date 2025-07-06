@@ -4,6 +4,8 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
+import { LayoutCache } from "./layout-cache";
+import { CONFIG } from "./config";
 import { dispatchCustomEvent, parseStringToDocument } from "./utils";
 
 const htmlLoader = new HtmlLoader();
@@ -12,67 +14,95 @@ const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
 const matcher = new PathLinkMatcher();
 const loadIndicator = new LoadIndicator();
+const layoutCache = new LayoutCache();
 
 export async function loadPage(): Promise<void> {
-  loadIndicator.startLoadingAnimation();
-  const slotContents = layoutManager.getSlotsContents(document);
-  const layoutUrls = getLayoutUrls(document);
-  const baseLayoutUrl = layoutUrls.shift();
+  try {
+    loadIndicator.startLoadingAnimation();
 
-  if (baseLayoutUrl) {
-    await renderBaseLayout(baseLayoutUrl);
-  }
+    const slotContents = layoutManager.getSlotsContents(document);
+    const layoutUrls = getLayoutUrls(document);
+    const baseLayoutUrl = layoutUrls.shift();
 
-  for (const layoutUrl of layoutUrls) {
-    await renderPartialLayout(layoutUrl);
-  }
-
-  layoutManager.replaceSlotContents(slotContents);
-  loadIndicator.stopLoadingAnimation();
-  layoutManager.consolidateLayouts();
-  enhanceRenderedContent(document);
-  dispatchCustomEvent("page-loaded");
-}
-
-export async function loadFetchedPage(url: URL): Promise<void> {
-  loadIndicator.startLoadingAnimation();
-  layoutManager.resetLayouts();
-  const partialDocument = await fetchDocument(url.toString());
-  const slotContents = layoutManager.getSlotsContents(partialDocument);
-  const layoutUrls = getLayoutUrls(partialDocument);
-  const baseLayoutUrl = layoutUrls.shift();
-
-  await startViewTransition(async () => {
     if (baseLayoutUrl) {
       await renderBaseLayout(baseLayoutUrl);
     }
 
-    for (const layoutUrl of layoutUrls) {
-      await renderPartialLayout(layoutUrl);
-    }
+    // Procesar layouts en paralelo si es posible
+    await Promise.all(
+      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
+    );
 
     layoutManager.replaceSlotContents(slotContents);
     loadIndicator.stopLoadingAnimation();
     layoutManager.consolidateLayouts();
     enhanceRenderedContent(document);
-    dispatchCustomEvent("page-loaded");
-  });
+    dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
+  } catch (error) {
+    console.error("Error loading page:", error);
+    loadIndicator.stopLoadingAnimation();
+    dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOAD_ERROR, { error });
+  }
+}
+
+export async function loadFetchedPage(url: URL): Promise<void> {
+  try {
+    loadIndicator.startLoadingAnimation();
+    layoutManager.resetLayouts();
+
+    const partialDocument = await fetchDocument(url.toString());
+    const slotContents = layoutManager.getSlotsContents(partialDocument);
+    const layoutUrls = getLayoutUrls(partialDocument);
+    const baseLayoutUrl = layoutUrls.shift();
+
+    await startViewTransition(async () => {
+      if (baseLayoutUrl) {
+        await renderBaseLayout(baseLayoutUrl);
+      }
+
+      // Procesar layouts en paralelo
+      await Promise.all(
+        layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
+      );
+
+      layoutManager.replaceSlotContents(slotContents);
+      loadIndicator.stopLoadingAnimation();
+      layoutManager.consolidateLayouts();
+      enhanceRenderedContent(document);
+      dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
+    });
+  } catch (error) {
+    console.error("Error loading fetched page:", error);
+    loadIndicator.stopLoadingAnimation();
+    dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOAD_ERROR, { error });
+  }
 }
 
 async function fetchDocument(url: string): Promise<Document> {
+  // Verificar cache primero
+  const cached = layoutCache.get(url);
+  if (cached) {
+    return cached;
+  }
+
   const partials = await htmlLoader.load(url);
-  return parseStringToDocument(partials);
+  const document = parseStringToDocument(partials);
+
+  // Cachear el documento
+  layoutCache.set(url, document);
+
+  return document;
 }
 
 function getLayoutUrls(
   target: Document,
-  removeLayoutTag: Boolean = true
+  removeLayoutTag: boolean = true
 ): string[] {
-  const layoutElements = target.querySelectorAll(`link[data-layout]`);
+  const layoutElements = target.querySelectorAll(CONFIG.SELECTORS.LAYOUT_LINKS);
 
   const layoutUrls = Array.from(layoutElements)
     .map((element) => element.getAttribute("href") ?? "")
-    .filter((element) => !!element);
+    .filter((url) => url.length > 0);
 
   if (layoutUrls.length && removeLayoutTag) {
     layoutElements.forEach((element) => element.remove());
@@ -90,32 +120,42 @@ function startViewTransition(callback: () => void): void {
   callback();
 }
 
-async function renderBaseLayout(layoutUrl: string) {
+async function renderBaseLayout(layoutUrl: string): Promise<void> {
   if (layoutManager.isAlreadyRendered(layoutUrl)) {
     layoutManager.markAsRendered(layoutUrl);
     return;
   }
 
-  const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
+  try {
+    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
 
-  layoutManager.render(document, layoutUrl, layout);
-  layoutManager.mergeHeads(layout, document);
-  dispatchCustomEvent("layout-rendered", { layoutUrl });
+    layoutManager.render(document, layoutUrl, layout);
+    layoutManager.mergeHeads(layout, document);
+    dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
+  } catch (error) {
+    console.error(`Error rendering base layout ${layoutUrl}:`, error);
+    throw error;
+  }
 }
 
-async function renderPartialLayout(layoutUrl: string) {
+async function renderPartialLayout(layoutUrl: string): Promise<void> {
   if (layoutManager.isAlreadyRendered(layoutUrl)) {
     layoutManager.markAsRendered(layoutUrl);
     return;
   }
 
-  const layout = await fetchDocument(layoutUrl);
-  const slotContents = layoutManager.getSlotsContents(layout);
+  try {
+    const layout = await fetchDocument(layoutUrl);
+    const slotContents = layoutManager.getSlotsContents(layout);
 
-  layoutManager.markAsRendered(layoutUrl);
-  layoutManager.replaceSlotContents(slotContents);
-  layoutManager.mergeHeads(layout, document);
-  dispatchCustomEvent("layout-rendered", { layoutUrl });
+    layoutManager.markAsRendered(layoutUrl);
+    layoutManager.replaceSlotContents(slotContents);
+    layoutManager.mergeHeads(layout, document);
+    dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
+  } catch (error) {
+    console.error(`Error rendering partial layout ${layoutUrl}:`, error);
+    throw error;
+  }
 }
 
 function enhanceRenderedContent(target: Document | Element): void {
@@ -123,4 +163,14 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
+}
+
+// Función para limpiar el cache (útil para testing o cuando se necesita liberar memoria)
+export function clearLayoutCache(): void {
+  layoutCache.clear();
+}
+
+// Función para obtener estadísticas del cache
+export function getCacheStats() {
+  return layoutCache.getStats();
 }
