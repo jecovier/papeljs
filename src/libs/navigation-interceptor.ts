@@ -46,7 +46,7 @@ export class NavigationInterceptor {
   private _interceptLinks(target: Document | Element): void {
     target
       .querySelectorAll(
-        `a:not([${INTERCEPTED_ATTR_NAME}]):not([${NOT_INTERCEPTED_ATTR_NAME}]):not([target])`
+        `a:not([${INTERCEPTED_ATTR_NAME}]):not([${NOT_INTERCEPTED_ATTR_NAME}]):not([target]):not([href^="${location.origin}"]):not([download])`
       )
       .forEach((link: Element) => {
         if (!(link instanceof HTMLAnchorElement)) {
