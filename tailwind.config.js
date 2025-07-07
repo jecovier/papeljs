@@ -10,6 +10,9 @@ export default {
         accent: colors.orange,
         gray: colors.zinc,
       },
+      screens: {
+        xs: "420px",
+      },
     },
   },
   plugins: [],
