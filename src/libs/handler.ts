@@ -55,22 +55,22 @@ export async function loadFetchedPage(url: URL): Promise<void> {
     const layoutUrls = getLayoutUrls(partialDocument);
     const baseLayoutUrl = layoutUrls.shift();
 
+    if (baseLayoutUrl) {
+      await renderBaseLayout(baseLayoutUrl);
+    }
+
+    // Procesar layouts en paralelo
+    await Promise.all(
+      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
+    );
+
     await startViewTransition(async () => {
-      if (baseLayoutUrl) {
-        await renderBaseLayout(baseLayoutUrl);
-      }
-
-      // Procesar layouts en paralelo
-      await Promise.all(
-        layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
-      );
-
       layoutManager.replaceSlotContents(slotContents);
-      loadIndicator.stopLoadingAnimation();
-      layoutManager.consolidateLayouts();
-      enhanceRenderedContent(document);
-      dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
     });
+    loadIndicator.stopLoadingAnimation();
+    layoutManager.consolidateLayouts();
+    enhanceRenderedContent(document);
+    dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
   } catch (error) {
     console.error("Error loading fetched page:", error);
     loadIndicator.stopLoadingAnimation();
