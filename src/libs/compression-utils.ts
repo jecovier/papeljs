@@ -221,6 +221,10 @@ export function listenToCompressionEvents(): void {
   if (!CONFIG.COMPRESSION.ENABLE_STATS) return;
 
   document.addEventListener(CONFIG.EVENTS.COMPRESSION_STATS, (event: Event) => {
+    if (!(event instanceof CustomEvent)) {
+      return;
+    }
+
     const { stats } = event.detail;
 
     // Log automático cuando se alcanzan hitos
