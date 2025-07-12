@@ -14,7 +14,7 @@ export const CONFIG = {
 
   // Selectores CSS
   SELECTORS: {
-    LAYOUT_LINKS: "link[data-layout]",
+    LAYOUT_LINKS: "link[data-layout], link[rel='layout']",
     SLOTS: "slot, [slot], [data-slot]",
     PRESERVE_ELEMENTS: "[data-preserve]",
   },
