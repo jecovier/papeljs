@@ -1,4 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { HtmlLoader } from "../html-loader";
+import { NavigationInterceptor } from "../navigation-interceptor";
+import { NavigationPrefetch } from "../navigation-prefetch";
+import { PathLinkMatcher } from "../path-link-matcher";
+import { LoadIndicator } from "../load-indicator";
+import { ApiType } from "../api";
 
 // Mock all dependencies
 vi.mock("../html-loader");
@@ -9,12 +15,12 @@ vi.mock("../load-indicator");
 vi.mock("../handler");
 
 describe("api", () => {
-  let mockHtmlLoader: any;
-  let mockNavigationInterceptor: any;
-  let mockNavigationPrefetch: any;
-  let mockMatcher: any;
-  let mockLoadIndicator: any;
-  let api: any;
+  let mockHtmlLoader: HtmlLoader;
+  let mockNavigationInterceptor: NavigationInterceptor;
+  let mockNavigationPrefetch: NavigationPrefetch;
+  let mockMatcher: PathLinkMatcher;
+  let mockLoadIndicator: LoadIndicator;
+  let api: ApiType;
 
   beforeEach(async () => {
     // Reset all mocks and module cache
@@ -22,43 +28,23 @@ describe("api", () => {
     vi.resetModules();
 
     // Create mock instances
-    mockHtmlLoader = {
-      // Add any methods that might be called
-    };
+    mockHtmlLoader = new HtmlLoader();
 
-    mockNavigationInterceptor = {
-      startInterception: vi.fn(),
-      onNavigate: vi.fn(),
-      navigate: vi.fn(),
-    };
+    mockNavigationInterceptor = new NavigationInterceptor();
 
-    mockNavigationPrefetch = {
-      startPrefetch: vi.fn(),
-    };
+    mockNavigationPrefetch = new NavigationPrefetch(mockHtmlLoader);
 
-    mockMatcher = {
-      highlightMatchingLinks: vi.fn(),
-    };
+    mockMatcher = new PathLinkMatcher();
 
-    mockLoadIndicator = {
-      startLoadingAnimation: vi.fn(),
-      stopLoadingAnimation: vi.fn(),
-    };
-
-    // Import the mocked classes
-    const { HtmlLoader } = await import("../html-loader");
-    const { NavigationInterceptor } = await import("../navigation-interceptor");
-    const { NavigationPrefetch } = await import("../navigation-prefetch");
-    const { PathLinkMatcher } = await import("../path-link-matcher");
-    const { LoadIndicator } = await import("../load-indicator");
+    mockLoadIndicator = new LoadIndicator();
 
     // Mock the class constructors
     vi.mocked(HtmlLoader).mockImplementation(() => mockHtmlLoader);
     vi.mocked(NavigationInterceptor).mockImplementation(
-      () => mockNavigationInterceptor
+      () => mockNavigationInterceptor,
     );
     vi.mocked(NavigationPrefetch).mockImplementation(
-      () => mockNavigationPrefetch
+      () => mockNavigationPrefetch,
     );
     vi.mocked(PathLinkMatcher).mockImplementation(() => mockMatcher);
     vi.mocked(LoadIndicator).mockImplementation(() => mockLoadIndicator);
@@ -75,10 +61,10 @@ describe("api", () => {
       api.interceptLinks(testElement);
 
       expect(mockNavigationInterceptor.startInterception).toHaveBeenCalledWith(
-        testElement
+        testElement,
       );
       expect(mockNavigationInterceptor.onNavigate).toHaveBeenCalledWith(
-        expect.any(Function)
+        expect.any(Function),
       );
     });
 
@@ -88,7 +74,7 @@ describe("api", () => {
       api.interceptLinks(doc);
 
       expect(mockNavigationInterceptor.startInterception).toHaveBeenCalledWith(
-        doc
+        doc,
       );
     });
   });
@@ -100,7 +86,7 @@ describe("api", () => {
       api.prefetchLinks(testElement);
 
       expect(mockNavigationPrefetch.startPrefetch).toHaveBeenCalledWith(
-        testElement
+        testElement,
       );
     });
 
@@ -120,7 +106,7 @@ describe("api", () => {
       api.highlightMatchingLinks(testElement);
 
       expect(mockMatcher.highlightMatchingLinks).toHaveBeenCalledWith(
-        testElement
+        testElement,
       );
     });
 
@@ -195,7 +181,7 @@ describe("api", () => {
       api.interceptLinks(testElement);
 
       expect(mockNavigationInterceptor.startInterception).toHaveBeenCalledTimes(
-        2
+        2,
       );
     });
   });

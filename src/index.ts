@@ -14,8 +14,8 @@ window.addEventListener(
     initCompressionStatsPanel();
     listenToCompressionEvents();
   },
-  { once: true }
+  { once: true },
 );
 
-// @ts-ignore
+// @ts-expect-error - Papel es una variable global
 window.papel = api;

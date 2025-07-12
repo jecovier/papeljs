@@ -34,7 +34,7 @@ export function formatTime(ms: number): string {
  */
 export function calculateSpaceSavings(
   original: number,
-  compressed: number
+  compressed: number,
 ): number {
   if (original === 0) return 0;
   return ((original - compressed) / original) * 100;
@@ -57,7 +57,7 @@ export function logCompressionStats(): void {
 
   console.log(
     "🔧 Compression Status:",
-    compressionAvailable ? "✅ Available" : "❌ Not Available"
+    compressionAvailable ? "✅ Available" : "❌ Not Available",
   );
 
   if (compressionAvailable) {
@@ -65,19 +65,19 @@ export function logCompressionStats(): void {
     console.log("Total Cache Size:", formatBytes(cacheStats.memoryUsage.total));
     console.log(
       "Compressed Size:",
-      formatBytes(cacheStats.memoryUsage.compressed)
+      formatBytes(cacheStats.memoryUsage.compressed),
     );
     console.log(
       "Uncompressed Size:",
-      formatBytes(cacheStats.memoryUsage.uncompressed)
+      formatBytes(cacheStats.memoryUsage.uncompressed),
     );
     console.log("Space Saved:", formatBytes(cacheStats.memoryUsage.spaceSaved));
     console.log(
       "Savings Percentage:",
       `${calculateSpaceSavings(
         cacheStats.memoryUsage.uncompressed,
-        cacheStats.memoryUsage.compressed
-      ).toFixed(1)}%`
+        cacheStats.memoryUsage.compressed,
+      ).toFixed(1)}%`,
     );
     console.groupEnd();
 
@@ -86,15 +86,15 @@ export function logCompressionStats(): void {
     console.log("Decompression Count:", compressionStats.decompressionCount);
     console.log(
       "Average Compression Time:",
-      formatTime(compressionStats.averageCompressionTime)
+      formatTime(compressionStats.averageCompressionTime),
     );
     console.log(
       "Average Decompression Time:",
-      formatTime(compressionStats.averageDecompressionTime)
+      formatTime(compressionStats.averageDecompressionTime),
     );
     console.log(
       "Overall Compression Ratio:",
-      `${(compressionStats.compressionRatio * 100).toFixed(1)}%`
+      `${(compressionStats.compressionRatio * 100).toFixed(1)}%`,
     );
     console.groupEnd();
 
@@ -107,7 +107,7 @@ export function logCompressionStats(): void {
   } else {
     console.log("⚠️ Compression is not available in this browser");
     console.log(
-      "💡 Consider using a modern browser with Web Compression API support"
+      "💡 Consider using a modern browser with Web Compression API support",
     );
   }
 
@@ -155,7 +155,7 @@ export function createCompressionStatsElement(): HTMLElement {
 
     const savingsPercent = calculateSpaceSavings(
       cacheStats.memoryUsage.uncompressed,
-      cacheStats.memoryUsage.compressed
+      cacheStats.memoryUsage.compressed,
     );
 
     container.innerHTML = `
@@ -165,7 +165,7 @@ export function createCompressionStatsElement(): HTMLElement {
         <div style="color: #95a5a6;">Memory Usage:</div>
         <div>Total: ${formatBytes(cacheStats.memoryUsage.total)}</div>
         <div>Saved: ${formatBytes(
-          cacheStats.memoryUsage.spaceSaved
+          cacheStats.memoryUsage.spaceSaved,
         )} (${savingsPercent.toFixed(1)}%)</div>
       </div>
       
@@ -174,7 +174,7 @@ export function createCompressionStatsElement(): HTMLElement {
         <div>Compressed: ${compressionStats.compressionCount}</div>
         <div>Decompressed: ${compressionStats.decompressionCount}</div>
         <div>Avg Time: ${formatTime(
-          compressionStats.averageCompressionTime
+          compressionStats.averageCompressionTime,
         )}</div>
       </div>
       
@@ -182,7 +182,7 @@ export function createCompressionStatsElement(): HTMLElement {
         <div style="color: #95a5a6;">Cache:</div>
         <div>Entries: ${cacheStats.size}/${cacheStats.maxSize}</div>
         <div>Ratio: ${(compressionStats.compressionRatio * 100).toFixed(
-          1
+          1,
         )}%</div>
       </div>
       
@@ -220,7 +220,7 @@ export function initCompressionStatsPanel(): void {
 export function listenToCompressionEvents(): void {
   if (!CONFIG.COMPRESSION.ENABLE_STATS) return;
 
-  document.addEventListener(CONFIG.EVENTS.COMPRESSION_STATS, (event: any) => {
+  document.addEventListener(CONFIG.EVENTS.COMPRESSION_STATS, (event: Event) => {
     const { stats } = event.detail;
 
     // Log automático cuando se alcanzan hitos
@@ -249,6 +249,6 @@ export function exportCompressionStats(): string {
       },
     },
     null,
-    2
+    2,
   );
 }

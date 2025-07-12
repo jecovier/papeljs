@@ -14,7 +14,7 @@ vi.mock("../utils", () => ({
 
 describe("LoadIndicator", () => {
   let loadIndicator: LoadIndicator;
-  let mockDispatchCustomEvent: any;
+  let mockDispatchCustomEvent: typeof dispatchCustomEvent;
 
   beforeEach(() => {
     loadIndicator = new LoadIndicator();
@@ -37,7 +37,7 @@ describe("LoadIndicator", () => {
       loadIndicator.startLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        true
+        true,
       );
       expect(mockDispatchCustomEvent).not.toHaveBeenCalled();
     });
@@ -48,7 +48,7 @@ describe("LoadIndicator", () => {
       loadIndicator.startLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        false
+        false,
       );
       expect(mockDispatchCustomEvent).not.toHaveBeenCalled();
     });
@@ -76,7 +76,7 @@ describe("LoadIndicator", () => {
       loadIndicator.startLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        true
+        true,
       );
     });
 
@@ -87,11 +87,11 @@ describe("LoadIndicator", () => {
       vi.advanceTimersByTime(200);
 
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingStartedEventName
+        LoadingStartedEventName,
       );
       expect(document.body.classList.contains(LoadState.IsLoading)).toBe(true);
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        false
+        false,
       );
     });
 
@@ -105,7 +105,7 @@ describe("LoadIndicator", () => {
       vi.advanceTimersByTime(2000);
 
       expect(document.body.classList.contains(LoadState.IsIndeterminate)).toBe(
-        true
+        true,
       );
     });
   });
@@ -117,13 +117,13 @@ describe("LoadIndicator", () => {
 
       expect(document.body.classList.contains(LoadState.IsLoading)).toBe(false);
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        false
+        false,
       );
       expect(document.body.classList.contains(LoadState.IsIndeterminate)).toBe(
-        false
+        false,
       );
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingFinishedEventName
+        LoadingFinishedEventName,
       );
     });
 
@@ -133,7 +133,7 @@ describe("LoadIndicator", () => {
       loadIndicator.stopLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        true
+        true,
       );
     });
 
@@ -143,7 +143,7 @@ describe("LoadIndicator", () => {
       loadIndicator.stopLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        true
+        true,
       );
     });
 
@@ -153,14 +153,14 @@ describe("LoadIndicator", () => {
       loadIndicator.stopLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        true
+        true,
       );
 
       // Advance timer to trigger the timeout
       vi.advanceTimersByTime(500);
 
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        false
+        false,
       );
     });
 
@@ -170,7 +170,7 @@ describe("LoadIndicator", () => {
       loadIndicator.stopLoadingAnimation();
 
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        false
+        false,
       );
     });
 
@@ -178,7 +178,7 @@ describe("LoadIndicator", () => {
       loadIndicator.stopLoadingAnimation();
 
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingFinishedEventName
+        LoadingFinishedEventName,
       );
     });
 
@@ -198,35 +198,35 @@ describe("LoadIndicator", () => {
       // Start loading
       loadIndicator.startLoadingAnimation();
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        true
+        true,
       );
 
       // Advance to loading state
       vi.advanceTimersByTime(200);
       expect(document.body.classList.contains(LoadState.IsLoading)).toBe(true);
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingStartedEventName
+        LoadingStartedEventName,
       );
 
       // Advance to indeterminate state
       vi.advanceTimersByTime(2000);
       expect(document.body.classList.contains(LoadState.IsIndeterminate)).toBe(
-        true
+        true,
       );
 
       // Stop loading
       loadIndicator.stopLoadingAnimation();
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        true
+        true,
       );
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingFinishedEventName
+        LoadingFinishedEventName,
       );
 
       // AfterLoading should be removed
       vi.advanceTimersByTime(500);
       expect(document.body.classList.contains(LoadState.AfterLoading)).toBe(
-        false
+        false,
       );
     });
 
@@ -251,7 +251,7 @@ describe("LoadIndicator", () => {
 
       expect(mockDispatchCustomEvent).toHaveBeenCalledTimes(1); // Only LoadingFinishedEventName
       expect(mockDispatchCustomEvent).toHaveBeenCalledWith(
-        LoadingFinishedEventName
+        LoadingFinishedEventName,
       );
     });
   });
@@ -264,13 +264,13 @@ describe("LoadIndicator", () => {
       loadIndicator.startLoadingAnimation();
       expect(document.body.classList.contains("existing-class")).toBe(true);
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        true
+        true,
       );
 
       loadIndicator.stopLoadingAnimation();
       expect(document.body.classList.contains("existing-class")).toBe(true);
       expect(document.body.classList.contains(LoadState.BeforeLoading)).toBe(
-        false
+        false,
       );
     });
   });

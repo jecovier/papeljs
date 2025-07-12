@@ -1,5 +1,9 @@
 import { CONFIG } from "./config";
-import { LayoutCompression, CompressedData } from "./layout-compression";
+import {
+  LayoutCompression,
+  CompressedData,
+  CompressionStats,
+} from "./layout-compression";
 
 interface CacheEntry {
   document: Document | CompressedData;
@@ -40,7 +44,7 @@ export class LayoutCache {
     if (entry.isCompressed) {
       try {
         const decompressed = await this.compression.decompressDocument(
-          entry.document as CompressedData
+          entry.document as CompressedData,
         );
         return decompressed.cloneNode(true) as Document;
       } catch (error) {
@@ -73,7 +77,7 @@ export class LayoutCache {
     } catch (error) {
       console.warn(
         `Compression failed for ${url}, storing uncompressed:`,
-        error
+        error,
       );
       compressedDocument = document;
       isCompressed = false;
@@ -120,7 +124,7 @@ export class LayoutCache {
     keys: string[];
     oldestEntry: string | null;
     mostAccessed: string | null;
-    compressionStats: any;
+    compressionStats: CompressionStats;
     memoryUsage: {
       total: number;
       compressed: number;
@@ -137,7 +141,7 @@ export class LayoutCache {
             entries.reduce(
               (min, entry, index) =>
                 entry.timestamp < entries[min].timestamp ? index : min,
-              0
+              0,
             )
           ]
         : null;
@@ -148,7 +152,7 @@ export class LayoutCache {
             entries.reduce(
               (max, entry, index) =>
                 entry.accessCount > entries[max].accessCount ? index : max,
-              0
+              0,
             )
           ]
         : null;
@@ -214,7 +218,7 @@ export class LayoutCache {
    */
   async prewarm(
     urls: string[],
-    loader: (url: string) => Promise<Document>
+    loader: (url: string) => Promise<Document>,
   ): Promise<void> {
     const promises = urls.map(async (url) => {
       if (!this.has(url)) {
@@ -268,7 +272,7 @@ export class LayoutCache {
       if (!entry.isCompressed && entry.document instanceof Document) {
         try {
           const compressed = await this.compression.compressDocument(
-            entry.document
+            entry.document,
           );
           if ("compressed" in compressed) {
             entry.document = compressed;

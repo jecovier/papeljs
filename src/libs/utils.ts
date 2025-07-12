@@ -1,6 +1,6 @@
 export function replaceContent(source: Element, target: Element): void {
   target.replaceChildren(
-    ...Array.from(source.children).map((child) => child.cloneNode(true))
+    ...Array.from(source.children).map((child) => child.cloneNode(true)),
   );
 }
 
@@ -25,6 +25,6 @@ export function slugifyUrl(tag: string): string {
   return formattedTag;
 }
 
-export function dispatchCustomEvent(event: string, detail?: Object): void {
+export function dispatchCustomEvent(event: string, detail?: object): void {
   document.dispatchEvent(new CustomEvent(event, detail));
 }

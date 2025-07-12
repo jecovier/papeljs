@@ -21,7 +21,7 @@ describe("utils", () => {
 
       replaceContent(source, target);
 
-      expect(target.children.length).toBe(2);
+      expect(target.children).toHaveLength(2);
       expect(target.children[0].tagName).toBe("P");
       expect(target.children[0].textContent).toBe("Source content");
       expect(target.children[1].tagName).toBe("SPAN");
@@ -35,7 +35,7 @@ describe("utils", () => {
 
       replaceContent(source, target);
 
-      expect(target.children.length).toBe(0);
+      expect(target.children).toHaveLength(0);
     });
 
     it("should clone nodes instead of moving them", () => {
@@ -49,8 +49,8 @@ describe("utils", () => {
       replaceContent(source, target);
 
       // Source should still have the child
-      expect(source.children.length).toBe(1);
-      expect(target.children.length).toBe(1);
+      expect(source.children).toHaveLength(1);
+      expect(target.children).toHaveLength(1);
       expect(target.children[0].textContent).toBe("Test content");
     });
   });
@@ -73,7 +73,7 @@ describe("utils", () => {
     });
 
     it("should handle null/undefined input", () => {
-      const doc = parseStringToDocument(null as any);
+      const doc = parseStringToDocument(null as unknown as string);
 
       expect(doc).toBeInstanceOf(Document);
       expect(doc.documentElement.tagName).toBe("HTML");
@@ -94,7 +94,7 @@ describe("utils", () => {
       expect(slugifyUrl("/about")).toBe("about-index.html");
       expect(slugifyUrl("/blog/post-1")).toBe("blog-post-1-index.html");
       expect(slugifyUrl("/products/category/item")).toBe(
-        "products-category-item-index.html"
+        "products-category-item-index.html",
       );
     });
 

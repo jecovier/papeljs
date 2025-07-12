@@ -26,7 +26,7 @@ export function createNavigationInterceptor(): NavigationInterceptor {
 }
 
 export function createNavigationPrefetch(
-  loader: HtmlLoader
+  loader: HtmlLoader,
 ): NavigationPrefetch {
   return new NavigationPrefetch(loader);
 }
@@ -116,3 +116,5 @@ export const api = {
   logCompressionStats,
   exportCompressionStats,
 };
+
+export type ApiType = typeof api;

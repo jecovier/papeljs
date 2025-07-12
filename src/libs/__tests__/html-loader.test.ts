@@ -10,7 +10,7 @@ vi.mock("../utils", () => ({
 
 describe("HtmlLoader", () => {
   let htmlLoader: HtmlLoader;
-  let mockFetch: any;
+  let mockFetch: typeof window.fetch;
 
   beforeEach(() => {
     htmlLoader = new HtmlLoader();
@@ -55,7 +55,7 @@ describe("HtmlLoader", () => {
       expect(mockFetch).not.toHaveBeenCalled();
       expect(result).toBe("");
       expect(console.error).toHaveBeenCalledWith(
-        "URL is required to load HTML"
+        "URL is required to load HTML",
       );
     });
 
@@ -81,7 +81,7 @@ describe("HtmlLoader", () => {
       expect(result).toBe("");
       expect(console.error).toHaveBeenCalledWith(
         "Error loading HTML: ",
-        expect.any(Error)
+        expect.any(Error),
       );
     });
 
@@ -170,7 +170,7 @@ describe("HtmlLoader", () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
       vi.mocked(parseStringToDocument).mockReturnValue(
-        document.implementation.createHTMLDocument()
+        document.implementation.createHTMLDocument(),
       );
 
       const data = { test: "data" };
@@ -180,7 +180,7 @@ describe("HtmlLoader", () => {
         "/test-page",
         FetchMethod.POST,
         data,
-        options
+        options,
       );
 
       expect(mockFetch).toHaveBeenCalledWith("/test-page", {
@@ -231,7 +231,7 @@ describe("HtmlLoader", () => {
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(result).toBe("");
       expect(console.error).toHaveBeenCalledWith(
-        "None of the urls could be loaded"
+        "None of the urls could be loaded",
       );
     });
 
