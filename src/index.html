@@ -6,16 +6,25 @@
     <title>papeljs - a minimalist pseudo framework</title>
     <link rel="stylesheet" href="/styles.css" />
     <script type="module" src="/index.ts" defer></script>
+    <link rel="icon" href="/assets/logo.svg" />
   </head>
   <body>
     <div data-preserve="loader"></div>
     <header>
       <div
-        class="max-w-6xl w-full flex flex-col xs:flex-row justify-between m-auto gap-4"
+        class="max-w-6xl w-full flex flex-col xs:flex-row justify-between items-center m-auto gap-4"
       >
-        <h1>
-          <a href="/papeljs/"> Papel JS </a>
-        </h1>
+        <a
+          href="/papeljs/"
+          class="no-underline text-gray-700 text-lg flex items-center"
+        >
+          <img
+            src="/assets/logo.svg"
+            alt="papeljs logo"
+            class="w-8 h-8 inline-block text-primary-500"
+          />
+          Papel.js
+        </a>
         <nav class="flex flex-col xs:flex-row gap-1">
           <a href="/papeljs/" class="is-home" data-prefetch>Home</a>
           <!-- <a href="/papeljs/about.html"  data-prefetch>About</a> -->
