@@ -1,81 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation - papeljs</title>
-    <link rel="icon" type="image/svg+xml" href="/papeljs/assets/file-down-56rC91Z4.svg" />
-    <script type="module" crossorigin src="/papeljs/assets/index-YunLRiA4.js"></script>
-    <link rel="stylesheet" crossorigin href="/papeljs/assets/styles-DJAKoQvB.css">
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/papeljs/"
+      crossorigin
+      data-layout
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      type="text/html"
+      href="/papeljs/layout-doc.html"
+      crossorigin
+      data-layout
+    />
+    <script type="module" crossorigin src="/papeljs/assets/index-DX1O9cvJ.js"></script>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="nav-container">
-        <a href="/papeljs/"> papeljs </a>
-        <div class="nav-links">
-          <a href="/papeljs/" class="is-home" data-prefetch>Home</a>
-          <a href="/papeljs/docs/" data-prefetch>Docs</a>
-          <a
-            href="https://github.com/jecovier/papeljs"
-            target="_blank"
-            rel="noopener noreferrer"
-            >GitHub</a
-          >
-        </div>
-      </div>
-    </nav>
-
-    <main>
-      <div class="container">
-        <h1>Documentation</h1>
+    <main slot="docs">
+      <article>
+        <h1>Get started</h1>
         <p>
           <strong>papeljs</strong> is a lightweight and easy-to-use JavaScript
-          framework for building modern web applications. This documentation
-          will guide you through all the features and concepts.
+          library that lets you manage layouts and partial pages using just HTML
+          files. It runs entirely on the client side, so no server is needed.
         </p>
-
         <h2>Installation</h2>
         <p>
           To start using papeljs, you can choose one of the following methods:
         </p>
-
-        <h3>1. Download the file</h3>
         <p>
-          Download <a href="/index.ts" download="papeljs.js"> papeljs</a> and
-          add it to your project:
+          <strong>1. Download and Include Locally</strong>
+          Download the latest version of
+          <a href="/index.ts" download="papel.js"> papeljs</a> and add it to
+          your project. Then include it in your index.html file:
         </p>
-        <pre><code>&lt;script src="papeljs.js"&gt;&lt;/script&gt;</code></pre>
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script <span class="highlight">src="papel.js"</span> defer&gt;&lt;/script&gt;
+      &lt;/head&gt;
+      ...
+    </code></pre>
+        </figure>
+        <p>
+          <strong>2. Use the CDN</strong> For a quicker setup, include papeljs
+          directly from the CDN:
+          <a href="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"
+            >https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js</a
+          >
+        </p>
 
-        <h3>2. Use the CDN</h3>
-        <p>For a quicker setup, include papeljs directly from our CDN:</p>
-        <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papeljs.js"&gt;&lt;/script&gt;</code></pre>
-
-        <h2>Quick Start</h2>
-        <p>Here's a simple example to get you started:</p>
-        <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;My App&lt;/title&gt;
-    &lt;script <span class="highlight">src="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papeljs.js"</span>&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;Hello World!&lt;/h1&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-
-        <div class="navigation-buttons">
+        <figure class="code-snippet">
+          <figcaption>index.html</figcaption>
+          <pre><code>
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script
+          <span class="highlight">src="https://cdn.jsdelivr.net/gh/jecovier/papeljs/dist/papel.js"</span>
+          defer
+        &gt;&lt;/script&gt;
+      &lt;/head&gt;
+      ...
+      </code></pre>
+        </figure>
+        <nav class="flex gap-4 justify-end">
           <a href="/papeljs/docs/layouts.html" class="btn">Layouts &#10140;</a>
-        </div>
-      </div>
+        </nav>
+      </article>
     </main>
-
-    <footer>
-      <div class="container">
-        <p class="text-center py-6 text-gray-500 text-sm">
-          papeljs by Jecovier
-        </p>
-      </div>
-    </footer>
-
   </body>
 </html>
