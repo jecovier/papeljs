@@ -34,14 +34,14 @@ export async function loadPage(): Promise<void> {
     );
 
     layoutManager.replaceSlotContents(slotContents);
-    loadIndicator.stopLoadingAnimation();
     layoutManager.consolidateLayouts();
     enhanceRenderedContent(document);
     dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
   } catch (error) {
     console.error("Error loading page:", error);
-    loadIndicator.stopLoadingAnimation();
     dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOAD_ERROR, { error });
+  } finally {
+    loadIndicator.stopLoadingAnimation();
   }
 }
 
@@ -66,15 +66,15 @@ export async function loadFetchedPage(url: URL): Promise<void> {
 
     await startViewTransition(async () => {
       layoutManager.replaceSlotContents(slotContents);
+      layoutManager.consolidateLayouts();
+      enhanceRenderedContent(document);
+      dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
     });
-    loadIndicator.stopLoadingAnimation();
-    layoutManager.consolidateLayouts();
-    enhanceRenderedContent(document);
-    dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
   } catch (error) {
     console.error("Error loading fetched page:", error);
-    loadIndicator.stopLoadingAnimation();
     dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOAD_ERROR, { error });
+  } finally {
+    loadIndicator.stopLoadingAnimation();
   }
 }
 
