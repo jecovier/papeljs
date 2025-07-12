@@ -3,7 +3,18 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
-import { loadFetchedPage } from "./handler";
+import {
+  loadFetchedPage,
+  getCacheStats,
+  getCompressionStats,
+  isCompressionAvailable,
+  optimizeCache,
+  clearLayoutCache,
+} from "./handler";
+import {
+  logCompressionStats,
+  exportCompressionStats,
+} from "./compression-utils";
 
 // Factory functions for dependency injection and testing
 export function createHtmlLoader(): HtmlLoader {
@@ -95,4 +106,13 @@ export const api = {
   stopLoading(): void {
     getLoadIndicator().stopLoadingAnimation();
   },
+
+  // Nuevas funciones de compresión
+  getCacheStats,
+  getCompressionStats,
+  isCompressionAvailable,
+  optimizeCache,
+  clearLayoutCache,
+  logCompressionStats,
+  exportCompressionStats,
 };

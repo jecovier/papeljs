@@ -10,6 +10,7 @@ export const CONFIG = {
     PAGE_LOAD_ERROR: "page-load-error",
     LAYOUT_RENDERED: "layout-rendered",
     CACHE_CLEARED: "cache-cleared",
+    COMPRESSION_STATS: "compression-stats",
   },
 
   // Selectores CSS
@@ -30,6 +31,14 @@ export const CONFIG = {
   VIEW_TRANSITIONS: {
     ENABLED: true,
     FALLBACK_DURATION: 300, // ms para fallback si no hay view transitions
+  },
+
+  // Configuración de compresión
+  COMPRESSION: {
+    ENABLED: true,
+    MIN_SIZE_TO_COMPRESS: 1024, // Solo comprimir documentos mayores a 1KB
+    COMPRESSION_LEVEL: 6, // Nivel de compresión (1-9, 9 = máxima compresión)
+    ENABLE_STATS: true, // Habilitar estadísticas de compresión
   },
 } as const;
 

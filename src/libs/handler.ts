@@ -80,7 +80,7 @@ export async function loadFetchedPage(url: URL): Promise<void> {
 
 async function fetchDocument(url: string): Promise<Document> {
   // Verificar cache primero
-  const cached = layoutCache.get(url);
+  const cached = await layoutCache.get(url);
   if (cached) {
     return cached;
   }
@@ -89,7 +89,7 @@ async function fetchDocument(url: string): Promise<Document> {
   const document = parseStringToDocument(partials);
 
   // Cachear el documento
-  layoutCache.set(url, document);
+  await layoutCache.set(url, document);
 
   return document;
 }
@@ -173,4 +173,19 @@ export function clearLayoutCache(): void {
 // Función para obtener estadísticas del cache
 export function getCacheStats() {
   return layoutCache.getStats();
+}
+
+// Función para obtener estadísticas de compresión
+export function getCompressionStats() {
+  return layoutCache.getCompressionStats();
+}
+
+// Función para verificar si la compresión está disponible
+export function isCompressionAvailable(): boolean {
+  return layoutCache.isCompressionAvailable();
+}
+
+// Función para optimizar el cache (comprimir entradas no comprimidas)
+export async function optimizeCache(): Promise<void> {
+  await layoutCache.optimize();
 }
