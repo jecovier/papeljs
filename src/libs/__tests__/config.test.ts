@@ -16,7 +16,9 @@ describe("config", () => {
     });
 
     it("should have correct CSS selectors", () => {
-      expect(CONFIG.SELECTORS.LAYOUT_LINKS).toBe("link[data-layout]");
+      expect(CONFIG.SELECTORS.LAYOUT_LINKS).toBe(
+        "link[data-layout], link[rel='layout']"
+      );
       expect(CONFIG.SELECTORS.SLOTS).toBe("slot, [slot], [data-slot]");
       expect(CONFIG.SELECTORS.PRESERVE_ELEMENTS).toBe("[data-preserve]");
     });
