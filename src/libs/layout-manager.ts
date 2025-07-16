@@ -7,6 +7,7 @@ export class LayoutManager {
 
   public resetLayouts(): void {
     this.currentLayouts = [];
+    this.loadedLayouts = [];
   }
 
   public render(target: Document, tag: string, layout?: Document): void {
@@ -31,7 +32,7 @@ export class LayoutManager {
   }
 
   public replaceSlotContents(
-    replacements: { slot: string; content: Element }[]
+    replacements: { slot: string; content: Element }[],
   ): void {
     const availableSlots = document.querySelectorAll("slot");
     availableSlots.forEach((slotElement) => {
@@ -55,11 +56,11 @@ export class LayoutManager {
   }
 
   public getSlotsContents(
-    target: Document | DocumentFragment | Element
+    target: Document | DocumentFragment | Element,
   ): { slot: string; content: Element }[] {
     const slotContents: { slot: string; content: Element }[] = [];
     const availableSlots = target.querySelectorAll(
-      `slot, [slot], [${SLOT_ATTR_NAME}]`
+      `slot, [slot], [${SLOT_ATTR_NAME}]`,
     );
 
     availableSlots.forEach((slotElement) => {
@@ -118,7 +119,7 @@ export class LayoutManager {
     const loadedLayouts = new Set(this.loadedLayouts);
 
     const layoutsToUnload = this.currentLayouts.filter(
-      (layout) => !loadedLayouts.has(layout)
+      (layout) => !loadedLayouts.has(layout),
     );
 
     layoutsToUnload.forEach((layout) => {
@@ -143,7 +144,7 @@ export class LayoutManager {
 
     preserveMap.forEach((el, name) => {
       const placeholderElement = target.querySelector(
-        `[${PRESERVE_ATTR_NAME}="${name}"]`
+        `[${PRESERVE_ATTR_NAME}="${name}"]`,
       );
       if (placeholderElement) {
         placeholderElement.replaceWith(el);

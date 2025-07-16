@@ -10,6 +10,8 @@ import {
   isCompressionAvailable,
   optimizeCache,
   clearLayoutCache,
+  debugCache,
+  isUrlCached,
 } from "./handler";
 import {
   logCompressionStats,
@@ -92,4 +94,8 @@ export const api = {
   clearLayoutCache,
   logCompressionStats,
   exportCompressionStats,
+
+  // Funciones de debugging del cache
+  debugCache,
+  isUrlCached,
 };

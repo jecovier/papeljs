@@ -30,7 +30,7 @@ export async function loadPage(): Promise<void> {
 
     // Procesar layouts en paralelo si es posible
     await Promise.all(
-      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
+      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
     );
 
     layoutManager.replaceSlotContents(slotContents);
@@ -61,7 +61,7 @@ export async function loadFetchedPage(url: URL): Promise<void> {
 
     // Procesar layouts en paralelo
     await Promise.all(
-      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl))
+      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
     );
 
     await startViewTransition(async () => {
@@ -82,21 +82,24 @@ async function fetchDocument(url: string): Promise<Document> {
   // Verificar cache primero
   const cached = await layoutCache.get(url);
   if (cached) {
+    console.log(`[Cache HIT] ${url}`);
     return cached;
   }
 
+  console.log(`[Cache MISS] ${url}`);
   const partials = await htmlLoader.load(url);
   const document = parseStringToDocument(partials);
 
   // Cachear el documento
   await layoutCache.set(url, document);
+  console.log(`[Cache SET] ${url}`);
 
   return document;
 }
 
 function getLayoutUrls(
   target: Document,
-  removeLayoutTag: boolean = true
+  removeLayoutTag: boolean = true,
 ): string[] {
   const layoutElements = target.querySelectorAll(CONFIG.SELECTORS.LAYOUT_LINKS);
 
@@ -120,6 +123,15 @@ function startViewTransition(callback: () => void): void {
   callback();
 }
 
+/**
+ * Normaliza una URL de layout para el cache (igual que LayoutManager._formatTag)
+ */
+function normalizeLayoutUrl(layoutUrl: string): string {
+  return layoutUrl.endsWith(".html")
+    ? layoutUrl
+    : `${layoutUrl.replace(/\/$/, "")}/index.html`;
+}
+
 async function renderBaseLayout(layoutUrl: string): Promise<void> {
   if (layoutManager.isAlreadyRendered(layoutUrl)) {
     layoutManager.markAsRendered(layoutUrl);
@@ -127,7 +139,8 @@ async function renderBaseLayout(layoutUrl: string): Promise<void> {
   }
 
   try {
-    const layout = await htmlLoader.loadHTMLDocument(layoutUrl);
+    // Usar fetchDocument para aprovechar el cache
+    const layout = await fetchDocument(normalizeLayoutUrl(layoutUrl));
 
     layoutManager.render(document, layoutUrl, layout);
     layoutManager.mergeHeads(layout, document);
@@ -145,7 +158,7 @@ async function renderPartialLayout(layoutUrl: string): Promise<void> {
   }
 
   try {
-    const layout = await fetchDocument(layoutUrl);
+    const layout = await fetchDocument(normalizeLayoutUrl(layoutUrl));
     const slotContents = layoutManager.getSlotsContents(layout);
 
     layoutManager.markAsRendered(layoutUrl);
@@ -188,4 +201,20 @@ export function isCompressionAvailable(): boolean {
 // Función para optimizar el cache (comprimir entradas no comprimidas)
 export async function optimizeCache(): Promise<void> {
   await layoutCache.optimize();
+}
+
+// Función para debugging del cache
+export function debugCache(): void {
+  const stats = layoutCache.getStats();
+  console.log("=== Layout Cache Debug ===");
+  console.log(`Cache size: ${stats.size}/${stats.maxSize}`);
+  console.log(`Keys in cache:`, stats.keys);
+  console.log(`Memory usage:`, stats.memoryUsage);
+  console.log(`Compression stats:`, stats.compressionStats);
+  console.log("=========================");
+}
+
+// Función para verificar si una URL está en el cache
+export function isUrlCached(url: string): boolean {
+  return layoutCache.has(normalizeLayoutUrl(url));
 }

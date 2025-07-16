@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Layout Cache</title>
+    <script type="module" src="src/index.ts"></script>
+  </head>
+  <body>
+    <h1>Test Layout Cache</h1>
+    <p>Open the console to see cache logs</p>
+
+    <button onclick="testCache()">Test Cache</button>
+    <button onclick="debugCache()">Debug Cache</button>
+    <button onclick="clearCache()">Clear Cache</button>
+
+    <script>
+      // Función para probar el cache
+      async function testCache() {
+        console.log("=== Testing Layout Cache ===");
+
+        // Simular navegación a una página con layout
+        const testUrl = new URL(
+          "/papeljs/layout-doc.html",
+          window.location.origin,
+        );
+
+        console.log("First navigation (should be cache MISS):");
+        await window.papel.loadFetchedPage(testUrl);
+
+        console.log("\nSecond navigation (should be cache HIT):");
+        await window.papel.loadFetchedPage(testUrl);
+
+        console.log("=== Test Complete ===");
+      }
+
+      // Función para debug del cache
+      function debugCache() {
+        if (window.papel && window.papel.debugCache) {
+          window.papel.debugCache();
+        } else {
+          console.log("Debug function not available");
+        }
+      }
+
+      // Función para limpiar el cache
+      function clearCache() {
+        if (window.papel && window.papel.clearLayoutCache) {
+          window.papel.clearLayoutCache();
+          console.log("Cache cleared");
+        } else {
+          console.log("Clear function not available");
+        }
+      }
+    </script>
+  </body>
+</html>

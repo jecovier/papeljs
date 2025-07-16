@@ -1,78 +1,78 @@
-var ie = Object.defineProperty;
-var ae = (n, e, t) =>
-  e in n
-    ? ie(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t })
-    : (n[e] = t);
-var d = (n, e, t) => ae(n, typeof e != "symbol" ? e + "" : e, t);
+var ae = Object.defineProperty;
+var ce = (s, e, t) =>
+  e in s
+    ? ae(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t })
+    : (s[e] = t);
+var d = (s, e, t) => ce(s, typeof e != "symbol" ? e + "" : e, t);
 (function () {
   const e = document.createElement("link").relList;
   if (e && e.supports && e.supports("modulepreload")) return;
-  for (const s of document.querySelectorAll('link[rel="modulepreload"]')) o(s);
-  new MutationObserver((s) => {
-    for (const r of s)
+  for (const n of document.querySelectorAll('link[rel="modulepreload"]')) o(n);
+  new MutationObserver((n) => {
+    for (const r of n)
       if (r.type === "childList")
         for (const i of r.addedNodes)
           i.tagName === "LINK" && i.rel === "modulepreload" && o(i);
   }).observe(document, { childList: !0, subtree: !0 });
-  function t(s) {
+  function t(n) {
     const r = {};
     return (
-      s.integrity && (r.integrity = s.integrity),
-      s.referrerPolicy && (r.referrerPolicy = s.referrerPolicy),
-      s.crossOrigin === "use-credentials"
+      n.integrity && (r.integrity = n.integrity),
+      n.referrerPolicy && (r.referrerPolicy = n.referrerPolicy),
+      n.crossOrigin === "use-credentials"
         ? (r.credentials = "include")
-        : s.crossOrigin === "anonymous"
+        : n.crossOrigin === "anonymous"
           ? (r.credentials = "omit")
           : (r.credentials = "same-origin"),
       r
     );
   }
-  function o(s) {
-    if (s.ep) return;
-    s.ep = !0;
-    const r = t(s);
-    fetch(s.href, r);
+  function o(n) {
+    if (n.ep) return;
+    n.ep = !0;
+    const r = t(n);
+    fetch(n.href, r);
   }
 })();
-const B = "data-slot",
+const F = "data-slot",
   b = "data-preserve",
-  F = "data-intercepted",
+  W = "data-intercepted",
   q = "data-nointercepted",
   v = "data-prefetch",
   P = "data-prefetched",
-  ce = "loading-started",
-  le = "loading-finished";
-var L = ((n) => ((n.GET = "GET"), (n.POST = "POST"), n))(L || {}),
-  V = ((n) => ((n.HTML = "text/html"), n))(V || {}),
-  m = ((n) => (
-    (n.IsLoading = "is-loading"),
-    (n.IsIndeterminate = "is-indeterminate"),
-    (n.BeforeLoading = "before-loading"),
-    (n.AfterLoading = "after-loading"),
-    n
+  le = "loading-started",
+  de = "loading-finished";
+var L = ((s) => ((s.GET = "GET"), (s.POST = "POST"), s))(L || {}),
+  G = ((s) => ((s.HTML = "text/html"), s))(G || {}),
+  m = ((s) => (
+    (s.IsLoading = "is-loading"),
+    (s.IsIndeterminate = "is-indeterminate"),
+    (s.BeforeLoading = "before-loading"),
+    (s.AfterLoading = "after-loading"),
+    s
   ))(m || {});
-function _(n, e) {
-  e.replaceChildren(...Array.from(n.children).map((t) => t.cloneNode(!0)));
+function _(s, e) {
+  e.replaceChildren(...Array.from(s.children).map((t) => t.cloneNode(!0)));
 }
-function G(n) {
-  return n
-    ? new DOMParser().parseFromString(n, "text/html")
+function Y(s) {
+  return s
+    ? new DOMParser().parseFromString(s, "text/html")
     : document.implementation.createHTMLDocument();
 }
-function p(n, e) {
-  document.dispatchEvent(new CustomEvent(n, e));
+function p(s, e) {
+  document.dispatchEvent(new CustomEvent(s, e));
 }
-class Y {
+class K {
   constructor() {
     d(this, "config", {});
   }
-  async load(e, t = L.GET, o, s) {
+  async load(e, t = L.GET, o, n) {
     if (!e) return (console.error("URL is required to load HTML"), "");
     try {
-      const { headers: r, ...i } = s || {},
+      const { headers: r, ...i } = n || {},
         a = await fetch(e, {
           method: t,
-          headers: { "Content-Type": V.HTML, ...r },
+          headers: { "Content-Type": G.HTML, ...r },
           ...(o ? { body: JSON.stringify(o) } : {}),
           ...i,
         });
@@ -82,32 +82,32 @@ class Y {
       return (console.error("Error loading HTML: ", r), "");
     }
   }
-  async loadHTMLDocument(e, t = L.GET, o, s) {
-    const r = await this.load(e, t, o, s);
-    return G(r);
+  async loadHTMLDocument(e, t = L.GET, o, n) {
+    const r = await this.load(e, t, o, n);
+    return Y(r);
   }
   async firstToMatch(e, t) {
     for (const o of e) {
-      const s = await this.load(o);
-      if (s && t(s)) return s;
+      const n = await this.load(o);
+      if (n && t(n)) return n;
     }
     return (console.error("None of the urls could be loaded"), "");
   }
 }
-class de {
+class me {
   constructor() {
     d(this, "currentLayouts", []);
     d(this, "loadedLayouts", []);
   }
   resetLayouts() {
-    this.currentLayouts = [];
+    ((this.currentLayouts = []), (this.loadedLayouts = []));
   }
   render(e, t, o) {
-    const s = this._formatTag(t);
+    const n = this._formatTag(t);
     if (!o) throw new Error("layout is required");
-    (this.currentLayouts.push(s),
-      !this.isAlreadyRendered(s) &&
-        (this.loadedLayouts.push(s),
+    (this.currentLayouts.push(n),
+      !this.isAlreadyRendered(n) &&
+        (this.loadedLayouts.push(n),
         this._copyElementAttributes(o.body, e.body),
         this._replaceContent(o.body, e.body)));
   }
@@ -116,8 +116,8 @@ class de {
   }
   replaceSlotContents(e) {
     document.querySelectorAll("slot").forEach((o) => {
-      const s = o.getAttribute("name") || "default",
-        r = e.find((i) => i.slot === s);
+      const n = o.getAttribute("name") || "default",
+        r = e.find((i) => i.slot === n);
       r && o.innerHTML !== r.content.innerHTML && _(r.content, o);
     });
   }
@@ -127,9 +127,9 @@ class de {
   getSlotsContents(e) {
     const t = [];
     return (
-      e.querySelectorAll(`slot, [slot], [${B}]`).forEach((s) => {
-        const r = s.getAttribute("slot") || s.getAttribute(B) || "default";
-        t.push({ slot: r, content: s });
+      e.querySelectorAll(`slot, [slot], [${F}]`).forEach((n) => {
+        const r = n.getAttribute("slot") || n.getAttribute(F) || "default";
+        t.push({ slot: r, content: n });
       }),
       t
     );
@@ -141,30 +141,30 @@ class de {
   }
   mergeHeads(e, t) {
     const o = e.head,
-      s = t.head;
+      n = t.head;
     if (o.innerHTML) {
-      if (o.innerHTML && !s.innerHTML) {
-        _(o, s);
+      if (o.innerHTML && !n.innerHTML) {
+        _(o, n);
         return;
       }
-      this._mergeElements(o, s);
+      this._mergeElements(o, n);
     }
   }
   _mergeElements(e, t) {
     const o = t.innerHTML;
-    Array.from(e.children).forEach((s) => {
-      if (this._elementIsPapelScript(s)) return;
-      const r = s.outerHTML;
-      o.includes(r) || t.appendChild(s);
+    Array.from(e.children).forEach((n) => {
+      if (this._elementIsPapelScript(n)) return;
+      const r = n.outerHTML;
+      o.includes(r) || t.appendChild(n);
     });
   }
   consolidateLayouts() {
     const e = new Set(this.currentLayouts),
       t = new Set(this.loadedLayouts);
     (this.currentLayouts
-      .filter((s) => !t.has(s))
-      .forEach((s) => {
-        const r = document.querySelector(`link[href$="${s}"]`);
+      .filter((n) => !t.has(n))
+      .forEach((n) => {
+        const r = document.querySelector(`link[href$="${n}"]`);
         r == null || r.remove();
       }),
       (this.loadedLayouts = Array.from(e)),
@@ -172,13 +172,13 @@ class de {
   }
   _replaceContent(e, t) {
     const o = t.querySelectorAll(`[${b}]`),
-      s = new Map();
+      n = new Map();
     (o.forEach((r, i) => {
       const a = r.getAttribute(b) ?? `preserve-${i}`;
-      s.set(a, r);
+      n.set(a, r);
     }),
       _(e, t),
-      s.forEach((r, i) => {
+      n.forEach((r, i) => {
         const a = t.querySelector(`[${b}="${i}"]`);
         a ? a.replaceWith(r) : t.insertBefore(r, t.firstChild);
       }));
@@ -222,14 +222,14 @@ class Z {
   }
   _interceptLinks(e) {
     e.querySelectorAll(
-      `a:not([${F}]):not([${q}]):not([target]):not([href^="${location.origin}"]):not([download])`,
+      `a:not([${W}]):not([${q}]):not([target]):not([href^="${location.origin}"]):not([download])`,
     ).forEach((t) => {
       if (t instanceof HTMLAnchorElement) {
         if (!this._shouldIntercept(new URL(t.href))) {
           t.setAttribute(q, "true");
           return;
         }
-        (t.setAttribute(F, "true"),
+        (t.setAttribute(W, "true"),
           t.addEventListener("click", (o) =>
             this._handleLinkClick.bind(this)(o, t),
           ));
@@ -268,7 +268,7 @@ class Z {
     window.scrollTo(0, 0);
   }
 }
-class K {
+class J {
   constructor(e) {
     d(this, "loadedUrls", []);
     this.htmlLoader = e;
@@ -281,8 +281,8 @@ class K {
         return;
       }
       if (o === "all") {
-        const s = await this._prefetchRequest(t.href),
-          i = new DOMParser().parseFromString(s, "text/html");
+        const n = await this._prefetchRequest(t.href),
+          i = new DOMParser().parseFromString(n, "text/html");
         (this.imagePrefetch(i), this.templateImagePrefetch(i));
       }
     });
@@ -315,9 +315,9 @@ class K {
     return new IntersectionObserver((t) => {
       t.forEach((o) => {
         if (o.isIntersecting) {
-          const s = o.target;
-          if ((s.setAttribute(P, "true"), this._isAlreadyPrefetched(s))) return;
-          (e(s), this.loadedUrls.push(s.href));
+          const n = o.target;
+          if ((n.setAttribute(P, "true"), this._isAlreadyPrefetched(n))) return;
+          (e(n), this.loadedUrls.push(n.href));
         }
       });
     });
@@ -332,7 +332,7 @@ class K {
     return this.htmlLoader.load(e, L.GET, void 0, { priority: "low" });
   }
 }
-class J {
+class X {
   constructor() {
     d(this, "currentPath");
     d(this, "cumulativePaths");
@@ -352,8 +352,8 @@ class J {
       .split("/")
       .filter((t) => t !== "")
       .reduce((t, o) => {
-        const s = t.length > 0 ? t[t.length - 1] : "";
-        return (t.push(`${s}/${o}`), t);
+        const n = t.length > 0 ? t[t.length - 1] : "";
+        return (t.push(`${n}/${o}`), t);
       }, []);
   }
   getMatchingLinks() {
@@ -362,9 +362,9 @@ class J {
           const t = new URL(e.href, window.location.origin);
           if (t.origin !== window.location.origin) return !1;
           const o = this.normalizePath(t.pathname),
-            s = this.ensureIndexPath(o),
+            n = this.ensureIndexPath(o),
             r = this.ensureIndexPath(this.currentPath);
-          return this.cumulativePaths.includes(o) || s === r;
+          return this.cumulativePaths.includes(o) || n === r;
         })
       : [];
   }
@@ -383,7 +383,7 @@ class J {
       }));
   }
 }
-class X {
+class j {
   constructor() {
     d(this, "startAnimationTimeout", null);
   }
@@ -396,7 +396,7 @@ class X {
         (this.startAnimationTimeout = null)),
       document.body.classList.add(m.BeforeLoading),
       (this.startAnimationTimeout = setTimeout(() => {
-        (p(ce), this.triggerLoadingAnimation());
+        (p(le), this.triggerLoadingAnimation());
       }, 200)));
   }
   triggerLoadingAnimation() {
@@ -419,7 +419,7 @@ class X {
       document.body.classList.remove(m.IsLoading),
       document.body.classList.remove(m.BeforeLoading),
       document.body.classList.remove(m.IsIndeterminate),
-      p(le));
+      p(de));
   }
 }
 const h = {
@@ -438,7 +438,7 @@ const h = {
   VIEW_TRANSITIONS: { ENABLED: !0 },
   COMPRESSION: { ENABLED: !0, MIN_SIZE_TO_COMPRESS: 1024, ENABLE_STATS: !0 },
 };
-class me {
+class ue {
   constructor() {
     d(this, "stats", {
       totalCompressed: 0,
@@ -455,11 +455,11 @@ class me {
     const t = e.documentElement.outerHTML,
       o = new TextEncoder().encode(t).length;
     if (o < h.COMPRESSION.MIN_SIZE_TO_COMPRESS) return e;
-    const s = performance.now();
+    const n = performance.now();
     try {
       return typeof CompressionStream < "u"
-        ? await this.compressWithWebAPI(t, o, s)
-        : await this.compressWithFallback(t, o, s);
+        ? await this.compressWithWebAPI(t, o, n)
+        : await this.compressWithFallback(t, o, n);
     } catch (r) {
       return (
         console.warn("Compression failed, returning original document:", r),
@@ -476,30 +476,30 @@ class me {
     const c = [];
     let f;
     for (; !(f = await u.read()).done; ) c.push(f.value);
-    const A = new Uint8Array(c.reduce((S, re) => S + re.length, 0));
-    let k = 0;
-    for (const S of c) (A.set(S, k), (k += S.length));
-    const U = performance.now() - o,
-      H = A.length;
+    const A = new Uint8Array(c.reduce((S, ie) => S + ie.length, 0));
+    let U = 0;
+    for (const S of c) (A.set(S, U), (U += S.length));
+    const H = performance.now() - o,
+      B = A.length;
     return (
-      this.updateStats(t, H, U, 0),
+      this.updateStats(t, B, H, 0),
       {
         compressed: A,
         originalSize: t,
-        compressedSize: H,
-        compressionTime: U,
+        compressedSize: B,
+        compressionTime: H,
         timestamp: Date.now(),
       }
     );
   }
   async compressWithFallback(e, t, o) {
-    const s = this.simpleRLECompress(e),
-      r = s.length,
+    const n = this.simpleRLECompress(e),
+      r = n.length,
       i = performance.now() - o;
     return (
       this.updateStats(t, r, i, 0),
       {
-        compressed: new TextEncoder().encode(s),
+        compressed: new TextEncoder().encode(n),
         originalSize: t,
         compressedSize: r,
         compressionTime: i,
@@ -511,17 +511,17 @@ class me {
     if (e.length === 0) return e;
     let t = "",
       o = 1,
-      s = e[0];
+      n = e[0];
     for (let r = 1; r < e.length; r++)
-      e[r] === s && o < 255
+      e[r] === n && o < 255
         ? o++
         : (o > 3
-            ? (t += `\0${String.fromCharCode(o)}${s}`)
-            : (t += s.repeat(o)),
-          (s = e[r]),
+            ? (t += `\0${String.fromCharCode(o)}${n}`)
+            : (t += n.repeat(o)),
+          (n = e[r]),
           (o = 1));
     return (
-      o > 3 ? (t += `\0${String.fromCharCode(o)}${s}`) : (t += s.repeat(o)),
+      o > 3 ? (t += `\0${String.fromCharCode(o)}${n}`) : (t += n.repeat(o)),
       t
     );
   }
@@ -533,9 +533,9 @@ class me {
         typeof DecompressionStream < "u"
           ? (o = await this.decompressWithWebAPI(e.compressed))
           : (o = this.decompressWithFallback(e.compressed));
-        const s = performance.now() - t;
+        const n = performance.now() - t;
         return (
-          this.updateStats(0, 0, 0, s),
+          this.updateStats(0, 0, 0, n),
           new DOMParser().parseFromString(o, "text/html")
         );
       } catch (o) {
@@ -547,11 +547,11 @@ class me {
   async decompressWithWebAPI(e) {
     const t = new DecompressionStream("gzip"),
       o = t.writable.getWriter(),
-      s = t.readable.getReader();
+      n = t.readable.getReader();
     (o.write(e), o.close());
     const r = [];
     let i;
-    for (; !(i = await s.read()).done; ) r.push(i.value);
+    for (; !(i = await n.read()).done; ) r.push(i.value);
     const a = new Uint8Array(r.reduce((c, f) => c + f.length, 0));
     let u = 0;
     for (const c of r) (a.set(c, u), (u += c.length));
@@ -560,19 +560,19 @@ class me {
   decompressWithFallback(e) {
     const t = new TextDecoder().decode(e);
     let o = "",
-      s = 0;
-    for (; s < t.length; )
-      if (t[s] === "\0" && s + 2 < t.length) {
-        const r = t.charCodeAt(s + 1),
-          i = t[s + 2];
-        ((o += i.repeat(r)), (s += 3));
-      } else ((o += t[s]), s++);
+      n = 0;
+    for (; n < t.length; )
+      if (t[n] === "\0" && n + 2 < t.length) {
+        const r = t.charCodeAt(n + 1),
+          i = t[n + 2];
+        ((o += i.repeat(r)), (n += 3));
+      } else ((o += t[n]), n++);
     return o;
   }
   isCompressedData(e) {
     return "compressed" in e && "originalSize" in e;
   }
-  updateStats(e, t, o, s) {
+  updateStats(e, t, o, n) {
     if (e > 0) {
       ((this.stats.totalCompressed += t),
         (this.stats.totalUncompressed += e),
@@ -583,12 +583,12 @@ class me {
         o;
       this.stats.averageCompressionTime = r / this.stats.compressionCount;
     }
-    if (s > 0) {
+    if (n > 0) {
       this.stats.decompressionCount++;
       const r =
         this.stats.averageDecompressionTime *
           (this.stats.decompressionCount - 1) +
-        s;
+        n;
       this.stats.averageDecompressionTime = r / this.stats.decompressionCount;
     }
     (this.stats.totalUncompressed > 0 &&
@@ -628,12 +628,12 @@ class me {
     }
   }
 }
-class ue {
+class he {
   constructor(e = h.CACHE_MAX_SIZE) {
     d(this, "cache", new Map());
     d(this, "maxSize");
     d(this, "compression");
-    ((this.maxSize = e), (this.compression = new me()));
+    ((this.maxSize = e), (this.compression = new ue()));
   }
   async get(e) {
     const t = this.cache.get(e);
@@ -661,20 +661,20 @@ class ue {
   async set(e, t) {
     this.cache.size >= this.maxSize && this.evictLRU();
     let o,
-      s = !1;
+      n = !1;
     try {
       ((o = await this.compression.compressDocument(t)),
-        (s = "compressed" in o));
+        (n = "compressed" in o));
     } catch (i) {
       (console.warn(`Compression failed for ${e}, storing uncompressed:`, i),
         (o = t),
-        (s = !1));
+        (n = !1));
     }
     const r = {
       document: o,
       timestamp: Date.now(),
       accessCount: 1,
-      isCompressed: s,
+      isCompressed: n,
     };
     this.cache.set(e, r);
   }
@@ -694,7 +694,7 @@ class ue {
         t.length > 0
           ? e[t.reduce((u, c, f) => (c.timestamp < t[u].timestamp ? f : u), 0)]
           : null,
-      s =
+      n =
         t.length > 0
           ? e[
               t.reduce(
@@ -719,7 +719,7 @@ class ue {
       hitRate: 0,
       keys: e,
       oldestEntry: o,
-      mostAccessed: s,
+      mostAccessed: n,
       compressionStats: this.compression.getStats(),
       memoryUsage: {
         total: r,
@@ -733,26 +733,26 @@ class ue {
     if (this.cache.size === 0) return;
     let e = null,
       t = Date.now();
-    for (const [o, s] of this.cache.entries())
-      s.timestamp < t && ((t = s.timestamp), (e = o));
+    for (const [o, n] of this.cache.entries())
+      n.timestamp < t && ((t = n.timestamp), (e = o));
     e && this.cache.delete(e);
   }
   async prewarm(e, t) {
-    const o = e.map(async (s) => {
-      if (!this.has(s))
+    const o = e.map(async (n) => {
+      if (!this.has(n))
         try {
-          const r = await t(s);
-          await this.set(s, r);
+          const r = await t(n);
+          await this.set(n, r);
         } catch (r) {
-          console.warn(`Failed to prewarm cache for ${s}:`, r);
+          console.warn(`Failed to prewarm cache for ${n}:`, r);
         }
     });
     await Promise.all(o);
   }
   cleanup(e = 5 * 60 * 1e3) {
     const t = Date.now();
-    for (const [o, s] of this.cache.entries())
-      t - s.timestamp > e && this.cache.delete(o);
+    for (const [o, n] of this.cache.entries())
+      t - n.timestamp > e && this.cache.delete(o);
   }
   getCompressionStats() {
     return this.compression.getStats();
@@ -765,154 +765,170 @@ class ue {
     for (const [t, o] of e)
       if (!o.isCompressed && o.document instanceof Document)
         try {
-          const s = await this.compression.compressDocument(o.document);
-          "compressed" in s && ((o.document = s), (o.isCompressed = !0));
-        } catch (s) {
-          console.warn(`Failed to compress cached document for ${t}:`, s);
+          const n = await this.compression.compressDocument(o.document);
+          "compressed" in n && ((o.document = n), (o.isCompressed = !0));
+        } catch (n) {
+          console.warn(`Failed to compress cached document for ${t}:`, n);
         }
   }
 }
-const $ = new Y(),
-  l = new de(),
+const Q = new K(),
+  l = new me(),
   x = new Z(),
-  he = new K($),
-  pe = new J(),
-  w = new X(),
-  y = new ue();
+  pe = new J(Q),
+  ge = new X(),
+  C = new j(),
+  g = new he();
 async function fe() {
   try {
-    w.startLoadingAnimation();
-    const n = l.getSlotsContents(document),
-      e = ee(document),
+    C.startLoadingAnimation();
+    const s = l.getSlotsContents(document),
+      e = te(document),
       t = e.shift();
-    (t && (await te(t)),
-      await Promise.all(e.map((o) => oe(o))),
-      l.replaceSlotContents(n),
+    (t && (await oe(t)),
+      await Promise.all(e.map((o) => se(o))),
+      l.replaceSlotContents(s),
       l.consolidateLayouts(),
-      se(document),
+      ne(document),
       p(h.EVENTS.PAGE_LOADED));
-  } catch (n) {
-    (console.error("Error loading page:", n),
-      p(h.EVENTS.PAGE_LOAD_ERROR, { error: n }));
+  } catch (s) {
+    (console.error("Error loading page:", s),
+      p(h.EVENTS.PAGE_LOAD_ERROR, { error: s }));
   } finally {
-    w.stopLoadingAnimation();
+    C.stopLoadingAnimation();
   }
 }
-async function j(n) {
+async function ee(s) {
   try {
-    (w.startLoadingAnimation(), l.resetLayouts());
-    const e = await Q(n.toString()),
+    (C.startLoadingAnimation(), l.resetLayouts());
+    const e = await O(s.toString()),
       t = l.getSlotsContents(e),
-      o = ee(e),
-      s = o.shift();
-    (s && (await te(s)),
-      await Promise.all(o.map((r) => oe(r))),
-      await ge(async () => {
+      o = te(e),
+      n = o.shift();
+    (n && (await oe(n)),
+      await Promise.all(o.map((r) => se(r))),
+      await ye(async () => {
         (l.replaceSlotContents(t),
           l.consolidateLayouts(),
-          se(document),
+          ne(document),
           p(h.EVENTS.PAGE_LOADED));
       }));
   } catch (e) {
     (console.error("Error loading fetched page:", e),
       p(h.EVENTS.PAGE_LOAD_ERROR, { error: e }));
   } finally {
-    w.stopLoadingAnimation();
+    C.stopLoadingAnimation();
   }
 }
-async function Q(n) {
-  const e = await y.get(n);
-  if (e) return e;
-  const t = await $.load(n),
-    o = G(t);
-  return (await y.set(n, o), o);
+async function O(s) {
+  const e = await g.get(s);
+  if (e) return (console.log(`[Cache HIT] ${s}`), e);
+  console.log(`[Cache MISS] ${s}`);
+  const t = await Q.load(s),
+    o = Y(t);
+  return (await g.set(s, o), console.log(`[Cache SET] ${s}`), o);
 }
-function ee(n, e = !0) {
-  const t = n.querySelectorAll(h.SELECTORS.LAYOUT_LINKS),
+function te(s, e = !0) {
+  const t = s.querySelectorAll(h.SELECTORS.LAYOUT_LINKS),
     o = Array.from(t)
-      .map((s) => s.getAttribute("href") ?? "")
-      .filter((s) => s.length > 0);
-  return (o.length && e && t.forEach((s) => s.remove()), o);
+      .map((n) => n.getAttribute("href") ?? "")
+      .filter((n) => n.length > 0);
+  return (o.length && e && t.forEach((n) => n.remove()), o);
 }
-function ge(n) {
+function ye(s) {
   if (x.isNavigationAvailable()) {
-    document.startViewTransition(n);
+    document.startViewTransition(s);
     return;
   }
-  n();
+  s();
 }
-async function te(n) {
-  if (l.isAlreadyRendered(n)) {
-    l.markAsRendered(n);
+function k(s) {
+  return s.endsWith(".html") ? s : `${s.replace(/\/$/, "")}/index.html`;
+}
+async function oe(s) {
+  if (l.isAlreadyRendered(s)) {
+    l.markAsRendered(s);
     return;
   }
   try {
-    const e = await $.loadHTMLDocument(n);
-    (l.render(document, n, e),
+    const e = await O(k(s));
+    (l.render(document, s, e),
       l.mergeHeads(e, document),
-      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
+      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: s }));
   } catch (e) {
-    throw (console.error(`Error rendering base layout ${n}:`, e), e);
+    throw (console.error(`Error rendering base layout ${s}:`, e), e);
   }
 }
-async function oe(n) {
-  if (l.isAlreadyRendered(n)) {
-    l.markAsRendered(n);
+async function se(s) {
+  if (l.isAlreadyRendered(s)) {
+    l.markAsRendered(s);
     return;
   }
   try {
-    const e = await Q(n),
+    const e = await O(k(s)),
       t = l.getSlotsContents(e);
-    (l.markAsRendered(n),
+    (l.markAsRendered(s),
       l.replaceSlotContents(t),
       l.mergeHeads(e, document),
-      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
+      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: s }));
   } catch (e) {
-    throw (console.error(`Error rendering partial layout ${n}:`, e), e);
+    throw (console.error(`Error rendering partial layout ${s}:`, e), e);
   }
 }
-function se(n) {
-  (x.startInterception(n),
-    x.onNavigate(j),
-    he.startPrefetch(n),
-    pe.highlightMatchingLinks(n));
+function ne(s) {
+  (x.startInterception(s),
+    x.onNavigate(ee),
+    pe.startPrefetch(s),
+    ge.highlightMatchingLinks(s));
 }
-function ye() {
-  y.clear();
+function Se() {
+  g.clear();
+}
+function w() {
+  return g.getStats();
 }
 function E() {
-  return y.getStats();
-}
-function C() {
-  return y.getCompressionStats();
+  return g.getCompressionStats();
 }
 function T() {
-  return y.isCompressionAvailable();
+  return g.isCompressionAvailable();
 }
-async function Se() {
-  await y.optimize();
+async function ve() {
+  await g.optimize();
 }
-function g(n, e = 2) {
-  if (n === 0) return "0 Bytes";
+function Le() {
+  const s = g.getStats();
+  (console.log("=== Layout Cache Debug ==="),
+    console.log(`Cache size: ${s.size}/${s.maxSize}`),
+    console.log("Keys in cache:", s.keys),
+    console.log("Memory usage:", s.memoryUsage),
+    console.log("Compression stats:", s.compressionStats),
+    console.log("========================="));
+}
+function Ce(s) {
+  return g.has(k(s));
+}
+function y(s, e = 2) {
+  if (s === 0) return "0 Bytes";
   const t = 1024,
     o = e < 0 ? 0 : e,
-    s = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
-    r = Math.floor(Math.log(n) / Math.log(t));
-  return parseFloat((n / Math.pow(t, r)).toFixed(o)) + " " + s[r];
+    n = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+    r = Math.floor(Math.log(s) / Math.log(t));
+  return parseFloat((s / Math.pow(t, r)).toFixed(o)) + " " + n[r];
 }
-function z(n) {
-  return n < 1
+function z(s) {
+  return s < 1
     ? "< 1ms"
-    : n < 1e3
-      ? `${n.toFixed(2)}ms`
-      : `${(n / 1e3).toFixed(2)}s`;
+    : s < 1e3
+      ? `${s.toFixed(2)}ms`
+      : `${(s / 1e3).toFixed(2)}s`;
 }
-function ne(n, e) {
-  return n === 0 ? 0 : ((n - e) / n) * 100;
+function re(s, e) {
+  return s === 0 ? 0 : ((s - e) / s) * 100;
 }
-function ve() {
-  const n = E(),
-    e = C(),
+function we() {
+  const s = w(),
+    e = E(),
     t = T();
   (console.group("📊 PapelJS Compression Statistics"),
     console.log(
@@ -921,13 +937,13 @@ function ve() {
     ),
     t
       ? (console.group("📈 Memory Usage"),
-        console.log("Total Cache Size:", g(n.memoryUsage.total)),
-        console.log("Compressed Size:", g(n.memoryUsage.compressed)),
-        console.log("Uncompressed Size:", g(n.memoryUsage.uncompressed)),
-        console.log("Space Saved:", g(n.memoryUsage.spaceSaved)),
+        console.log("Total Cache Size:", y(s.memoryUsage.total)),
+        console.log("Compressed Size:", y(s.memoryUsage.compressed)),
+        console.log("Uncompressed Size:", y(s.memoryUsage.uncompressed)),
+        console.log("Space Saved:", y(s.memoryUsage.spaceSaved)),
         console.log(
           "Savings Percentage:",
-          `${ne(n.memoryUsage.uncompressed, n.memoryUsage.compressed).toFixed(1)}%`,
+          `${re(s.memoryUsage.uncompressed, s.memoryUsage.compressed).toFixed(1)}%`,
         ),
         console.groupEnd(),
         console.group("⚡ Performance Metrics"),
@@ -944,10 +960,10 @@ function ve() {
         ),
         console.groupEnd(),
         console.group("🎯 Cache Information"),
-        console.log("Cache Entries:", n.size),
-        console.log("Max Cache Size:", n.maxSize),
-        console.log("Most Accessed:", n.mostAccessed || "None"),
-        console.log("Oldest Entry:", n.oldestEntry || "None"),
+        console.log("Cache Entries:", s.size),
+        console.log("Max Cache Size:", s.maxSize),
+        console.log("Most Accessed:", s.mostAccessed || "None"),
+        console.log("Oldest Entry:", s.oldestEntry || "None"),
         console.groupEnd())
       : (console.log("⚠️ Compression is not available in this browser"),
         console.log(
@@ -955,10 +971,10 @@ function ve() {
         )),
     console.groupEnd());
 }
-function Le() {
-  const n = document.createElement("div");
-  ((n.className = "papeljs-compression-stats"),
-    (n.style.cssText = `
+function Ee() {
+  const s = document.createElement("div");
+  ((s.className = "papeljs-compression-stats"),
+    (s.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
@@ -973,23 +989,23 @@ function Le() {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   `));
   const e = () => {
-    const t = E(),
-      o = C();
+    const t = w(),
+      o = E();
     if (!T()) {
-      n.innerHTML = `
+      s.innerHTML = `
         <div style="color: #ff6b6b;">⚠️ Compression not available</div>
         <div style="font-size: 10px; margin-top: 5px;">Use modern browser</div>
       `;
       return;
     }
-    const r = ne(t.memoryUsage.uncompressed, t.memoryUsage.compressed);
-    n.innerHTML = `
+    const r = re(t.memoryUsage.uncompressed, t.memoryUsage.compressed);
+    s.innerHTML = `
       <div style="margin-bottom: 10px; font-weight: bold; color: #4ecdc4;">📊 Compression Stats</div>
       
       <div style="margin-bottom: 8px;">
         <div style="color: #95a5a6;">Memory Usage:</div>
-        <div>Total: ${g(t.memoryUsage.total)}</div>
-        <div>Saved: ${g(t.memoryUsage.spaceSaved)} (${r.toFixed(1)}%)</div>
+        <div>Total: ${y(t.memoryUsage.total)}</div>
+        <div>Saved: ${y(t.memoryUsage.spaceSaved)} (${r.toFixed(1)}%)</div>
       </div>
       
       <div style="margin-bottom: 8px;">
@@ -1010,31 +1026,31 @@ function Le() {
       </div>
     `;
   };
-  return (e(), setInterval(e, 2e3), n);
+  return (e(), setInterval(e, 2e3), s);
 }
-function we() {
+function Te() {
   if (window.location.search.includes("debug=compression")) {
-    const e = Le();
+    const e = Ee();
     document.body.appendChild(e);
   }
 }
-function Ee() {
-  document.addEventListener(h.EVENTS.COMPRESSION_STATS, (n) => {
-    if (!(n instanceof CustomEvent)) return;
-    const { stats: e } = n.detail;
+function Ae() {
+  document.addEventListener(h.EVENTS.COMPRESSION_STATS, (s) => {
+    if (!(s instanceof CustomEvent)) return;
+    const { stats: e } = s.detail;
     e.compressionCount % 10 === 0 &&
       e.compressionCount > 0 &&
       (console.log(`🎉 Compressed ${e.compressionCount} documents!`),
-      console.log(`💾 Total space saved: ${g(e.spaceSaved)}`));
+      console.log(`💾 Total space saved: ${y(e.spaceSaved)}`));
   });
 }
-function Ce() {
-  const n = E(),
-    e = C();
+function be() {
+  const s = w(),
+    e = E();
   return JSON.stringify(
     {
       timestamp: new Date().toISOString(),
-      cache: n,
+      cache: s,
       compression: e,
       browser: { userAgent: navigator.userAgent, compressionAvailable: T() },
     },
@@ -1042,54 +1058,56 @@ function Ce() {
     2,
   );
 }
-let I, R, N, D, M;
-function Te() {
-  return (I || (I = new Y()), I);
+let I, R, N, M, D;
+function Pe() {
+  return (I || (I = new K()), I);
 }
-function O() {
+function $() {
   return (R || (R = new Z()), R);
 }
-function Ae() {
-  return (N || (N = new K(Te())), N);
+function _e() {
+  return (N || (N = new J(Pe())), N);
 }
-function be() {
-  return (D || (D = new J()), D);
-}
-function W() {
+function Ie() {
   return (M || (M = new X()), M);
 }
-const Pe = {
-  interceptLinks(n) {
-    (O().startInterception(n), O().onNavigate(j));
+function V() {
+  return (D || (D = new j()), D);
+}
+const Re = {
+  interceptLinks(s) {
+    ($().startInterception(s), $().onNavigate(ee));
   },
-  prefetchLinks(n) {
-    Ae().startPrefetch(n);
+  prefetchLinks(s) {
+    _e().startPrefetch(s);
   },
-  highlightMatchingLinks(n) {
-    be().highlightMatchingLinks(n);
+  highlightMatchingLinks(s) {
+    Ie().highlightMatchingLinks(s);
   },
-  navigate(n) {
-    O().navigate(n);
+  navigate(s) {
+    $().navigate(s);
   },
   startLoading() {
-    W().startLoadingAnimation();
+    V().startLoadingAnimation();
   },
   stopLoading() {
-    W().stopLoadingAnimation();
+    V().stopLoadingAnimation();
   },
-  getCacheStats: E,
-  getCompressionStats: C,
+  getCacheStats: w,
+  getCompressionStats: E,
   isCompressionAvailable: T,
-  optimizeCache: Se,
-  clearLayoutCache: ye,
-  logCompressionStats: ve,
-  exportCompressionStats: Ce,
+  optimizeCache: ve,
+  clearLayoutCache: Se,
+  logCompressionStats: we,
+  exportCompressionStats: be,
+  debugCache: Le,
+  isUrlCached: Ce,
 };
 window.addEventListener(
   "load",
   () => {
-    (fe(), we(), Ee());
+    (fe(), Te(), Ae());
   },
   { once: !0 },
 );
-window.papel = Pe;
+window.papel = Re;
