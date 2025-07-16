@@ -10,7 +10,7 @@ vi.mock("../utils", () => ({
 
 describe("HtmlLoader", () => {
   let htmlLoader: HtmlLoader;
-  let mockFetch: typeof window.fetch;
+  let mockFetch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     htmlLoader = new HtmlLoader();
