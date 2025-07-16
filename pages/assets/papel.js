@@ -1,434 +1,74 @@
-var ae = Object.defineProperty;
-var ce = (s, e, t) =>
-  e in s
-    ? ae(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t })
-    : (s[e] = t);
-var d = (s, e, t) => ce(s, typeof e != "symbol" ? e + "" : e, t);
+var z = Object.defineProperty;
+var Y = (n, t, e) =>
+  t in n
+    ? z(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e })
+    : (n[t] = e);
+var l = (n, t, e) => Y(n, typeof t != "symbol" ? t + "" : t, e);
 (function () {
-  const e = document.createElement("link").relList;
-  if (e && e.supports && e.supports("modulepreload")) return;
-  for (const n of document.querySelectorAll('link[rel="modulepreload"]')) o(n);
-  new MutationObserver((n) => {
-    for (const r of n)
-      if (r.type === "childList")
-        for (const i of r.addedNodes)
-          i.tagName === "LINK" && i.rel === "modulepreload" && o(i);
+  const t = document.createElement("link").relList;
+  if (t && t.supports && t.supports("modulepreload")) return;
+  for (const o of document.querySelectorAll('link[rel="modulepreload"]')) r(o);
+  new MutationObserver((o) => {
+    for (const a of o)
+      if (a.type === "childList")
+        for (const c of a.addedNodes)
+          c.tagName === "LINK" && c.rel === "modulepreload" && r(c);
   }).observe(document, { childList: !0, subtree: !0 });
-  function t(n) {
-    const r = {};
+  function e(o) {
+    const a = {};
     return (
-      n.integrity && (r.integrity = n.integrity),
-      n.referrerPolicy && (r.referrerPolicy = n.referrerPolicy),
-      n.crossOrigin === "use-credentials"
-        ? (r.credentials = "include")
-        : n.crossOrigin === "anonymous"
-          ? (r.credentials = "omit")
-          : (r.credentials = "same-origin"),
-      r
+      o.integrity && (a.integrity = o.integrity),
+      o.referrerPolicy && (a.referrerPolicy = o.referrerPolicy),
+      o.crossOrigin === "use-credentials"
+        ? (a.credentials = "include")
+        : o.crossOrigin === "anonymous"
+          ? (a.credentials = "omit")
+          : (a.credentials = "same-origin"),
+      a
     );
   }
-  function o(n) {
-    if (n.ep) return;
-    n.ep = !0;
-    const r = t(n);
-    fetch(n.href, r);
+  function r(o) {
+    if (o.ep) return;
+    o.ep = !0;
+    const a = e(o);
+    fetch(o.href, a);
   }
 })();
-const F = "data-slot",
-  b = "data-preserve",
-  W = "data-intercepted",
-  q = "data-nointercepted",
-  v = "data-prefetch",
-  P = "data-prefetched",
-  le = "loading-started",
-  de = "loading-finished";
-var L = ((s) => ((s.GET = "GET"), (s.POST = "POST"), s))(L || {}),
-  G = ((s) => ((s.HTML = "text/html"), s))(G || {}),
-  m = ((s) => (
-    (s.IsLoading = "is-loading"),
-    (s.IsIndeterminate = "is-indeterminate"),
-    (s.BeforeLoading = "before-loading"),
-    (s.AfterLoading = "after-loading"),
-    s
-  ))(m || {});
-function _(s, e) {
-  e.replaceChildren(...Array.from(s.children).map((t) => t.cloneNode(!0)));
+const S = "data-slot",
+  g = "data-preserve",
+  b = "data-intercepted",
+  C = "data-nointercepted",
+  m = "data-prefetch",
+  L = "data-prefetched",
+  W = "loading-started",
+  K = "loading-finished";
+var I = ((n) => ((n.GET = "GET"), (n.POST = "POST"), n))(I || {}),
+  R = ((n) => ((n.HTML = "text/html"), n))(R || {}),
+  s = ((n) => (
+    (n.IsLoading = "is-loading"),
+    (n.IsIndeterminate = "is-indeterminate"),
+    (n.BeforeLoading = "before-loading"),
+    (n.AfterLoading = "after-loading"),
+    n
+  ))(s || {});
+function p(n, t) {
+  t.replaceChildren(...Array.from(n.children).map((e) => e.cloneNode(!0)));
 }
-function Y(s) {
-  return s
-    ? new DOMParser().parseFromString(s, "text/html")
+function M(n) {
+  return n
+    ? new DOMParser().parseFromString(n, "text/html")
     : document.implementation.createHTMLDocument();
 }
-function p(s, e) {
-  document.dispatchEvent(new CustomEvent(s, e));
+function h(n, t) {
+  document.dispatchEvent(new CustomEvent(n, t));
 }
-class K {
-  constructor() {
-    d(this, "config", {});
-  }
-  async load(e, t = L.GET, o, n) {
-    if (!e) return (console.error("URL is required to load HTML"), "");
-    try {
-      const { headers: r, ...i } = n || {},
-        a = await fetch(e, {
-          method: t,
-          headers: { "Content-Type": G.HTML, ...r },
-          ...(o ? { body: JSON.stringify(o) } : {}),
-          ...i,
-        });
-      if (!a.ok) throw new Error(`Failed to load ${e}: ${a.statusText}`);
-      return await a.text();
-    } catch (r) {
-      return (console.error("Error loading HTML: ", r), "");
-    }
-  }
-  async loadHTMLDocument(e, t = L.GET, o, n) {
-    const r = await this.load(e, t, o, n);
-    return Y(r);
-  }
-  async firstToMatch(e, t) {
-    for (const o of e) {
-      const n = await this.load(o);
-      if (n && t(n)) return n;
-    }
-    return (console.error("None of the urls could be loaded"), "");
-  }
-}
-class me {
-  constructor() {
-    d(this, "currentLayouts", []);
-    d(this, "loadedLayouts", []);
-  }
-  resetLayouts() {
-    ((this.currentLayouts = []), (this.loadedLayouts = []));
-  }
-  render(e, t, o) {
-    const n = this._formatTag(t);
-    if (!o) throw new Error("layout is required");
-    (this.currentLayouts.push(n),
-      !this.isAlreadyRendered(n) &&
-        (this.loadedLayouts.push(n),
-        this._copyElementAttributes(o.body, e.body),
-        this._replaceContent(o.body, e.body)));
-  }
-  markAsRendered(e) {
-    this.currentLayouts.push(this._formatTag(e));
-  }
-  replaceSlotContents(e) {
-    document.querySelectorAll("slot").forEach((o) => {
-      const n = o.getAttribute("name") || "default",
-        r = e.find((i) => i.slot === n);
-      r && o.innerHTML !== r.content.innerHTML && _(r.content, o);
-    });
-  }
-  isAlreadyRendered(e) {
-    return this.loadedLayouts.includes(e);
-  }
-  getSlotsContents(e) {
-    const t = [];
-    return (
-      e.querySelectorAll(`slot, [slot], [${F}]`).forEach((n) => {
-        const r = n.getAttribute("slot") || n.getAttribute(F) || "default";
-        t.push({ slot: r, content: n });
-      }),
-      t
-    );
-  }
-  _copyElementAttributes(e, t) {
-    Array.from(e.attributes).forEach((o) => {
-      t.setAttribute(o.name, o.value);
-    });
-  }
-  mergeHeads(e, t) {
-    const o = e.head,
-      n = t.head;
-    if (o.innerHTML) {
-      if (o.innerHTML && !n.innerHTML) {
-        _(o, n);
-        return;
-      }
-      this._mergeElements(o, n);
-    }
-  }
-  _mergeElements(e, t) {
-    const o = t.innerHTML;
-    Array.from(e.children).forEach((n) => {
-      if (this._elementIsPapelScript(n)) return;
-      const r = n.outerHTML;
-      o.includes(r) || t.appendChild(n);
-    });
-  }
-  consolidateLayouts() {
-    const e = new Set(this.currentLayouts),
-      t = new Set(this.loadedLayouts);
-    (this.currentLayouts
-      .filter((n) => !t.has(n))
-      .forEach((n) => {
-        const r = document.querySelector(`link[href$="${n}"]`);
-        r == null || r.remove();
-      }),
-      (this.loadedLayouts = Array.from(e)),
-      (this.currentLayouts = []));
-  }
-  _replaceContent(e, t) {
-    const o = t.querySelectorAll(`[${b}]`),
-      n = new Map();
-    (o.forEach((r, i) => {
-      const a = r.getAttribute(b) ?? `preserve-${i}`;
-      n.set(a, r);
-    }),
-      _(e, t),
-      n.forEach((r, i) => {
-        const a = t.querySelector(`[${b}="${i}"]`);
-        a ? a.replaceWith(r) : t.insertBefore(r, t.firstChild);
-      }));
-  }
-  _elementIsPapelScript(e) {
-    var t;
-    return (
-      e.tagName === "SCRIPT" &&
-      !!((t = e.getAttribute("src")) != null && t.includes("papel"))
-    );
-  }
-  _formatTag(e) {
-    return e.endsWith(".html") ? e : `${e.replace(/\/$/, "")}/index.html`;
-  }
-}
-class Z {
-  constructor() {
-    d(this, "navigationCallback");
-    d(this, "scrollPositions");
-    ((this.navigationCallback = async () => {}),
-      (this.scrollPositions = new Map()),
-      window.addEventListener("popstate", (e) => {
-        const t = new URL(location.href);
-        this._handlePopState(t, e);
-      }));
-  }
-  onNavigate(e) {
-    this.navigationCallback = e;
-  }
-  startInterception(e) {
-    this._interceptLinks(e);
-  }
-  isNavigationAvailable() {
-    return "navigation" in window && typeof window.navigation < "u";
-  }
-  _isLocalUrl(e) {
-    return e.origin === location.origin;
-  }
-  _shouldIntercept(e) {
-    return this._isLocalUrl(e) && !!this.navigationCallback;
-  }
-  _interceptLinks(e) {
-    e.querySelectorAll(
-      `a:not([${W}]):not([${q}]):not([target]):not([href^="${location.origin}"]):not([download])`,
-    ).forEach((t) => {
-      if (t instanceof HTMLAnchorElement) {
-        if (!this._shouldIntercept(new URL(t.href))) {
-          t.setAttribute(q, "true");
-          return;
-        }
-        (t.setAttribute(W, "true"),
-          t.addEventListener("click", (o) =>
-            this._handleLinkClick.bind(this)(o, t),
-          ));
-      }
-    });
-  }
-  async _handleLinkClick(e, t) {
-    (e.preventDefault(), this.navigate(t.href));
-  }
-  navigate(e) {
-    const t = new URL(e);
-    this._shouldIntercept(t) &&
-      (this.scrollPositions.set(location.href, {
-        x: window.scrollX,
-        y: window.scrollY,
-      }),
-      this._addNavigationToBrowserHistory(t),
-      this._handleNavigation(t));
-  }
-  _addNavigationToBrowserHistory(e) {
-    window.history.pushState({}, "", e);
-  }
-  async _handleNavigation(e) {
-    (await this.navigationCallback(e), this._restoreScrollPosition(e));
-  }
-  _handlePopState(e, t) {
-    if (this._shouldIntercept(e)) {
-      if ((t.preventDefault(), this.isNavigationAvailable())) {
-        document.startViewTransition(() => this._handleNavigation(e));
-        return;
-      }
-      this._handleNavigation(e);
-    }
-  }
-  _restoreScrollPosition(e) {
-    window.scrollTo(0, 0);
-  }
-}
-class J {
-  constructor(e) {
-    d(this, "loadedUrls", []);
-    this.htmlLoader = e;
-  }
-  startPrefetch(e) {
-    this._addObserverToLinks(e, async (t) => {
-      const o = t.getAttribute(v);
-      if (o !== "all") {
-        this._prefetchRequest(t.href);
-        return;
-      }
-      if (o === "all") {
-        const n = await this._prefetchRequest(t.href),
-          i = new DOMParser().parseFromString(n, "text/html");
-        (this.imagePrefetch(i), this.templateImagePrefetch(i));
-      }
-    });
-  }
-  imagePrefetch(e) {
-    e.querySelectorAll(`img[${v}]`).forEach((o) => {
-      (this._prefetchRequest(o.src), this.loadedUrls.push(o.src));
-    });
-  }
-  templateImagePrefetch(e) {
-    e.querySelectorAll("template").forEach((o) => {
-      this.imagePrefetch(o.content);
-    });
-  }
-  _addObserverToLinks(e, t) {
-    const o = this._getIntersectionObserver(t);
-    e.querySelectorAll(`a[${v}]:not([${v}="none"]):not([${P}])`).forEach(
-      (r) => {
-        if (this._isLocalLink(r)) {
-          if (this._isAlreadyPrefetched(r)) {
-            r.setAttribute(P, "true");
-            return;
-          }
-          o.observe(r);
-        }
-      },
-    );
-  }
-  _getIntersectionObserver(e) {
-    return new IntersectionObserver((t) => {
-      t.forEach((o) => {
-        if (o.isIntersecting) {
-          const n = o.target;
-          if ((n.setAttribute(P, "true"), this._isAlreadyPrefetched(n))) return;
-          (e(n), this.loadedUrls.push(n.href));
-        }
-      });
-    });
-  }
-  _isAlreadyPrefetched(e) {
-    return this.loadedUrls.includes(e.href);
-  }
-  _isLocalLink(e) {
-    return e.hostname === window.location.hostname;
-  }
-  async _prefetchRequest(e) {
-    return this.htmlLoader.load(e, L.GET, void 0, { priority: "low" });
-  }
-}
-class X {
-  constructor() {
-    d(this, "currentPath");
-    d(this, "cumulativePaths");
-    d(this, "allLinks");
-    ((this.currentPath = this.normalizePath(window.location.pathname)),
-      (this.cumulativePaths = this.getCumulativePaths()),
-      (this.allLinks = document.querySelectorAll("a")));
-  }
-  normalizePath(e) {
-    return e.endsWith("/") ? e.slice(0, -1) : e;
-  }
-  ensureIndexPath(e) {
-    return /\.[a-zA-Z0-9]+$/.test(e) ? e : `${e}/index.html`;
-  }
-  getCumulativePaths() {
-    return this.currentPath
-      .split("/")
-      .filter((t) => t !== "")
-      .reduce((t, o) => {
-        const n = t.length > 0 ? t[t.length - 1] : "";
-        return (t.push(`${n}/${o}`), t);
-      }, []);
-  }
-  getMatchingLinks() {
-    return this.allLinks
-      ? Array.from(this.allLinks).filter((e) => {
-          const t = new URL(e.href, window.location.origin);
-          if (t.origin !== window.location.origin) return !1;
-          const o = this.normalizePath(t.pathname),
-            n = this.ensureIndexPath(o),
-            r = this.ensureIndexPath(this.currentPath);
-          return this.cumulativePaths.includes(o) || n === r;
-        })
-      : [];
-  }
-  clearPreviousMatches() {
-    var e;
-    (e = this.allLinks) == null ||
-      e.forEach((t) => t.classList.remove("pl-path-match"));
-  }
-  highlightMatchingLinks(e) {
-    ((this.currentPath = this.normalizePath(window.location.pathname)),
-      (this.cumulativePaths = this.getCumulativePaths()),
-      (this.allLinks = e.querySelectorAll("a")),
-      this.clearPreviousMatches(),
-      this.getMatchingLinks().forEach((o) => {
-        o.classList.add("pl-path-match");
-      }));
-  }
-}
-class j {
-  constructor() {
-    d(this, "startAnimationTimeout", null);
-  }
-  startLoadingAnimation() {
-    document.body.classList.contains(m.IsLoading) ||
-      document.body.classList.contains(m.BeforeLoading) ||
-      document.body.classList.contains(m.IsIndeterminate) ||
-      (this.startAnimationTimeout &&
-        (clearTimeout(this.startAnimationTimeout),
-        (this.startAnimationTimeout = null)),
-      document.body.classList.add(m.BeforeLoading),
-      (this.startAnimationTimeout = setTimeout(() => {
-        (p(le), this.triggerLoadingAnimation());
-      }, 200)));
-  }
-  triggerLoadingAnimation() {
-    (document.body.classList.add(m.IsLoading),
-      document.body.classList.remove(m.BeforeLoading),
-      (this.startAnimationTimeout = setTimeout(() => {
-        document.body.classList.add(m.IsIndeterminate);
-      }, 2e3)));
-  }
-  stopLoadingAnimation() {
-    (this.startAnimationTimeout &&
-      (clearTimeout(this.startAnimationTimeout),
-      (this.startAnimationTimeout = null)),
-      (document.body.classList.contains(m.IsLoading) ||
-        document.body.classList.contains(m.IsIndeterminate)) &&
-        (document.body.classList.add(m.AfterLoading),
-        setTimeout(() => {
-          document.body.classList.remove(m.AfterLoading);
-        }, 500)),
-      document.body.classList.remove(m.IsLoading),
-      document.body.classList.remove(m.BeforeLoading),
-      document.body.classList.remove(m.IsIndeterminate),
-      p(de));
-  }
-}
-const h = {
+const d = {
   CACHE_MAX_SIZE: 50,
+  CACHE_NAME: "papel-fetch",
   EVENTS: {
     PAGE_LOADED: "page-loaded",
     PAGE_LOAD_ERROR: "page-load-error",
     LAYOUT_RENDERED: "layout-rendered",
-    COMPRESSION_STATS: "compression-stats",
   },
   SELECTORS: {
     LAYOUT_LINKS: "link[data-layout], link[rel='layout']",
@@ -436,678 +76,530 @@ const h = {
   },
   PREFETCH: { ENABLED: !0 },
   VIEW_TRANSITIONS: { ENABLED: !0 },
-  COMPRESSION: { ENABLED: !0, MIN_SIZE_TO_COMPRESS: 1024, ENABLE_STATS: !0 },
 };
-class ue {
+class O {
   constructor() {
-    d(this, "stats", {
-      totalCompressed: 0,
-      totalUncompressed: 0,
-      compressionRatio: 0,
-      spaceSaved: 0,
-      compressionCount: 0,
-      decompressionCount: 0,
-      averageCompressionTime: 0,
-      averageDecompressionTime: 0,
-    });
+    l(this, "config", {});
   }
-  async compressDocument(e) {
-    const t = e.documentElement.outerHTML,
-      o = new TextEncoder().encode(t).length;
-    if (o < h.COMPRESSION.MIN_SIZE_TO_COMPRESS) return e;
-    const n = performance.now();
+  async load(t) {
+    if (!t) return (console.error("URL is required to load HTML"), "");
+    const e = await this.getCache();
+    if (e) {
+      const r = await e.match(t);
+      if (r) return await r.text();
+    }
     try {
-      return typeof CompressionStream < "u"
-        ? await this.compressWithWebAPI(t, o, n)
-        : await this.compressWithFallback(t, o, n);
+      const r = await this.fetchHtml(t);
+      return (e && (await e.put(t, r.clone())), await r.text());
     } catch (r) {
-      return (
-        console.warn("Compression failed, returning original document:", r),
-        e
-      );
+      return (console.error("Error loading HTML: ", r, t), "");
     }
   }
-  async compressWithWebAPI(e, t, o) {
-    const r = new TextEncoder().encode(e),
-      i = new CompressionStream("gzip"),
-      a = i.writable.getWriter(),
-      u = i.readable.getReader();
-    (a.write(r), a.close());
-    const c = [];
-    let f;
-    for (; !(f = await u.read()).done; ) c.push(f.value);
-    const A = new Uint8Array(c.reduce((S, ie) => S + ie.length, 0));
-    let U = 0;
-    for (const S of c) (A.set(S, U), (U += S.length));
-    const H = performance.now() - o,
-      B = A.length;
-    return (
-      this.updateStats(t, B, H, 0),
-      {
-        compressed: A,
-        originalSize: t,
-        compressedSize: B,
-        compressionTime: H,
-        timestamp: Date.now(),
-      }
-    );
-  }
-  async compressWithFallback(e, t, o) {
-    const n = this.simpleRLECompress(e),
-      r = n.length,
-      i = performance.now() - o;
-    return (
-      this.updateStats(t, r, i, 0),
-      {
-        compressed: new TextEncoder().encode(n),
-        originalSize: t,
-        compressedSize: r,
-        compressionTime: i,
-        timestamp: Date.now(),
-      }
-    );
-  }
-  simpleRLECompress(e) {
-    if (e.length === 0) return e;
-    let t = "",
-      o = 1,
-      n = e[0];
-    for (let r = 1; r < e.length; r++)
-      e[r] === n && o < 255
-        ? o++
-        : (o > 3
-            ? (t += `\0${String.fromCharCode(o)}${n}`)
-            : (t += n.repeat(o)),
-          (n = e[r]),
-          (o = 1));
-    return (
-      o > 3 ? (t += `\0${String.fromCharCode(o)}${n}`) : (t += n.repeat(o)),
-      t
-    );
-  }
-  async decompressDocument(e) {
-    if (this.isCompressedData(e)) {
-      const t = performance.now();
-      try {
-        let o;
-        typeof DecompressionStream < "u"
-          ? (o = await this.decompressWithWebAPI(e.compressed))
-          : (o = this.decompressWithFallback(e.compressed));
-        const n = performance.now() - t;
-        return (
-          this.updateStats(0, 0, 0, n),
-          new DOMParser().parseFromString(o, "text/html")
-        );
-      } catch (o) {
-        throw (console.error("Decompression failed:", o), o);
-      }
-    }
-    return e;
-  }
-  async decompressWithWebAPI(e) {
-    const t = new DecompressionStream("gzip"),
-      o = t.writable.getWriter(),
-      n = t.readable.getReader();
-    (o.write(e), o.close());
-    const r = [];
-    let i;
-    for (; !(i = await n.read()).done; ) r.push(i.value);
-    const a = new Uint8Array(r.reduce((c, f) => c + f.length, 0));
-    let u = 0;
-    for (const c of r) (a.set(c, u), (u += c.length));
-    return new TextDecoder().decode(a);
-  }
-  decompressWithFallback(e) {
-    const t = new TextDecoder().decode(e);
-    let o = "",
-      n = 0;
-    for (; n < t.length; )
-      if (t[n] === "\0" && n + 2 < t.length) {
-        const r = t.charCodeAt(n + 1),
-          i = t[n + 2];
-        ((o += i.repeat(r)), (n += 3));
-      } else ((o += t[n]), n++);
-    return o;
-  }
-  isCompressedData(e) {
-    return "compressed" in e && "originalSize" in e;
-  }
-  updateStats(e, t, o, n) {
-    if (e > 0) {
-      ((this.stats.totalCompressed += t),
-        (this.stats.totalUncompressed += e),
-        this.stats.compressionCount++,
-        (this.stats.spaceSaved += e - t));
-      const r =
-        this.stats.averageCompressionTime * (this.stats.compressionCount - 1) +
-        o;
-      this.stats.averageCompressionTime = r / this.stats.compressionCount;
-    }
-    if (n > 0) {
-      this.stats.decompressionCount++;
-      const r =
-        this.stats.averageDecompressionTime *
-          (this.stats.decompressionCount - 1) +
-        n;
-      this.stats.averageDecompressionTime = r / this.stats.decompressionCount;
-    }
-    (this.stats.totalUncompressed > 0 &&
-      (this.stats.compressionRatio =
-        this.stats.totalCompressed / this.stats.totalUncompressed),
-      p(h.EVENTS.COMPRESSION_STATS, { stats: this.getStats() }));
-  }
-  getStats() {
-    return { ...this.stats };
-  }
-  resetStats() {
-    this.stats = {
-      totalCompressed: 0,
-      totalUncompressed: 0,
-      compressionRatio: 0,
-      spaceSaved: 0,
-      compressionCount: 0,
-      decompressionCount: 0,
-      averageCompressionTime: 0,
-      averageDecompressionTime: 0,
-    };
-  }
-  isCompressionAvailable() {
-    return typeof CompressionStream < "u" || typeof TextEncoder < "u";
-  }
-  getSizeInfo(e) {
-    if (this.isCompressedData(e))
-      return {
-        size: e.compressedSize,
-        originalSize: e.originalSize,
-        compressionRatio: e.compressedSize / e.originalSize,
-        spaceSaved: e.originalSize - e.compressedSize,
-      };
-    {
-      const t = e.documentElement.outerHTML;
-      return { size: new TextEncoder().encode(t).length };
-    }
-  }
-}
-class he {
-  constructor(e = h.CACHE_MAX_SIZE) {
-    d(this, "cache", new Map());
-    d(this, "maxSize");
-    d(this, "compression");
-    ((this.maxSize = e), (this.compression = new ue()));
-  }
-  async get(e) {
-    const t = this.cache.get(e);
-    if (!t) return null;
-    if (
-      (t.accessCount++,
-      (t.timestamp = Date.now()),
-      this.cache.delete(e),
-      this.cache.set(e, t),
-      t.isCompressed)
-    )
-      try {
-        return (
-          await this.compression.decompressDocument(t.document)
-        ).cloneNode(!0);
-      } catch (o) {
-        return (
-          console.error(`Error decompressing cached document for ${e}:`, o),
-          this.cache.delete(e),
-          null
-        );
-      }
-    return t.document.cloneNode(!0);
-  }
-  async set(e, t) {
-    this.cache.size >= this.maxSize && this.evictLRU();
-    let o,
-      n = !1;
+  async getCache() {
     try {
-      ((o = await this.compression.compressDocument(t)),
-        (n = "compressed" in o));
-    } catch (i) {
-      (console.warn(`Compression failed for ${e}, storing uncompressed:`, i),
-        (o = t),
-        (n = !1));
+      return await caches.open(d.CACHE_NAME);
+    } catch (t) {
+      return (console.error("Error opening cache: ", t), null);
     }
-    const r = {
-      document: o,
-      timestamp: Date.now(),
-      accessCount: 1,
-      isCompressed: n,
-    };
-    this.cache.set(e, r);
   }
-  has(e) {
-    return this.cache.has(e);
-  }
-  delete(e) {
-    return this.cache.delete(e);
-  }
-  clear() {
-    this.cache.clear();
-  }
-  getStats() {
-    const e = Array.from(this.cache.keys()),
-      t = Array.from(this.cache.values()),
-      o =
-        t.length > 0
-          ? e[t.reduce((u, c, f) => (c.timestamp < t[u].timestamp ? f : u), 0)]
-          : null,
-      n =
-        t.length > 0
-          ? e[
-              t.reduce(
-                (u, c, f) => (c.accessCount > t[u].accessCount ? f : u),
-                0,
-              )
-            ]
-          : null;
-    let r = 0,
-      i = 0,
-      a = 0;
-    for (const u of t) {
-      const c = this.compression.getSizeInfo(u.document);
-      ((r += c.size),
-        u.isCompressed && c.originalSize
-          ? ((i += c.size), (a += c.originalSize))
-          : (a += c.size));
-    }
-    return {
-      size: this.cache.size,
-      maxSize: this.maxSize,
-      hitRate: 0,
-      keys: e,
-      oldestEntry: o,
-      mostAccessed: n,
-      compressionStats: this.compression.getStats(),
-      memoryUsage: {
-        total: r,
-        compressed: i,
-        uncompressed: a,
-        spaceSaved: a - i,
-      },
-    };
-  }
-  evictLRU() {
-    if (this.cache.size === 0) return;
-    let e = null,
-      t = Date.now();
-    for (const [o, n] of this.cache.entries())
-      n.timestamp < t && ((t = n.timestamp), (e = o));
-    e && this.cache.delete(e);
-  }
-  async prewarm(e, t) {
-    const o = e.map(async (n) => {
-      if (!this.has(n))
-        try {
-          const r = await t(n);
-          await this.set(n, r);
-        } catch (r) {
-          console.warn(`Failed to prewarm cache for ${n}:`, r);
-        }
+  async fetchHtml(t, e) {
+    const r = await fetch(t, {
+      method: I.GET,
+      headers: { "Content-Type": R.HTML },
+      ...e,
     });
-    await Promise.all(o);
+    if (!r.ok) throw new Error(`Failed to load ${t}: ${r.statusText}`);
+    return r;
   }
-  cleanup(e = 5 * 60 * 1e3) {
-    const t = Date.now();
-    for (const [o, n] of this.cache.entries())
-      t - n.timestamp > e && this.cache.delete(o);
+  async loadHTMLDocument(t) {
+    const e = await this.load(t);
+    return M(e);
   }
-  getCompressionStats() {
-    return this.compression.getStats();
-  }
-  isCompressionAvailable() {
-    return this.compression.isCompressionAvailable();
-  }
-  async optimize() {
-    const e = Array.from(this.cache.entries());
-    for (const [t, o] of e)
-      if (!o.isCompressed && o.document instanceof Document)
-        try {
-          const n = await this.compression.compressDocument(o.document);
-          "compressed" in n && ((o.document = n), (o.isCompressed = !0));
-        } catch (n) {
-          console.warn(`Failed to compress cached document for ${t}:`, n);
-        }
-  }
-}
-const Q = new K(),
-  l = new me(),
-  x = new Z(),
-  pe = new J(Q),
-  ge = new X(),
-  C = new j(),
-  g = new he();
-async function fe() {
-  try {
-    C.startLoadingAnimation();
-    const s = l.getSlotsContents(document),
-      e = te(document),
-      t = e.shift();
-    (t && (await oe(t)),
-      await Promise.all(e.map((o) => se(o))),
-      l.replaceSlotContents(s),
-      l.consolidateLayouts(),
-      ne(document),
-      p(h.EVENTS.PAGE_LOADED));
-  } catch (s) {
-    (console.error("Error loading page:", s),
-      p(h.EVENTS.PAGE_LOAD_ERROR, { error: s }));
-  } finally {
-    C.stopLoadingAnimation();
-  }
-}
-async function ee(s) {
-  try {
-    (C.startLoadingAnimation(), l.resetLayouts());
-    const e = await O(s.toString()),
-      t = l.getSlotsContents(e),
-      o = te(e),
-      n = o.shift();
-    (n && (await oe(n)),
-      await Promise.all(o.map((r) => se(r))),
-      await ye(async () => {
-        (l.replaceSlotContents(t),
-          l.consolidateLayouts(),
-          ne(document),
-          p(h.EVENTS.PAGE_LOADED));
-      }));
-  } catch (e) {
-    (console.error("Error loading fetched page:", e),
-      p(h.EVENTS.PAGE_LOAD_ERROR, { error: e }));
-  } finally {
-    C.stopLoadingAnimation();
-  }
-}
-async function O(s) {
-  const e = await g.get(s);
-  if (e) return (console.log(`[Cache HIT] ${s}`), e);
-  console.log(`[Cache MISS] ${s}`);
-  const t = await Q.load(s),
-    o = Y(t);
-  return (await g.set(s, o), console.log(`[Cache SET] ${s}`), o);
-}
-function te(s, e = !0) {
-  const t = s.querySelectorAll(h.SELECTORS.LAYOUT_LINKS),
-    o = Array.from(t)
-      .map((n) => n.getAttribute("href") ?? "")
-      .filter((n) => n.length > 0);
-  return (o.length && e && t.forEach((n) => n.remove()), o);
-}
-function ye(s) {
-  if (x.isNavigationAvailable()) {
-    document.startViewTransition(s);
-    return;
-  }
-  s();
-}
-function k(s) {
-  return s.endsWith(".html") ? s : `${s.replace(/\/$/, "")}/index.html`;
-}
-async function oe(s) {
-  if (l.isAlreadyRendered(s)) {
-    l.markAsRendered(s);
-    return;
-  }
-  try {
-    const e = await O(k(s));
-    (l.render(document, s, e),
-      l.mergeHeads(e, document),
-      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: s }));
-  } catch (e) {
-    throw (console.error(`Error rendering base layout ${s}:`, e), e);
-  }
-}
-async function se(s) {
-  if (l.isAlreadyRendered(s)) {
-    l.markAsRendered(s);
-    return;
-  }
-  try {
-    const e = await O(k(s)),
-      t = l.getSlotsContents(e);
-    (l.markAsRendered(s),
-      l.replaceSlotContents(t),
-      l.mergeHeads(e, document),
-      p(h.EVENTS.LAYOUT_RENDERED, { layoutUrl: s }));
-  } catch (e) {
-    throw (console.error(`Error rendering partial layout ${s}:`, e), e);
-  }
-}
-function ne(s) {
-  (x.startInterception(s),
-    x.onNavigate(ee),
-    pe.startPrefetch(s),
-    ge.highlightMatchingLinks(s));
-}
-function Se() {
-  g.clear();
-}
-function w() {
-  return g.getStats();
-}
-function E() {
-  return g.getCompressionStats();
-}
-function T() {
-  return g.isCompressionAvailable();
-}
-async function ve() {
-  await g.optimize();
-}
-function Le() {
-  const s = g.getStats();
-  (console.log("=== Layout Cache Debug ==="),
-    console.log(`Cache size: ${s.size}/${s.maxSize}`),
-    console.log("Keys in cache:", s.keys),
-    console.log("Memory usage:", s.memoryUsage),
-    console.log("Compression stats:", s.compressionStats),
-    console.log("========================="));
-}
-function Ce(s) {
-  return g.has(k(s));
-}
-function y(s, e = 2) {
-  if (s === 0) return "0 Bytes";
-  const t = 1024,
-    o = e < 0 ? 0 : e,
-    n = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
-    r = Math.floor(Math.log(s) / Math.log(t));
-  return parseFloat((s / Math.pow(t, r)).toFixed(o)) + " " + n[r];
-}
-function z(s) {
-  return s < 1
-    ? "< 1ms"
-    : s < 1e3
-      ? `${s.toFixed(2)}ms`
-      : `${(s / 1e3).toFixed(2)}s`;
-}
-function re(s, e) {
-  return s === 0 ? 0 : ((s - e) / s) * 100;
-}
-function we() {
-  const s = w(),
-    e = E(),
-    t = T();
-  (console.group("📊 PapelJS Compression Statistics"),
-    console.log(
-      "🔧 Compression Status:",
-      t ? "✅ Available" : "❌ Not Available",
-    ),
-    t
-      ? (console.group("📈 Memory Usage"),
-        console.log("Total Cache Size:", y(s.memoryUsage.total)),
-        console.log("Compressed Size:", y(s.memoryUsage.compressed)),
-        console.log("Uncompressed Size:", y(s.memoryUsage.uncompressed)),
-        console.log("Space Saved:", y(s.memoryUsage.spaceSaved)),
-        console.log(
-          "Savings Percentage:",
-          `${re(s.memoryUsage.uncompressed, s.memoryUsage.compressed).toFixed(1)}%`,
-        ),
-        console.groupEnd(),
-        console.group("⚡ Performance Metrics"),
-        console.log("Compression Count:", e.compressionCount),
-        console.log("Decompression Count:", e.decompressionCount),
-        console.log("Average Compression Time:", z(e.averageCompressionTime)),
-        console.log(
-          "Average Decompression Time:",
-          z(e.averageDecompressionTime),
-        ),
-        console.log(
-          "Overall Compression Ratio:",
-          `${(e.compressionRatio * 100).toFixed(1)}%`,
-        ),
-        console.groupEnd(),
-        console.group("🎯 Cache Information"),
-        console.log("Cache Entries:", s.size),
-        console.log("Max Cache Size:", s.maxSize),
-        console.log("Most Accessed:", s.mostAccessed || "None"),
-        console.log("Oldest Entry:", s.oldestEntry || "None"),
-        console.groupEnd())
-      : (console.log("⚠️ Compression is not available in this browser"),
-        console.log(
-          "💡 Consider using a modern browser with Web Compression API support",
-        )),
-    console.groupEnd());
-}
-function Ee() {
-  const s = document.createElement("div");
-  ((s.className = "papeljs-compression-stats"),
-    (s.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 10000;
-    max-width: 300px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  `));
-  const e = () => {
-    const t = w(),
-      o = E();
-    if (!T()) {
-      s.innerHTML = `
-        <div style="color: #ff6b6b;">⚠️ Compression not available</div>
-        <div style="font-size: 10px; margin-top: 5px;">Use modern browser</div>
-      `;
-      return;
+  async firstToMatch(t, e) {
+    for (const r of t) {
+      const o = await this.load(r);
+      if (o && e(o)) return o;
     }
-    const r = re(t.memoryUsage.uncompressed, t.memoryUsage.compressed);
-    s.innerHTML = `
-      <div style="margin-bottom: 10px; font-weight: bold; color: #4ecdc4;">📊 Compression Stats</div>
-      
-      <div style="margin-bottom: 8px;">
-        <div style="color: #95a5a6;">Memory Usage:</div>
-        <div>Total: ${y(t.memoryUsage.total)}</div>
-        <div>Saved: ${y(t.memoryUsage.spaceSaved)} (${r.toFixed(1)}%)</div>
-      </div>
-      
-      <div style="margin-bottom: 8px;">
-        <div style="color: #95a5a6;">Performance:</div>
-        <div>Compressed: ${o.compressionCount}</div>
-        <div>Decompressed: ${o.decompressionCount}</div>
-        <div>Avg Time: ${z(o.averageCompressionTime)}</div>
-      </div>
-      
-      <div style="margin-bottom: 8px;">
-        <div style="color: #95a5a6;">Cache:</div>
-        <div>Entries: ${t.size}/${t.maxSize}</div>
-        <div>Ratio: ${(o.compressionRatio * 100).toFixed(1)}%</div>
-      </div>
-      
-      <div style="font-size: 10px; color: #7f8c8d; text-align: center; margin-top: 10px;">
-        PapelJS Compression
-      </div>
-    `;
-  };
-  return (e(), setInterval(e, 2e3), s);
-}
-function Te() {
-  if (window.location.search.includes("debug=compression")) {
-    const e = Ee();
-    document.body.appendChild(e);
+    return (console.error("None of the urls could be loaded", t), "");
+  }
+  async clearCache() {
+    const t = await this.getCache();
+    t && (await t.delete(d.CACHE_NAME), console.log("Cache cleared"));
   }
 }
-function Ae() {
-  document.addEventListener(h.EVENTS.COMPRESSION_STATS, (s) => {
-    if (!(s instanceof CustomEvent)) return;
-    const { stats: e } = s.detail;
-    e.compressionCount % 10 === 0 &&
-      e.compressionCount > 0 &&
-      (console.log(`🎉 Compressed ${e.compressionCount} documents!`),
-      console.log(`💾 Total space saved: ${y(e.spaceSaved)}`));
-  });
+class X {
+  constructor() {
+    l(this, "currentLayouts", []);
+    l(this, "loadedLayouts", []);
+  }
+  resetLayouts() {
+    ((this.currentLayouts = []), (this.loadedLayouts = []));
+  }
+  render(t, e, r) {
+    const o = this._formatTag(e);
+    if (!r) throw new Error("layout is required");
+    (this.currentLayouts.push(o),
+      !this.isAlreadyRendered(o) &&
+        (this.loadedLayouts.push(o),
+        this._copyElementAttributes(r.body, t.body),
+        this._replaceContent(r.body, t.body)));
+  }
+  markAsRendered(t) {
+    this.currentLayouts.push(this._formatTag(t));
+  }
+  replaceSlotContents(t) {
+    document.querySelectorAll("slot").forEach((r) => {
+      const o = r.getAttribute("name") || "default",
+        a = t.find((c) => c.slot === o);
+      a && r.innerHTML !== a.content.innerHTML && p(a.content, r);
+    });
+  }
+  isAlreadyRendered(t) {
+    return this.loadedLayouts.includes(t);
+  }
+  getSlotsContents(t) {
+    const e = [];
+    return (
+      t.querySelectorAll(`slot, [slot], [${S}]`).forEach((o) => {
+        const a = o.getAttribute("slot") || o.getAttribute(S) || "default";
+        e.push({ slot: a, content: o });
+      }),
+      e
+    );
+  }
+  _copyElementAttributes(t, e) {
+    Array.from(t.attributes).forEach((r) => {
+      e.setAttribute(r.name, r.value);
+    });
+  }
+  mergeHeads(t, e) {
+    const r = t.head,
+      o = e.head;
+    if (r.innerHTML) {
+      if (r.innerHTML && !o.innerHTML) {
+        p(r, o);
+        return;
+      }
+      this._mergeElements(r, o);
+    }
+  }
+  _mergeElements(t, e) {
+    const r = e.innerHTML;
+    Array.from(t.children).forEach((o) => {
+      if (this._elementIsPapelScript(o)) return;
+      const a = o.outerHTML;
+      r.includes(a) || e.appendChild(o);
+    });
+  }
+  consolidateLayouts() {
+    const t = new Set(this.currentLayouts),
+      e = new Set(this.loadedLayouts);
+    (this.currentLayouts
+      .filter((o) => !e.has(o))
+      .forEach((o) => {
+        const a = document.querySelector(`link[href$="${o}"]`);
+        a == null || a.remove();
+      }),
+      (this.loadedLayouts = Array.from(t)),
+      (this.currentLayouts = []));
+  }
+  _replaceContent(t, e) {
+    const r = e.querySelectorAll(`[${g}]`),
+      o = new Map();
+    (r.forEach((a, c) => {
+      const u = a.getAttribute(g) ?? `preserve-${c}`;
+      o.set(u, a);
+    }),
+      p(t, e),
+      o.forEach((a, c) => {
+        const u = e.querySelector(`[${g}="${c}"]`);
+        u ? u.replaceWith(a) : e.insertBefore(a, e.firstChild);
+      }));
+  }
+  _elementIsPapelScript(t) {
+    var e;
+    return (
+      t.tagName === "SCRIPT" &&
+      !!((e = t.getAttribute("src")) != null && e.includes("papel"))
+    );
+  }
+  _formatTag(t) {
+    return t.endsWith(".html") ? t : `${t.replace(/\/$/, "")}/index.html`;
+  }
 }
-function be() {
-  const s = w(),
-    e = E();
-  return JSON.stringify(
-    {
-      timestamp: new Date().toISOString(),
-      cache: s,
-      compression: e,
-      browser: { userAgent: navigator.userAgent, compressionAvailable: T() },
-    },
-    null,
-    2,
-  );
+class H {
+  constructor() {
+    l(this, "navigationCallback");
+    l(this, "scrollPositions");
+    ((this.navigationCallback = async () => {}),
+      (this.scrollPositions = new Map()),
+      window.addEventListener("popstate", (t) => {
+        const e = new URL(location.href);
+        this._handlePopState(e, t);
+      }));
+  }
+  onNavigate(t) {
+    this.navigationCallback = t;
+  }
+  startInterception(t) {
+    this._interceptLinks(t);
+  }
+  isNavigationAvailable() {
+    return "navigation" in window && typeof window.navigation < "u";
+  }
+  _isLocalUrl(t) {
+    return t.origin === location.origin;
+  }
+  _shouldIntercept(t) {
+    return this._isLocalUrl(t) && !!this.navigationCallback;
+  }
+  _interceptLinks(t) {
+    t.querySelectorAll(
+      `a:not([${b}]):not([${C}]):not([target]):not([href^="${location.origin}"]):not([download])`,
+    ).forEach((e) => {
+      if (e instanceof HTMLAnchorElement) {
+        if (!this._shouldIntercept(new URL(e.href))) {
+          e.setAttribute(C, "true");
+          return;
+        }
+        (e.setAttribute(b, "true"),
+          e.addEventListener("click", (r) =>
+            this._handleLinkClick.bind(this)(r, e),
+          ));
+      }
+    });
+  }
+  async _handleLinkClick(t, e) {
+    (t.preventDefault(), this.navigate(e.href));
+  }
+  navigate(t) {
+    const e = new URL(t);
+    this._shouldIntercept(e) &&
+      (this.scrollPositions.set(location.href, {
+        x: window.scrollX,
+        y: window.scrollY,
+      }),
+      this._addNavigationToBrowserHistory(e),
+      this._handleNavigation(e));
+  }
+  _addNavigationToBrowserHistory(t) {
+    window.history.pushState({}, "", t);
+  }
+  async _handleNavigation(t) {
+    (await this.navigationCallback(t), this._restoreScrollPosition(t));
+  }
+  _handlePopState(t, e) {
+    if (this._shouldIntercept(t)) {
+      if ((e.preventDefault(), this.isNavigationAvailable())) {
+        document.startViewTransition(() => this._handleNavigation(t));
+        return;
+      }
+      this._handleNavigation(t);
+    }
+  }
+  _restoreScrollPosition(t) {
+    window.scrollTo(0, 0);
+  }
 }
-let I, R, N, M, D;
-function Pe() {
-  return (I || (I = new K()), I);
+class k {
+  constructor(t) {
+    l(this, "loadedUrls", []);
+    this.htmlLoader = t;
+  }
+  startPrefetch(t) {
+    this._addObserverToLinks(t, async (e) => {
+      const r = e.getAttribute(m);
+      if (r !== "all") {
+        await this._prefetchRequest(e.href);
+        return;
+      }
+      if (r === "all") {
+        const o = await this._prefetchRequest(e.href),
+          c = new DOMParser().parseFromString(o, "text/html");
+        (this.imagePrefetch(c), this.templateImagePrefetch(c));
+      }
+    });
+  }
+  imagePrefetch(t) {
+    t.querySelectorAll(`img[${m}]`).forEach((r) => {
+      (this._prefetchRequest(r.src), this.loadedUrls.push(r.src));
+    });
+  }
+  templateImagePrefetch(t) {
+    t.querySelectorAll("template").forEach((r) => {
+      this.imagePrefetch(r.content);
+    });
+  }
+  _addObserverToLinks(t, e) {
+    const r = this._getIntersectionObserver(e);
+    t.querySelectorAll(`a[${m}]:not([${m}="none"]):not([${L}])`).forEach(
+      (a) => {
+        if (this._isLocalLink(a)) {
+          if (this._isAlreadyPrefetched(a)) {
+            a.setAttribute(L, "true");
+            return;
+          }
+          r.observe(a);
+        }
+      },
+    );
+  }
+  _getIntersectionObserver(t) {
+    return new IntersectionObserver((e) => {
+      e.forEach((r) => {
+        if (r.isIntersecting) {
+          const o = r.target;
+          if ((o.setAttribute(L, "true"), this._isAlreadyPrefetched(o))) return;
+          (t(o), this.loadedUrls.push(o.href));
+        }
+      });
+    });
+  }
+  _isAlreadyPrefetched(t) {
+    return this.loadedUrls.includes(t.href);
+  }
+  _isLocalLink(t) {
+    return t.hostname === window.location.hostname;
+  }
+  async _prefetchRequest(t) {
+    return this.htmlLoader.load(t);
+  }
 }
-function $() {
-  return (R || (R = new Z()), R);
+class $ {
+  constructor() {
+    l(this, "currentPath");
+    l(this, "cumulativePaths");
+    l(this, "allLinks");
+    ((this.currentPath = this.normalizePath(window.location.pathname)),
+      (this.cumulativePaths = this.getCumulativePaths()),
+      (this.allLinks = document.querySelectorAll("a")));
+  }
+  normalizePath(t) {
+    return t.endsWith("/") ? t.slice(0, -1) : t;
+  }
+  ensureIndexPath(t) {
+    return /\.[a-zA-Z0-9]+$/.test(t) ? t : `${t}/index.html`;
+  }
+  getCumulativePaths() {
+    return this.currentPath
+      .split("/")
+      .filter((e) => e !== "")
+      .reduce((e, r) => {
+        const o = e.length > 0 ? e[e.length - 1] : "";
+        return (e.push(`${o}/${r}`), e);
+      }, []);
+  }
+  getMatchingLinks() {
+    return this.allLinks
+      ? Array.from(this.allLinks).filter((t) => {
+          const e = new URL(t.href, window.location.origin);
+          if (e.origin !== window.location.origin) return !1;
+          const r = this.normalizePath(e.pathname),
+            o = this.ensureIndexPath(r),
+            a = this.ensureIndexPath(this.currentPath);
+          return this.cumulativePaths.includes(r) || o === a;
+        })
+      : [];
+  }
+  clearPreviousMatches() {
+    var t;
+    (t = this.allLinks) == null ||
+      t.forEach((e) => e.classList.remove("pl-path-match"));
+  }
+  highlightMatchingLinks(t) {
+    ((this.currentPath = this.normalizePath(window.location.pathname)),
+      (this.cumulativePaths = this.getCumulativePaths()),
+      (this.allLinks = t.querySelectorAll("a")),
+      this.clearPreviousMatches(),
+      this.getMatchingLinks().forEach((r) => {
+        r.classList.add("pl-path-match");
+      }));
+  }
 }
-function _e() {
-  return (N || (N = new J(Pe())), N);
+class D {
+  constructor() {
+    l(this, "startAnimationTimeout", null);
+  }
+  startLoadingAnimation() {
+    document.body.classList.contains(s.IsLoading) ||
+      document.body.classList.contains(s.BeforeLoading) ||
+      document.body.classList.contains(s.IsIndeterminate) ||
+      (this.startAnimationTimeout &&
+        (clearTimeout(this.startAnimationTimeout),
+        (this.startAnimationTimeout = null)),
+      document.body.classList.add(s.BeforeLoading),
+      (this.startAnimationTimeout = setTimeout(() => {
+        (h(W), this.triggerLoadingAnimation());
+      }, 200)));
+  }
+  triggerLoadingAnimation() {
+    (document.body.classList.add(s.IsLoading),
+      document.body.classList.remove(s.BeforeLoading),
+      (this.startAnimationTimeout = setTimeout(() => {
+        document.body.classList.add(s.IsIndeterminate);
+      }, 2e3)));
+  }
+  stopLoadingAnimation() {
+    (this.startAnimationTimeout &&
+      (clearTimeout(this.startAnimationTimeout),
+      (this.startAnimationTimeout = null)),
+      (document.body.classList.contains(s.IsLoading) ||
+        document.body.classList.contains(s.IsIndeterminate)) &&
+        (document.body.classList.add(s.AfterLoading),
+        setTimeout(() => {
+          document.body.classList.remove(s.AfterLoading);
+        }, 500)),
+      document.body.classList.remove(s.IsLoading),
+      document.body.classList.remove(s.BeforeLoading),
+      document.body.classList.remove(s.IsIndeterminate),
+      h(K));
+  }
 }
-function Ie() {
-  return (M || (M = new X()), M);
+const q = new O(),
+  i = new X(),
+  _ = new H(),
+  Z = new k(q),
+  j = new $(),
+  f = new D();
+async function J() {
+  try {
+    f.startLoadingAnimation();
+    const n = i.getSlotsContents(document),
+      t = x(document),
+      e = t.shift();
+    (e && (await B(e)),
+      await Promise.all(t.map((r) => G(r))),
+      i.replaceSlotContents(n),
+      i.consolidateLayouts(),
+      F(document),
+      h(d.EVENTS.PAGE_LOADED));
+  } catch (n) {
+    (console.error("Error loading page:", n),
+      h(d.EVENTS.PAGE_LOAD_ERROR, { error: n }));
+  } finally {
+    f.stopLoadingAnimation();
+  }
 }
-function V() {
-  return (D || (D = new j()), D);
+async function U(n) {
+  try {
+    (f.startLoadingAnimation(), i.resetLayouts());
+    const t = await P(n.toString()),
+      e = i.getSlotsContents(t),
+      r = x(t),
+      o = r.shift();
+    (o && (await B(o)),
+      await Promise.all(r.map((a) => G(a))),
+      await Q(async () => {
+        (i.replaceSlotContents(e),
+          i.consolidateLayouts(),
+          F(document),
+          h(d.EVENTS.PAGE_LOADED));
+      }));
+  } catch (t) {
+    (console.error("Error loading fetched page:", t),
+      h(d.EVENTS.PAGE_LOAD_ERROR, { error: t }));
+  } finally {
+    f.stopLoadingAnimation();
+  }
 }
-const Re = {
-  interceptLinks(s) {
-    ($().startInterception(s), $().onNavigate(ee));
+async function P(n) {
+  const t = await q.load(n);
+  return M(t);
+}
+function x(n, t = !0) {
+  const e = n.querySelectorAll(d.SELECTORS.LAYOUT_LINKS),
+    r = Array.from(e)
+      .map((o) => o.getAttribute("href") ?? "")
+      .filter((o) => o.length > 0);
+  return (r.length && t && e.forEach((o) => o.remove()), r);
+}
+function Q(n) {
+  if (_.isNavigationAvailable()) {
+    document.startViewTransition(n);
+    return;
+  }
+  n();
+}
+function V(n) {
+  return n.endsWith(".html") ? n : `${n.replace(/\/$/, "")}/index.html`;
+}
+async function B(n) {
+  if (i.isAlreadyRendered(n)) {
+    i.markAsRendered(n);
+    return;
+  }
+  try {
+    const t = await P(V(n));
+    (i.render(document, n, t),
+      i.mergeHeads(t, document),
+      h(d.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
+  } catch (t) {
+    throw (console.error(`Error rendering base layout ${n}:`, t), t);
+  }
+}
+async function G(n) {
+  if (i.isAlreadyRendered(n)) {
+    i.markAsRendered(n);
+    return;
+  }
+  try {
+    const t = await P(V(n)),
+      e = i.getSlotsContents(t);
+    (i.markAsRendered(n),
+      i.replaceSlotContents(e),
+      i.mergeHeads(t, document),
+      h(d.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
+  } catch (t) {
+    throw (console.error(`Error rendering partial layout ${n}:`, t), t);
+  }
+}
+function F(n) {
+  (_.startInterception(n),
+    _.onNavigate(U),
+    Z.startPrefetch(n),
+    j.highlightMatchingLinks(n));
+}
+let y, E, A, T, w;
+function tt() {
+  return (y || (y = new O()), y);
+}
+function v() {
+  return (E || (E = new H()), E);
+}
+function et() {
+  return (A || (A = new k(tt())), A);
+}
+function nt() {
+  return (T || (T = new $()), T);
+}
+function N() {
+  return (w || (w = new D()), w);
+}
+const rt = {
+  interceptLinks(n) {
+    (v().startInterception(n), v().onNavigate(U));
   },
-  prefetchLinks(s) {
-    _e().startPrefetch(s);
+  prefetchLinks(n) {
+    et().startPrefetch(n);
   },
-  highlightMatchingLinks(s) {
-    Ie().highlightMatchingLinks(s);
+  highlightMatchingLinks(n) {
+    nt().highlightMatchingLinks(n);
   },
-  navigate(s) {
-    $().navigate(s);
+  navigate(n) {
+    v().navigate(n);
   },
   startLoading() {
-    V().startLoadingAnimation();
+    N().startLoadingAnimation();
   },
   stopLoading() {
-    V().stopLoadingAnimation();
+    N().stopLoadingAnimation();
   },
-  getCacheStats: w,
-  getCompressionStats: E,
-  isCompressionAvailable: T,
-  optimizeCache: ve,
-  clearLayoutCache: Se,
-  logCompressionStats: we,
-  exportCompressionStats: be,
-  debugCache: Le,
-  isUrlCached: Ce,
 };
 window.addEventListener(
   "load",
   () => {
-    (fe(), Te(), Ae());
+    J();
   },
   { once: !0 },
 );
-window.papel = Re;
+window.papel = rt;

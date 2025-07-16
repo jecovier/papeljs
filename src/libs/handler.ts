@@ -4,7 +4,6 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
-import { LayoutCache } from "./layout-cache";
 import { CONFIG } from "./config";
 import { dispatchCustomEvent, parseStringToDocument } from "./utils";
 
@@ -14,7 +13,6 @@ const navigationInterceptor = new NavigationInterceptor();
 const navigationPrefetch = new NavigationPrefetch(htmlLoader);
 const matcher = new PathLinkMatcher();
 const loadIndicator = new LoadIndicator();
-const layoutCache = new LayoutCache();
 
 export async function loadPage(): Promise<void> {
   try {
@@ -79,20 +77,8 @@ export async function loadFetchedPage(url: URL): Promise<void> {
 }
 
 async function fetchDocument(url: string): Promise<Document> {
-  // Verificar cache primero
-  const cached = await layoutCache.get(url);
-  if (cached) {
-    console.log(`[Cache HIT] ${url}`);
-    return cached;
-  }
-
-  console.log(`[Cache MISS] ${url}`);
   const partials = await htmlLoader.load(url);
   const document = parseStringToDocument(partials);
-
-  // Cachear el documento
-  await layoutCache.set(url, document);
-  console.log(`[Cache SET] ${url}`);
 
   return document;
 }
@@ -176,45 +162,4 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
-}
-
-// Función para limpiar el cache (útil para testing o cuando se necesita liberar memoria)
-export function clearLayoutCache(): void {
-  layoutCache.clear();
-}
-
-// Función para obtener estadísticas del cache
-export function getCacheStats() {
-  return layoutCache.getStats();
-}
-
-// Función para obtener estadísticas de compresión
-export function getCompressionStats() {
-  return layoutCache.getCompressionStats();
-}
-
-// Función para verificar si la compresión está disponible
-export function isCompressionAvailable(): boolean {
-  return layoutCache.isCompressionAvailable();
-}
-
-// Función para optimizar el cache (comprimir entradas no comprimidas)
-export async function optimizeCache(): Promise<void> {
-  await layoutCache.optimize();
-}
-
-// Función para debugging del cache
-export function debugCache(): void {
-  const stats = layoutCache.getStats();
-  console.log("=== Layout Cache Debug ===");
-  console.log(`Cache size: ${stats.size}/${stats.maxSize}`);
-  console.log(`Keys in cache:`, stats.keys);
-  console.log(`Memory usage:`, stats.memoryUsage);
-  console.log(`Compression stats:`, stats.compressionStats);
-  console.log("=========================");
-}
-
-// Función para verificar si una URL está en el cache
-export function isUrlCached(url: string): boolean {
-  return layoutCache.has(normalizeLayoutUrl(url));
 }

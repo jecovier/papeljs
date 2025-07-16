@@ -3,20 +3,7 @@ import { NavigationInterceptor } from "@/libs/navigation-interceptor";
 import { NavigationPrefetch } from "@/libs/navigation-prefetch";
 import { PathLinkMatcher } from "./path-link-matcher";
 import { LoadIndicator } from "./load-indicator";
-import {
-  loadFetchedPage,
-  getCacheStats,
-  getCompressionStats,
-  isCompressionAvailable,
-  optimizeCache,
-  clearLayoutCache,
-  debugCache,
-  isUrlCached,
-} from "./handler";
-import {
-  logCompressionStats,
-  exportCompressionStats,
-} from "./compression-utils";
+import { loadFetchedPage } from "./handler";
 
 // Create instances lazily to allow for proper mocking in tests
 let htmlLoader: HtmlLoader;
@@ -86,16 +73,7 @@ export const api = {
     getLoadIndicator().stopLoadingAnimation();
   },
 
-  // Nuevas funciones de compresión
-  getCacheStats,
-  getCompressionStats,
-  isCompressionAvailable,
-  optimizeCache,
-  clearLayoutCache,
-  logCompressionStats,
-  exportCompressionStats,
-
-  // Funciones de debugging del cache
-  debugCache,
-  isUrlCached,
+  clearCache(): void {
+    getHtmlLoader().clearCache();
+  },
 };

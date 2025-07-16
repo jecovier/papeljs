@@ -38,6 +38,7 @@ describe("HtmlLoader", () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.load("/test-page");
 
       expect(mockFetch).toHaveBeenCalledWith("/test-page", {
@@ -50,6 +51,7 @@ describe("HtmlLoader", () => {
     });
 
     it("should handle empty URL", async () => {
+      await htmlLoader.clearCache();
       const result = await htmlLoader.load("");
 
       expect(mockFetch).not.toHaveBeenCalled();
@@ -63,10 +65,15 @@ describe("HtmlLoader", () => {
       const error = new Error("Network error");
       mockFetch.mockRejectedValue(error);
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.load("/test-page");
 
       expect(result).toBe("");
-      expect(console.error).toHaveBeenCalledWith("Error loading HTML: ", error);
+      expect(console.error).toHaveBeenCalledWith(
+        "Error loading HTML: ",
+        error,
+        "/test-page",
+      );
     });
 
     it("should handle non-ok responses", async () => {
@@ -76,72 +83,15 @@ describe("HtmlLoader", () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.load("/test-page");
 
       expect(result).toBe("");
       expect(console.error).toHaveBeenCalledWith(
         "Error loading HTML: ",
         expect.any(Error),
+        "/test-page",
       );
-    });
-
-    it("should use custom HTTP method", async () => {
-      const mockResponse = {
-        ok: true,
-        text: vi.fn().mockResolvedValue("Response content"),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await htmlLoader.load("/test-page", FetchMethod.POST);
-
-      expect(mockFetch).toHaveBeenCalledWith("/test-page", {
-        method: FetchMethod.POST,
-        headers: {
-          "Content-Type": HtmlLoaderContentType.HTML,
-        },
-      });
-    });
-
-    it("should include request body when data is provided", async () => {
-      const mockResponse = {
-        ok: true,
-        text: vi.fn().mockResolvedValue("Response content"),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const data = { key: "value", number: 42 };
-      await htmlLoader.load("/test-page", FetchMethod.POST, data);
-
-      expect(mockFetch).toHaveBeenCalledWith("/test-page", {
-        method: FetchMethod.POST,
-        headers: {
-          "Content-Type": HtmlLoaderContentType.HTML,
-        },
-        body: JSON.stringify(data),
-      });
-    });
-
-    it("should merge custom options", async () => {
-      const mockResponse = {
-        ok: true,
-        text: vi.fn().mockResolvedValue("Response content"),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const options = {
-        headers: { "X-Custom-Header": "value" },
-        mode: "cors" as RequestMode,
-      };
-      await htmlLoader.load("/test-page", FetchMethod.GET, null, options);
-
-      expect(mockFetch).toHaveBeenCalledWith("/test-page", {
-        method: FetchMethod.GET,
-        headers: {
-          "Content-Type": HtmlLoaderContentType.HTML,
-          "X-Custom-Header": "value",
-        },
-        mode: "cors",
-      });
     });
   });
 
@@ -157,40 +107,11 @@ describe("HtmlLoader", () => {
       mockFetch.mockResolvedValue(mockResponse);
       vi.mocked(parseStringToDocument).mockReturnValue(mockDocument);
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.loadHTMLDocument("/test-page");
 
       expect(parseStringToDocument).toHaveBeenCalledWith(mockHtml);
       expect(result).toBe(mockDocument);
-    });
-
-    it("should pass parameters to load method", async () => {
-      const mockResponse = {
-        ok: true,
-        text: vi.fn().mockResolvedValue("<html></html>"),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
-      vi.mocked(parseStringToDocument).mockReturnValue(
-        document.implementation.createHTMLDocument(),
-      );
-
-      const data = { test: "data" };
-      const options = { mode: "cors" as RequestMode };
-
-      await htmlLoader.loadHTMLDocument(
-        "/test-page",
-        FetchMethod.POST,
-        data,
-        options,
-      );
-
-      expect(mockFetch).toHaveBeenCalledWith("/test-page", {
-        method: FetchMethod.POST,
-        headers: {
-          "Content-Type": HtmlLoaderContentType.HTML,
-        },
-        body: JSON.stringify(data),
-        mode: "cors",
-      });
     });
   });
 
@@ -210,6 +131,7 @@ describe("HtmlLoader", () => {
 
       const match = (html: string) => html === "content2";
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.firstToMatch(urls, match);
 
       expect(mockFetch).toHaveBeenCalledTimes(2); // Only first two URLs
@@ -226,12 +148,14 @@ describe("HtmlLoader", () => {
 
       const match = (html: string) => html === "nonexistent";
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.firstToMatch(urls, match);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(result).toBe("");
       expect(console.error).toHaveBeenCalledWith(
         "None of the urls could be loaded",
+        urls,
       );
     });
 
@@ -250,6 +174,7 @@ describe("HtmlLoader", () => {
 
       const match = (html: string) => html === "content2";
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.firstToMatch(urls, match);
 
       expect(mockFetch).toHaveBeenCalledTimes(2); // First two URLs
@@ -267,6 +192,7 @@ describe("HtmlLoader", () => {
 
       const match = (html: string) => html === "content";
 
+      await htmlLoader.clearCache();
       const result = await htmlLoader.firstToMatch(urls, match);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);

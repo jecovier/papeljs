@@ -46,7 +46,7 @@ export class NavigationInterceptor {
   private _interceptLinks(target: Document | Element): void {
     target
       .querySelectorAll(
-        `a:not([${INTERCEPTED_ATTR_NAME}]):not([${NOT_INTERCEPTED_ATTR_NAME}]):not([target]):not([href^="${location.origin}"]):not([download])`
+        `a:not([${INTERCEPTED_ATTR_NAME}]):not([${NOT_INTERCEPTED_ATTR_NAME}]):not([target]):not([href^="${location.origin}"]):not([download])`,
       )
       .forEach((link: Element) => {
         if (!(link instanceof HTMLAnchorElement)) {
@@ -61,14 +61,14 @@ export class NavigationInterceptor {
         link.setAttribute(INTERCEPTED_ATTR_NAME, "true");
 
         link.addEventListener("click", (e: MouseEvent) =>
-          this._handleLinkClick.bind(this)(e, link)
+          this._handleLinkClick.bind(this)(e, link),
         );
       });
   }
 
   private async _handleLinkClick(
     event: MouseEvent,
-    link: HTMLAnchorElement
+    link: HTMLAnchorElement,
   ): Promise<void> {
     event.preventDefault();
     this.navigate(link.href);
@@ -88,11 +88,6 @@ export class NavigationInterceptor {
     });
 
     this._addNavigationToBrowserHistory(url);
-
-    /* if (this.isNavigationAvailable()) {
-      document.startViewTransition(() => this._handleNavigation(url));
-      return;
-    } */
 
     this._handleNavigation(url);
   }

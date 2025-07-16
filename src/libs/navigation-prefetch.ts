@@ -1,12 +1,9 @@
-import {
-  FetchMethod,
-  PREFETCH_ATTR_NAME,
-  PREFETCHED_ATTR_NAME,
-} from "@/libs/constants";
+import { PREFETCH_ATTR_NAME, PREFETCHED_ATTR_NAME } from "@/libs/constants";
 import { HtmlLoader } from "@/libs/html-loader";
 
 export class NavigationPrefetch {
   private loadedUrls: string[] = [];
+
   constructor(private htmlLoader: HtmlLoader) {}
 
   public startPrefetch(target: Document | Element): void {
@@ -14,7 +11,7 @@ export class NavigationPrefetch {
       const prefetch = link.getAttribute(PREFETCH_ATTR_NAME);
 
       if (prefetch !== "all") {
-        this._prefetchRequest(link.href);
+        await this._prefetchRequest(link.href);
         return;
       }
 
@@ -30,7 +27,7 @@ export class NavigationPrefetch {
 
   public imagePrefetch(target: Document | DocumentFragment | Element): void {
     const images = target.querySelectorAll(
-      `img[${PREFETCH_ATTR_NAME}]`
+      `img[${PREFETCH_ATTR_NAME}]`,
     ) as NodeListOf<HTMLImageElement>;
 
     images.forEach((image) => {
@@ -40,10 +37,10 @@ export class NavigationPrefetch {
   }
 
   public templateImagePrefetch(
-    target: Document | DocumentFragment | Element
+    target: Document | DocumentFragment | Element,
   ): void {
     const templates = target.querySelectorAll(
-      "template"
+      "template",
     ) as NodeListOf<HTMLTemplateElement>;
 
     templates.forEach((template) => {
@@ -53,11 +50,11 @@ export class NavigationPrefetch {
 
   private _addObserverToLinks(
     target: Document | Element,
-    callback: (link: HTMLAnchorElement) => void
+    callback: (link: HTMLAnchorElement) => void,
   ): void {
     const observer = this._getIntersectionObserver(callback);
     const links = target.querySelectorAll(
-      `a[${PREFETCH_ATTR_NAME}]:not([${PREFETCH_ATTR_NAME}="none"]):not([${PREFETCHED_ATTR_NAME}])`
+      `a[${PREFETCH_ATTR_NAME}]:not([${PREFETCH_ATTR_NAME}="none"]):not([${PREFETCHED_ATTR_NAME}])`,
     ) as NodeListOf<HTMLAnchorElement>;
 
     links.forEach((link) => {
@@ -75,7 +72,7 @@ export class NavigationPrefetch {
   }
 
   private _getIntersectionObserver(
-    callback: (link: HTMLAnchorElement) => void
+    callback: (link: HTMLAnchorElement) => void,
   ): IntersectionObserver {
     return new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -103,8 +100,6 @@ export class NavigationPrefetch {
   }
 
   private async _prefetchRequest(url: string): Promise<string> {
-    return this.htmlLoader.load(url, FetchMethod.GET, undefined, {
-      priority: "low",
-    });
+    return this.htmlLoader.load(url);
   }
 }

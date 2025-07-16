@@ -3,12 +3,13 @@ export const CONFIG = {
   // Cache
   CACHE_MAX_SIZE: 50, // Máximo número de layouts en cache
 
+  CACHE_NAME: "papel-fetch",
+
   // Eventos personalizados
   EVENTS: {
     PAGE_LOADED: "page-loaded",
     PAGE_LOAD_ERROR: "page-load-error",
     LAYOUT_RENDERED: "layout-rendered",
-    COMPRESSION_STATS: "compression-stats",
   },
 
   // Selectores CSS
@@ -25,12 +26,5 @@ export const CONFIG = {
   // Configuración de view transitions
   VIEW_TRANSITIONS: {
     ENABLED: true,
-  },
-
-  // Configuración de compresión
-  COMPRESSION: {
-    ENABLED: true,
-    MIN_SIZE_TO_COMPRESS: 1024, // Solo comprimir documentos mayores a 1KB
-    ENABLE_STATS: true, // Habilitar estadísticas de compresión
   },
 } as const;
