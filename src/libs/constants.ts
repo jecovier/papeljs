@@ -13,43 +13,10 @@ export const LoadingFinishedEventName = "loading-finished";
 export enum FetchMethod {
   "GET" = "GET",
   "POST" = "POST",
-  "PUT" = "PUT",
-  "PATCH" = "PATCH",
-  "DELETE" = "DELETE",
-}
-
-export enum EventTrigger {
-  "LOAD" = "load",
-  "CLICK" = "click",
-  "SUBMIT" = "submit",
-  "CHANGE" = "change",
-  "FOCUS" = "focus",
-  "BLUR" = "blur",
-  "KEYDOWN" = "keydown",
-  "KEYUP" = "keyup",
-  "KEYPRESS" = "keypress",
-  "MOUSEDOWN" = "mousedown",
-  "MOUSEUP" = "mouseup",
-  "MOUSEMOVE" = "mousemove",
-  "MOUSEOUT" = "mouseout",
-  "MOUSEOVER" = "mouseover",
-  "MOUSEENTER" = "mouseenter",
-  "MOUSELEAVE" = "mouseleave",
-  "DRAG" = "drag",
-  "DROP" = "drop",
-  "DRAGSTART" = "dragstart",
-  "DRAGEND" = "dragend",
-  "DRAGOVER" = "dragover",
-  "DRAGENTER" = "dragenter",
-  "DRAGLEAVE" = "dragleave",
-  "DRAGEXIT" = "dragexit",
-  "INPUT" = "input",
 }
 
 export enum HtmlLoaderContentType {
   "HTML" = "text/html",
-  "JSON" = "application/json",
-  "TEXT" = "text/plain",
 }
 
 export enum LoadState {

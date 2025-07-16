@@ -4,7 +4,6 @@ import { NavigationInterceptor } from "../navigation-interceptor";
 import { NavigationPrefetch } from "../navigation-prefetch";
 import { PathLinkMatcher } from "../path-link-matcher";
 import { LoadIndicator } from "../load-indicator";
-import { ApiType } from "../api";
 
 // Mock all dependencies
 vi.mock("../html-loader");
@@ -20,7 +19,7 @@ describe("api", () => {
   let mockNavigationPrefetch: NavigationPrefetch;
   let mockMatcher: PathLinkMatcher;
   let mockLoadIndicator: LoadIndicator;
-  let api: ApiType;
+  let api: any;
 
   beforeEach(async () => {
     // Reset all mocks and module cache

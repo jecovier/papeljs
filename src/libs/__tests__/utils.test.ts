@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   replaceContent,
   parseStringToDocument,
-  slugifyUrl,
   dispatchCustomEvent,
 } from "../utils";
 
@@ -86,42 +85,6 @@ describe("utils", () => {
       expect(doc).toBeInstanceOf(Document);
       // Should still parse and create a document
       expect(doc.documentElement.tagName).toBe("HTML");
-    });
-  });
-
-  describe("slugifyUrl", () => {
-    it("should convert URL to slug format", () => {
-      expect(slugifyUrl("/about")).toBe("about-index.html");
-      expect(slugifyUrl("/blog/post-1")).toBe("blog-post-1-index.html");
-      expect(slugifyUrl("/products/category/item")).toBe(
-        "products-category-item-index.html",
-      );
-    });
-
-    it("should handle URLs with .html extension", () => {
-      expect(slugifyUrl("/page.html")).toBe("page.html");
-      expect(slugifyUrl("/blog/post.html")).toBe("blog-post.html");
-    });
-
-    it("should remove leading and trailing slashes", () => {
-      expect(slugifyUrl("///about///")).toBe("about-index.html");
-      expect(slugifyUrl("/about/")).toBe("about-index.html");
-    });
-
-    it("should handle empty string", () => {
-      expect(slugifyUrl("")).toBe("-index.html");
-    });
-
-    it("should handle single slash", () => {
-      expect(slugifyUrl("/")).toBe("-index.html");
-    });
-
-    it("should convert to lowercase", () => {
-      expect(slugifyUrl("/About/Page")).toBe("about-page-index.html");
-    });
-
-    it("should trim whitespace", () => {
-      expect(slugifyUrl("  /about  ")).toBe("about-index.html");
     });
   });
 

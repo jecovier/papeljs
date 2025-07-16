@@ -9,7 +9,6 @@ import {
   LoadingStartedEventName,
   LoadingFinishedEventName,
   FetchMethod,
-  EventTrigger,
   HtmlLoaderContentType,
   LoadState,
 } from "../constants";
@@ -52,77 +51,25 @@ describe("constants", () => {
   });
 
   describe("FetchMethod enum", () => {
-    it("should have all HTTP methods", () => {
+    it("should have HTTP methods", () => {
       expect(FetchMethod.GET).toBe("GET");
       expect(FetchMethod.POST).toBe("POST");
-      expect(FetchMethod.PUT).toBe("PUT");
-      expect(FetchMethod.PATCH).toBe("PATCH");
-      expect(FetchMethod.DELETE).toBe("DELETE");
     });
 
     it("should have correct number of methods", () => {
       const methods = Object.values(FetchMethod);
-      expect(methods).toHaveLength(5);
-    });
-  });
-
-  describe("EventTrigger enum", () => {
-    it("should have common DOM events", () => {
-      expect(EventTrigger.LOAD).toBe("load");
-      expect(EventTrigger.CLICK).toBe("click");
-      expect(EventTrigger.SUBMIT).toBe("submit");
-      expect(EventTrigger.CHANGE).toBe("change");
-      expect(EventTrigger.FOCUS).toBe("focus");
-      expect(EventTrigger.BLUR).toBe("blur");
-    });
-
-    it("should have keyboard events", () => {
-      expect(EventTrigger.KEYDOWN).toBe("keydown");
-      expect(EventTrigger.KEYUP).toBe("keyup");
-      expect(EventTrigger.KEYPRESS).toBe("keypress");
-    });
-
-    it("should have mouse events", () => {
-      expect(EventTrigger.MOUSEDOWN).toBe("mousedown");
-      expect(EventTrigger.MOUSEUP).toBe("mouseup");
-      expect(EventTrigger.MOUSEMOVE).toBe("mousemove");
-      expect(EventTrigger.MOUSEOUT).toBe("mouseout");
-      expect(EventTrigger.MOUSEOVER).toBe("mouseover");
-      expect(EventTrigger.MOUSEENTER).toBe("mouseenter");
-      expect(EventTrigger.MOUSELEAVE).toBe("mouseleave");
-    });
-
-    it("should have drag and drop events", () => {
-      expect(EventTrigger.DRAG).toBe("drag");
-      expect(EventTrigger.DROP).toBe("drop");
-      expect(EventTrigger.DRAGSTART).toBe("dragstart");
-      expect(EventTrigger.DRAGEND).toBe("dragend");
-      expect(EventTrigger.DRAGOVER).toBe("dragover");
-      expect(EventTrigger.DRAGENTER).toBe("dragenter");
-      expect(EventTrigger.DRAGLEAVE).toBe("dragleave");
-      expect(EventTrigger.DRAGEXIT).toBe("dragexit");
-    });
-
-    it("should have input event", () => {
-      expect(EventTrigger.INPUT).toBe("input");
-    });
-
-    it("should have correct number of event triggers", () => {
-      const triggers = Object.values(EventTrigger);
-      expect(triggers).toHaveLength(25);
+      expect(methods).toHaveLength(2);
     });
   });
 
   describe("HtmlLoaderContentType enum", () => {
     it("should have correct content types", () => {
       expect(HtmlLoaderContentType.HTML).toBe("text/html");
-      expect(HtmlLoaderContentType.JSON).toBe("application/json");
-      expect(HtmlLoaderContentType.TEXT).toBe("text/plain");
     });
 
     it("should have correct number of content types", () => {
       const contentTypes = Object.values(HtmlLoaderContentType);
-      expect(contentTypes).toHaveLength(3);
+      expect(contentTypes).toHaveLength(1);
     });
   });
 

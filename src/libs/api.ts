@@ -16,29 +16,6 @@ import {
   exportCompressionStats,
 } from "./compression-utils";
 
-// Factory functions for dependency injection and testing
-export function createHtmlLoader(): HtmlLoader {
-  return new HtmlLoader();
-}
-
-export function createNavigationInterceptor(): NavigationInterceptor {
-  return new NavigationInterceptor();
-}
-
-export function createNavigationPrefetch(
-  loader: HtmlLoader,
-): NavigationPrefetch {
-  return new NavigationPrefetch(loader);
-}
-
-export function createPathLinkMatcher(): PathLinkMatcher {
-  return new PathLinkMatcher();
-}
-
-export function createLoadIndicator(): LoadIndicator {
-  return new LoadIndicator();
-}
-
 // Create instances lazily to allow for proper mocking in tests
 let htmlLoader: HtmlLoader;
 let navigationInterceptor: NavigationInterceptor;
@@ -48,35 +25,35 @@ let loadIndicator: LoadIndicator;
 
 function getHtmlLoader(): HtmlLoader {
   if (!htmlLoader) {
-    htmlLoader = createHtmlLoader();
+    htmlLoader = new HtmlLoader();
   }
   return htmlLoader;
 }
 
 function getNavigationInterceptor(): NavigationInterceptor {
   if (!navigationInterceptor) {
-    navigationInterceptor = createNavigationInterceptor();
+    navigationInterceptor = new NavigationInterceptor();
   }
   return navigationInterceptor;
 }
 
 function getNavigationPrefetch(): NavigationPrefetch {
   if (!navigationPrefetch) {
-    navigationPrefetch = createNavigationPrefetch(getHtmlLoader());
+    navigationPrefetch = new NavigationPrefetch(getHtmlLoader());
   }
   return navigationPrefetch;
 }
 
 function getMatcher(): PathLinkMatcher {
   if (!matcher) {
-    matcher = createPathLinkMatcher();
+    matcher = new PathLinkMatcher();
   }
   return matcher;
 }
 
 function getLoadIndicator(): LoadIndicator {
   if (!loadIndicator) {
-    loadIndicator = createLoadIndicator();
+    loadIndicator = new LoadIndicator();
   }
   return loadIndicator;
 }
@@ -116,5 +93,3 @@ export const api = {
   logCompressionStats,
   exportCompressionStats,
 };
-
-export type ApiType = typeof api;

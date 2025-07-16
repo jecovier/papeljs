@@ -1,10 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { CONFIG, ConfigKey, EventName } from "../config";
+import { CONFIG } from "../config";
 
 describe("config", () => {
   describe("CONFIG object", () => {
-    it("should have correct timeout values", () => {
-      expect(CONFIG.REQUEST_TIMEOUT).toBe(10000);
+    it("should have correct cache size", () => {
       expect(CONFIG.CACHE_MAX_SIZE).toBe(50);
     });
 
@@ -12,7 +11,7 @@ describe("config", () => {
       expect(CONFIG.EVENTS.PAGE_LOADED).toBe("page-loaded");
       expect(CONFIG.EVENTS.PAGE_LOAD_ERROR).toBe("page-load-error");
       expect(CONFIG.EVENTS.LAYOUT_RENDERED).toBe("layout-rendered");
-      expect(CONFIG.EVENTS.CACHE_CLEARED).toBe("cache-cleared");
+      expect(CONFIG.EVENTS.COMPRESSION_STATS).toBe("compression-stats");
     });
 
     it("should have correct CSS selectors", () => {
@@ -20,50 +19,20 @@ describe("config", () => {
         "link[data-layout], link[rel='layout']",
       );
       expect(CONFIG.SELECTORS.SLOTS).toBe("slot, [slot], [data-slot]");
-      expect(CONFIG.SELECTORS.PRESERVE_ELEMENTS).toBe("[data-preserve]");
     });
 
     it("should have correct prefetch configuration", () => {
       expect(CONFIG.PREFETCH.ENABLED).toBe(true);
-      expect(CONFIG.PREFETCH.DELAY).toBe(100);
-      expect(CONFIG.PREFETCH.MAX_CONCURRENT).toBe(3);
     });
 
     it("should have correct view transitions configuration", () => {
       expect(CONFIG.VIEW_TRANSITIONS.ENABLED).toBe(true);
-      expect(CONFIG.VIEW_TRANSITIONS.FALLBACK_DURATION).toBe(300);
     });
-  });
 
-  describe("ConfigKey type", () => {
-    it("should include all top-level config keys", () => {
-      const expectedKeys: ConfigKey[] = [
-        "REQUEST_TIMEOUT",
-        "CACHE_MAX_SIZE",
-        "EVENTS",
-        "SELECTORS",
-        "PREFETCH",
-        "VIEW_TRANSITIONS",
-      ];
-
-      expectedKeys.forEach((key) => {
-        expect(CONFIG[key]).toBeDefined();
-      });
-    });
-  });
-
-  describe("EventName type", () => {
-    it("should include all event names", () => {
-      const expectedEventNames: EventName[] = [
-        "page-loaded",
-        "page-load-error",
-        "layout-rendered",
-        "cache-cleared",
-      ];
-
-      expectedEventNames.forEach((eventName) => {
-        expect(Object.values(CONFIG.EVENTS)).toContain(eventName);
-      });
+    it("should have correct compression configuration", () => {
+      expect(CONFIG.COMPRESSION.ENABLED).toBe(true);
+      expect(CONFIG.COMPRESSION.MIN_SIZE_TO_COMPRESS).toBe(1024);
+      expect(CONFIG.COMPRESSION.ENABLE_STATS).toBe(true);
     });
   });
 
@@ -79,31 +48,37 @@ describe("config", () => {
       expect(CONFIG.SELECTORS).toBeDefined();
       expect(CONFIG.PREFETCH).toBeDefined();
       expect(CONFIG.VIEW_TRANSITIONS).toBeDefined();
+      expect(CONFIG.COMPRESSION).toBeDefined();
     });
 
     it("should have correct number of top-level properties", () => {
       const topLevelKeys = Object.keys(CONFIG);
-      expect(topLevelKeys).toHaveLength(7);
+      expect(topLevelKeys).toHaveLength(6);
     });
 
     it("should have correct number of events", () => {
       const eventKeys = Object.keys(CONFIG.EVENTS);
-      expect(eventKeys).toHaveLength(5);
+      expect(eventKeys).toHaveLength(4);
     });
 
     it("should have correct number of selectors", () => {
       const selectorKeys = Object.keys(CONFIG.SELECTORS);
-      expect(selectorKeys).toHaveLength(3);
+      expect(selectorKeys).toHaveLength(2);
     });
 
     it("should have correct number of prefetch options", () => {
       const prefetchKeys = Object.keys(CONFIG.PREFETCH);
-      expect(prefetchKeys).toHaveLength(3);
+      expect(prefetchKeys).toHaveLength(1);
     });
 
     it("should have correct number of view transition options", () => {
       const viewTransitionKeys = Object.keys(CONFIG.VIEW_TRANSITIONS);
-      expect(viewTransitionKeys).toHaveLength(2);
+      expect(viewTransitionKeys).toHaveLength(1);
+    });
+
+    it("should have correct number of compression options", () => {
+      const compressionKeys = Object.keys(CONFIG.COMPRESSION);
+      expect(compressionKeys).toHaveLength(3);
     });
   });
 });

@@ -13,18 +13,6 @@ export function parseStringToDocument(html: string): Document {
   return parser.parseFromString(html, "text/html");
 }
 
-export function slugifyUrl(tag: string): string {
-  let formattedTag = tag
-    .toLowerCase()
-    .trim()
-    .replace(/^\/+|\/+$/g, "");
-  if (!formattedTag.endsWith(".html")) {
-    formattedTag += "/index.html";
-  }
-  formattedTag = formattedTag.replace(/\//g, "-");
-  return formattedTag;
-}
-
 export function dispatchCustomEvent(event: string, detail?: object): void {
   document.dispatchEvent(new CustomEvent(event, detail));
 }
