@@ -1,64 +1,30 @@
 import { PREFETCH_ATTR_NAME, PREFETCHED_ATTR_NAME } from "@/libs/constants";
 import { HtmlLoader } from "@/libs/html-loader";
 
+type LinkType = HTMLAnchorElement | HTMLLinkElement;
+
 export class NavigationPrefetch {
   private loadedUrls: string[] = [];
 
   constructor(private htmlLoader: HtmlLoader) {}
 
   public startPrefetch(target: Document | Element): void {
-    this._addObserverToLinks(target, async (link: HTMLAnchorElement) => {
-      const prefetch = link.getAttribute(PREFETCH_ATTR_NAME);
-
-      if (prefetch !== "all") {
-        await this._prefetchRequest(link.href);
-        return;
-      }
-
-      if (prefetch === "all") {
-        const data = await this._prefetchRequest(link.href);
-        const parser = new DOMParser();
-        const newDocument = parser.parseFromString(data, "text/html");
-        this.imagePrefetch(newDocument);
-        this.templateImagePrefetch(newDocument);
-      }
-    });
-  }
-
-  public imagePrefetch(target: Document | DocumentFragment | Element): void {
-    const images = target.querySelectorAll(
-      `img[${PREFETCH_ATTR_NAME}]`,
-    ) as NodeListOf<HTMLImageElement>;
-
-    images.forEach((image) => {
-      this._prefetchRequest(image.src);
-      this.loadedUrls.push(image.src);
-    });
-  }
-
-  public templateImagePrefetch(
-    target: Document | DocumentFragment | Element,
-  ): void {
-    const templates = target.querySelectorAll(
-      "template",
-    ) as NodeListOf<HTMLTemplateElement>;
-
-    templates.forEach((template) => {
-      this.imagePrefetch(template.content);
+    this._addObserverToLinks(target, async (link: LinkType) => {
+      await this._prefetchRequest(link.href);
     });
   }
 
   private _addObserverToLinks(
     target: Document | Element,
-    callback: (link: HTMLAnchorElement) => void,
+    callback: (link: LinkType) => void,
   ): void {
     const observer = this._getIntersectionObserver(callback);
     const links = target.querySelectorAll(
-      `a[${PREFETCH_ATTR_NAME}]:not([${PREFETCH_ATTR_NAME}="none"]):not([${PREFETCHED_ATTR_NAME}])`,
+      `a[${PREFETCH_ATTR_NAME}]:not([${PREFETCH_ATTR_NAME}="none"]):not([${PREFETCHED_ATTR_NAME}]):not([target]):not([href^="${location.origin}"]):not([download]), link[${PREFETCH_ATTR_NAME}]:not([${PREFETCH_ATTR_NAME}="none"]):not([${PREFETCHED_ATTR_NAME}]):not([href^="${location.origin}"])`,
     ) as NodeListOf<HTMLAnchorElement>;
 
     links.forEach((link) => {
-      if (!this._isLocalLink(link)) {
+      if (!this._isLocalLink(new URL(link.href))) {
         return;
       }
 
@@ -72,7 +38,7 @@ export class NavigationPrefetch {
   }
 
   private _getIntersectionObserver(
-    callback: (link: HTMLAnchorElement) => void,
+    callback: (link: LinkType) => void,
   ): IntersectionObserver {
     return new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -91,11 +57,11 @@ export class NavigationPrefetch {
     });
   }
 
-  private _isAlreadyPrefetched(link: HTMLAnchorElement): boolean {
+  private _isAlreadyPrefetched(link: LinkType): boolean {
     return this.loadedUrls.includes(link.href);
   }
 
-  private _isLocalLink(link: HTMLAnchorElement): boolean {
+  private _isLocalLink(link: URL): boolean {
     return link.hostname === window.location.hostname;
   }
 
