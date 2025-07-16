@@ -1,8 +1,6 @@
 // Configuración centralizada para el sistema de layouts
 export const CONFIG = {
-  // Cache
-  CACHE_MAX_SIZE: 50, // Máximo número de layouts en cache
-
+  ERROR_PAGE_URL: "/_error.html",
   CACHE_NAME: "papel-fetch",
 
   // Eventos personalizados

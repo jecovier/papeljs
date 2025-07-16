@@ -26,7 +26,6 @@ export async function loadPage(): Promise<void> {
       await renderBaseLayout(baseLayoutUrl);
     }
 
-    // Procesar layouts en paralelo si es posible
     await Promise.all(
       layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
     );
@@ -57,7 +56,6 @@ export async function loadFetchedPage(url: URL): Promise<void> {
       await renderBaseLayout(baseLayoutUrl);
     }
 
-    // Procesar layouts en paralelo
     await Promise.all(
       layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
     );
@@ -69,7 +67,8 @@ export async function loadFetchedPage(url: URL): Promise<void> {
       dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOADED);
     });
   } catch (error) {
-    console.error("Error loading fetched page:", error);
+    console.error("Error loading page:", error);
+    redirectToErrorPage();
     dispatchCustomEvent(CONFIG.EVENTS.PAGE_LOAD_ERROR, { error });
   } finally {
     loadIndicator.stopLoadingAnimation();
@@ -109,9 +108,6 @@ function startViewTransition(callback: () => void): void {
   callback();
 }
 
-/**
- * Normaliza una URL de layout para el cache (igual que LayoutManager._formatTag)
- */
 function normalizeLayoutUrl(layoutUrl: string): string {
   return layoutUrl.endsWith(".html")
     ? layoutUrl
@@ -125,7 +121,6 @@ async function renderBaseLayout(layoutUrl: string): Promise<void> {
   }
 
   try {
-    // Usar fetchDocument para aprovechar el cache
     const layout = await fetchDocument(normalizeLayoutUrl(layoutUrl));
 
     layoutManager.render(document, layoutUrl, layout);
@@ -162,4 +157,8 @@ function enhanceRenderedContent(target: Document | Element): void {
   navigationInterceptor.onNavigate(loadFetchedPage);
   navigationPrefetch.startPrefetch(target);
   matcher.highlightMatchingLinks(target);
+}
+
+function redirectToErrorPage(): void {
+  window.location.href = CONFIG.ERROR_PAGE_URL;
 }

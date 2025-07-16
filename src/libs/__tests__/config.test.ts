@@ -3,8 +3,8 @@ import { CONFIG } from "../config";
 
 describe("config", () => {
   describe("CONFIG object", () => {
-    it("should have correct cache size", () => {
-      expect(CONFIG.CACHE_MAX_SIZE).toBe(50);
+    it("should have correct error page url", () => {
+      expect(CONFIG.ERROR_PAGE_URL).toBe("/_error.html");
     });
 
     it("should have all required events", () => {

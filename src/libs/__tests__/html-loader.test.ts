@@ -50,25 +50,24 @@ describe("HtmlLoader", () => {
       expect(result).toBe("<html><body>Test content</body></html>");
     });
 
-    it("should handle empty URL", async () => {
+    it("should throw error for empty URL", async () => {
       await htmlLoader.clearCache();
-      const result = await htmlLoader.load("");
 
-      expect(mockFetch).not.toHaveBeenCalled();
-      expect(result).toBe("");
-      expect(console.error).toHaveBeenCalledWith(
+      await expect(htmlLoader.load("")).rejects.toThrow(
         "URL is required to load HTML",
       );
+      expect(mockFetch).not.toHaveBeenCalled();
     });
 
-    it("should handle fetch errors", async () => {
+    it("should throw error for fetch errors", async () => {
       const error = new Error("Network error");
       mockFetch.mockRejectedValue(error);
 
       await htmlLoader.clearCache();
-      const result = await htmlLoader.load("/test-page");
 
-      expect(result).toBe("");
+      await expect(htmlLoader.load("/test-page")).rejects.toThrow(
+        "Failed to load /test-page",
+      );
       expect(console.error).toHaveBeenCalledWith(
         "Error loading HTML: ",
         error,
@@ -76,7 +75,7 @@ describe("HtmlLoader", () => {
       );
     });
 
-    it("should handle non-ok responses", async () => {
+    it("should throw error for non-ok responses", async () => {
       const mockResponse = {
         ok: false,
         statusText: "Not Found",
@@ -84,13 +83,9 @@ describe("HtmlLoader", () => {
       mockFetch.mockResolvedValue(mockResponse);
 
       await htmlLoader.clearCache();
-      const result = await htmlLoader.load("/test-page");
 
-      expect(result).toBe("");
-      expect(console.error).toHaveBeenCalledWith(
-        "Error loading HTML: ",
-        expect.any(Error),
-        "/test-page",
+      await expect(htmlLoader.load("/test-page")).rejects.toThrow(
+        "Failed to load /test-page",
       );
     });
   });
@@ -112,6 +107,17 @@ describe("HtmlLoader", () => {
 
       expect(parseStringToDocument).toHaveBeenCalledWith(mockHtml);
       expect(result).toBe(mockDocument);
+    });
+
+    it("should throw error when load fails", async () => {
+      const error = new Error("Network error");
+      mockFetch.mockRejectedValue(error);
+
+      await htmlLoader.clearCache();
+
+      await expect(htmlLoader.loadHTMLDocument("/test-page")).rejects.toThrow(
+        "Failed to load /test-page",
+      );
     });
   });
 
@@ -197,6 +203,25 @@ describe("HtmlLoader", () => {
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(result).toBe("content");
+    });
+
+    it("should return empty string when all URLs fail to load", async () => {
+      const urls = ["/page1", "/page2"];
+      mockFetch
+        .mockRejectedValueOnce(new Error("Network error"))
+        .mockRejectedValueOnce(new Error("Network error"));
+
+      const match = (html: string) => html === "content";
+
+      await htmlLoader.clearCache();
+      const result = await htmlLoader.firstToMatch(urls, match);
+
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(result).toBe("");
+      expect(console.error).toHaveBeenCalledWith(
+        "None of the urls could be loaded",
+        urls,
+      );
     });
   });
 

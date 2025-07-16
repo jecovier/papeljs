@@ -7,8 +7,7 @@ export class HtmlLoader {
 
   async load(url: string): Promise<string> {
     if (!url) {
-      console.error("URL is required to load HTML");
-      return "";
+      throw new Error("URL is required to load HTML");
     }
 
     const cache = await this.getCache();
@@ -31,7 +30,7 @@ export class HtmlLoader {
       return await response.text();
     } catch (error) {
       console.error("Error loading HTML: ", error, url);
-      return "";
+      throw new Error(`Failed to load ${url}`);
     }
   }
 
@@ -74,10 +73,14 @@ export class HtmlLoader {
     match: (html: string) => boolean,
   ): Promise<string> {
     for (const url of urls) {
-      const html = await this.load(url);
+      try {
+        const html = await this.load(url);
 
-      if (html && match(html)) {
-        return html;
+        if (html && match(html)) {
+          return html;
+        }
+      } catch (error) {
+        console.error("Error loading url", url, error);
       }
     }
 
@@ -89,7 +92,9 @@ export class HtmlLoader {
     const cache = await this.getCache();
 
     if (cache) {
-      await cache.delete(CONFIG.CACHE_NAME);
+      for (const key of await cache.keys()) {
+        await cache.delete(key);
+      }
       console.log("Cache cleared");
     }
   }
