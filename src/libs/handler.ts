@@ -91,28 +91,28 @@ export async function loadFetchedPage(url: URL): Promise<void> {
 
     const fetchedLayouts = await Promise.all(layoutPromises);
 
-    // Segunda fase: Renderizado de todos los layouts
-    if (baseLayoutUrl) {
-      const baseLayout = fetchedLayouts.shift()!;
-      layoutManager.render(document, baseLayoutUrl, baseLayout);
-      layoutManager.mergeHeads(baseLayout, document);
-      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, {
-        layoutUrl: baseLayoutUrl,
-      });
-    }
-
-    // Renderizar layouts parciales
-    layoutUrls.forEach((layoutUrl, index) => {
-      const layout = fetchedLayouts[index];
-      const slotContents = layoutManager.getSlotsContents(layout);
-
-      layoutManager.markAsRendered(layoutUrl);
-      layoutManager.replaceSlotContents(slotContents);
-      layoutManager.mergeHeads(layout, document);
-      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
-    });
-
     await startViewTransition(async () => {
+      // Segunda fase: Renderizado de todos los layouts
+      if (baseLayoutUrl) {
+        const baseLayout = fetchedLayouts.shift()!;
+        layoutManager.render(document, baseLayoutUrl, baseLayout);
+        layoutManager.mergeHeads(baseLayout, document);
+        dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, {
+          layoutUrl: baseLayoutUrl,
+        });
+      }
+
+      // Renderizar layouts parciales
+      layoutUrls.forEach((layoutUrl, index) => {
+        const layout = fetchedLayouts[index];
+        const slotContents = layoutManager.getSlotsContents(layout);
+
+        layoutManager.markAsRendered(layoutUrl);
+        layoutManager.replaceSlotContents(slotContents);
+        layoutManager.mergeHeads(layout, document);
+        dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
+      });
+
       layoutManager.replaceSlotContents(slotContents);
       layoutManager.consolidateLayouts();
       enhanceRenderedContent(document);

@@ -1,237 +1,131 @@
-var z = Object.defineProperty;
-var Y = (n, t, e) =>
-  t in n
-    ? z(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e })
-    : (n[t] = e);
-var l = (n, t, e) => Y(n, typeof t != "symbol" ? t + "" : t, e);
-(function () {
+var t = Object.defineProperty,
+  e = (e, n, i) =>
+    ((e, n, i) =>
+      n in e
+        ? t(e, n, { enumerable: !0, configurable: !0, writable: !0, value: i })
+        : (e[n] = i))(e, "symbol" != typeof n ? n + "" : n, i);
+!(function () {
   const t = document.createElement("link").relList;
-  if (t && t.supports && t.supports("modulepreload")) return;
-  for (const o of document.querySelectorAll('link[rel="modulepreload"]')) r(o);
-  new MutationObserver((o) => {
-    for (const a of o)
-      if (a.type === "childList")
-        for (const c of a.addedNodes)
-          c.tagName === "LINK" && c.rel === "modulepreload" && r(c);
-  }).observe(document, { childList: !0, subtree: !0 });
-  function e(o) {
-    const a = {};
-    return (
-      o.integrity && (a.integrity = o.integrity),
-      o.referrerPolicy && (a.referrerPolicy = o.referrerPolicy),
-      o.crossOrigin === "use-credentials"
-        ? (a.credentials = "include")
-        : o.crossOrigin === "anonymous"
-          ? (a.credentials = "omit")
-          : (a.credentials = "same-origin"),
-      a
-    );
+  if (!(t && t.supports && t.supports("modulepreload"))) {
+    for (const t of document.querySelectorAll('link[rel="modulepreload"]'))
+      e(t);
+    new MutationObserver((t) => {
+      for (const n of t)
+        if ("childList" === n.type)
+          for (const t of n.addedNodes)
+            "LINK" === t.tagName && "modulepreload" === t.rel && e(t);
+    }).observe(document, { childList: !0, subtree: !0 });
   }
-  function r(o) {
-    if (o.ep) return;
-    o.ep = !0;
-    const a = e(o);
-    fetch(o.href, a);
+  function e(t) {
+    if (t.ep) return;
+    t.ep = !0;
+    const e = (function (t) {
+      const e = {};
+      return (
+        t.integrity && (e.integrity = t.integrity),
+        t.referrerPolicy && (e.referrerPolicy = t.referrerPolicy),
+        "use-credentials" === t.crossOrigin
+          ? (e.credentials = "include")
+          : "anonymous" === t.crossOrigin
+            ? (e.credentials = "omit")
+            : (e.credentials = "same-origin"),
+        e
+      );
+    })(t);
+    fetch(t.href, e);
   }
 })();
-const S = "data-slot",
-  g = "data-preserve",
-  b = "data-intercepted",
-  C = "data-nointercepted",
-  m = "data-prefetch",
-  L = "data-prefetched",
-  W = "loading-started",
-  K = "loading-finished";
-var I = ((n) => ((n.GET = "GET"), (n.POST = "POST"), n))(I || {}),
-  R = ((n) => ((n.HTML = "text/html"), n))(R || {}),
-  s = ((n) => (
-    (n.IsLoading = "is-loading"),
-    (n.IsIndeterminate = "is-indeterminate"),
-    (n.BeforeLoading = "before-loading"),
-    (n.AfterLoading = "after-loading"),
-    n
-  ))(s || {});
-function p(n, t) {
-  t.replaceChildren(...Array.from(n.children).map((e) => e.cloneNode(!0)));
+const n = "data-slot",
+  i = "data-preserve",
+  o = "data-intercepted",
+  a = "data-nointercepted",
+  r = "data-prefetch",
+  s = "data-prefetched";
+var c = ((t) => ((t.GET = "GET"), (t.POST = "POST"), t))(c || {}),
+  l = ((t) => ((t.HTML = "text/html"), t))(l || {}),
+  d = ((t) => (
+    (t.IsLoading = "is-loading"),
+    (t.IsIndeterminate = "is-indeterminate"),
+    (t.BeforeLoading = "before-loading"),
+    (t.AfterLoading = "after-loading"),
+    t
+  ))(d || {});
+function h(t, e) {
+  e.replaceChildren(...Array.from(t.children).map((t) => t.cloneNode(!0)));
 }
-function M(n) {
-  return n
-    ? new DOMParser().parseFromString(n, "text/html")
-    : document.implementation.createHTMLDocument();
+function u(t) {
+  if (!t) return document.implementation.createHTMLDocument();
+  return new DOMParser().parseFromString(t, "text/html");
 }
-function h(n, t) {
-  document.dispatchEvent(new CustomEvent(n, t));
+function m(t, e) {
+  document.dispatchEvent(new CustomEvent(t, e));
 }
-const d = {
-  CACHE_MAX_SIZE: 50,
-  CACHE_NAME: "papel-fetch",
-  EVENTS: {
+const f = "/_error.html",
+  g = "papel-fetch",
+  L = {
     PAGE_LOADED: "page-loaded",
     PAGE_LOAD_ERROR: "page-load-error",
     LAYOUT_RENDERED: "layout-rendered",
   },
-  SELECTORS: {
+  y = {
     LAYOUT_LINKS: "link[data-layout], link[rel='layout']",
     SLOTS: "slot, [slot], [data-slot]",
-  },
-  PREFETCH: { ENABLED: !0 },
-  VIEW_TRANSITIONS: { ENABLED: !0 },
-};
-class O {
+  };
+class p {
   constructor() {
-    l(this, "config", {});
+    e(this, "config", {});
   }
   async load(t) {
-    if (!t) return (console.error("URL is required to load HTML"), "");
+    if (!t) throw new Error("URL is required to load HTML");
     const e = await this.getCache();
     if (e) {
-      const r = await e.match(t);
-      if (r) return await r.text();
+      const n = await e.match(t);
+      if (n) return await n.text();
     }
     try {
-      const r = await this.fetchHtml(t);
-      return (e && (await e.put(t, r.clone())), await r.text());
-    } catch (r) {
-      return (console.error("Error loading HTML: ", r, t), "");
+      const n = await this.fetchHtml(t);
+      return (e && (await e.put(t, n.clone())), await n.text());
+    } catch (n) {
+      throw new Error(`Failed to load ${t}`);
     }
   }
   async getCache() {
     try {
-      return await caches.open(d.CACHE_NAME);
+      return await caches.open(g);
     } catch (t) {
-      return (console.error("Error opening cache: ", t), null);
+      return null;
     }
   }
   async fetchHtml(t, e) {
-    const r = await fetch(t, {
-      method: I.GET,
-      headers: { "Content-Type": R.HTML },
+    const n = await fetch(t, {
+      method: c.GET,
+      headers: { "Content-Type": l.HTML },
       ...e,
     });
-    if (!r.ok) throw new Error(`Failed to load ${t}: ${r.statusText}`);
-    return r;
+    if (!n.ok) throw new Error(`Failed to load ${t}: ${n.statusText}`);
+    return n;
   }
   async loadHTMLDocument(t) {
-    const e = await this.load(t);
-    return M(e);
+    return u(await this.load(t));
   }
   async firstToMatch(t, e) {
-    for (const r of t) {
-      const o = await this.load(r);
-      if (o && e(o)) return o;
-    }
-    return (console.error("None of the urls could be loaded", t), "");
+    for (const i of t)
+      try {
+        const t = await this.load(i);
+        if (t && e(t)) return t;
+      } catch (n) {}
+    return "";
   }
   async clearCache() {
     const t = await this.getCache();
-    t && (await t.delete(d.CACHE_NAME), console.log("Cache cleared"));
+    if (t) for (const e of await t.keys()) await t.delete(e);
   }
 }
-class X {
+class w {
   constructor() {
-    l(this, "currentLayouts", []);
-    l(this, "loadedLayouts", []);
-  }
-  resetLayouts() {
-    ((this.currentLayouts = []), (this.loadedLayouts = []));
-  }
-  render(t, e, r) {
-    const o = this._formatTag(e);
-    if (!r) throw new Error("layout is required");
-    (this.currentLayouts.push(o),
-      !this.isAlreadyRendered(o) &&
-        (this.loadedLayouts.push(o),
-        this._copyElementAttributes(r.body, t.body),
-        this._replaceContent(r.body, t.body)));
-  }
-  markAsRendered(t) {
-    this.currentLayouts.push(this._formatTag(t));
-  }
-  replaceSlotContents(t) {
-    document.querySelectorAll("slot").forEach((r) => {
-      const o = r.getAttribute("name") || "default",
-        a = t.find((c) => c.slot === o);
-      a && r.innerHTML !== a.content.innerHTML && p(a.content, r);
-    });
-  }
-  isAlreadyRendered(t) {
-    return this.loadedLayouts.includes(t);
-  }
-  getSlotsContents(t) {
-    const e = [];
-    return (
-      t.querySelectorAll(`slot, [slot], [${S}]`).forEach((o) => {
-        const a = o.getAttribute("slot") || o.getAttribute(S) || "default";
-        e.push({ slot: a, content: o });
-      }),
-      e
-    );
-  }
-  _copyElementAttributes(t, e) {
-    Array.from(t.attributes).forEach((r) => {
-      e.setAttribute(r.name, r.value);
-    });
-  }
-  mergeHeads(t, e) {
-    const r = t.head,
-      o = e.head;
-    if (r.innerHTML) {
-      if (r.innerHTML && !o.innerHTML) {
-        p(r, o);
-        return;
-      }
-      this._mergeElements(r, o);
-    }
-  }
-  _mergeElements(t, e) {
-    const r = e.innerHTML;
-    Array.from(t.children).forEach((o) => {
-      if (this._elementIsPapelScript(o)) return;
-      const a = o.outerHTML;
-      r.includes(a) || e.appendChild(o);
-    });
-  }
-  consolidateLayouts() {
-    const t = new Set(this.currentLayouts),
-      e = new Set(this.loadedLayouts);
-    (this.currentLayouts
-      .filter((o) => !e.has(o))
-      .forEach((o) => {
-        const a = document.querySelector(`link[href$="${o}"]`);
-        a == null || a.remove();
-      }),
-      (this.loadedLayouts = Array.from(t)),
-      (this.currentLayouts = []));
-  }
-  _replaceContent(t, e) {
-    const r = e.querySelectorAll(`[${g}]`),
-      o = new Map();
-    (r.forEach((a, c) => {
-      const u = a.getAttribute(g) ?? `preserve-${c}`;
-      o.set(u, a);
-    }),
-      p(t, e),
-      o.forEach((a, c) => {
-        const u = e.querySelector(`[${g}="${c}"]`);
-        u ? u.replaceWith(a) : e.insertBefore(a, e.firstChild);
-      }));
-  }
-  _elementIsPapelScript(t) {
-    var e;
-    return (
-      t.tagName === "SCRIPT" &&
-      !!((e = t.getAttribute("src")) != null && e.includes("papel"))
-    );
-  }
-  _formatTag(t) {
-    return t.endsWith(".html") ? t : `${t.replace(/\/$/, "")}/index.html`;
-  }
-}
-class H {
-  constructor() {
-    l(this, "navigationCallback");
-    l(this, "scrollPositions");
-    ((this.navigationCallback = async () => {}),
+    (e(this, "navigationCallback"),
+      e(this, "scrollPositions"),
+      (this.navigationCallback = async () => {}),
       (this.scrollPositions = new Map()),
       window.addEventListener("popstate", (t) => {
         const e = new URL(location.href);
@@ -245,7 +139,7 @@ class H {
     this._interceptLinks(t);
   }
   isNavigationAvailable() {
-    return "navigation" in window && typeof window.navigation < "u";
+    return "navigation" in window && void 0 !== window.navigation;
   }
   _isLocalUrl(t) {
     return t.origin === location.origin;
@@ -255,18 +149,15 @@ class H {
   }
   _interceptLinks(t) {
     t.querySelectorAll(
-      `a:not([${b}]):not([${C}]):not([target]):not([href^="${location.origin}"]):not([download])`,
-    ).forEach((e) => {
-      if (e instanceof HTMLAnchorElement) {
-        if (!this._shouldIntercept(new URL(e.href))) {
-          e.setAttribute(C, "true");
-          return;
-        }
-        (e.setAttribute(b, "true"),
-          e.addEventListener("click", (r) =>
-            this._handleLinkClick.bind(this)(r, e),
-          ));
-      }
+      `a:not([${o}]):not([${a}]):not([target]):not([href^="${location.origin}"]):not([download])`,
+    ).forEach((t) => {
+      t instanceof HTMLAnchorElement &&
+        (this._shouldIntercept(new URL(t.href))
+          ? (t.setAttribute(o, "true"),
+            t.addEventListener("click", (e) =>
+              this._handleLinkClick.bind(this)(e, t),
+            ))
+          : t.setAttribute(a, "true"));
     });
   }
   async _handleLinkClick(t, e) {
@@ -289,68 +180,43 @@ class H {
     (await this.navigationCallback(t), this._restoreScrollPosition(t));
   }
   _handlePopState(t, e) {
-    if (this._shouldIntercept(t)) {
-      if ((e.preventDefault(), this.isNavigationAvailable())) {
-        document.startViewTransition(() => this._handleNavigation(t));
-        return;
-      }
-      this._handleNavigation(t);
-    }
+    this._shouldIntercept(t) &&
+      (e.preventDefault(),
+      this.isNavigationAvailable()
+        ? document.startViewTransition(() => this._handleNavigation(t))
+        : this._handleNavigation(t));
   }
   _restoreScrollPosition(t) {
     window.scrollTo(0, 0);
   }
 }
-class k {
+class A {
   constructor(t) {
-    l(this, "loadedUrls", []);
-    this.htmlLoader = t;
+    (e(this, "loadedUrls", []), (this.htmlLoader = t));
   }
   startPrefetch(t) {
-    this._addObserverToLinks(t, async (e) => {
-      const r = e.getAttribute(m);
-      if (r !== "all") {
-        await this._prefetchRequest(e.href);
-        return;
-      }
-      if (r === "all") {
-        const o = await this._prefetchRequest(e.href),
-          c = new DOMParser().parseFromString(o, "text/html");
-        (this.imagePrefetch(c), this.templateImagePrefetch(c));
-      }
-    });
-  }
-  imagePrefetch(t) {
-    t.querySelectorAll(`img[${m}]`).forEach((r) => {
-      (this._prefetchRequest(r.src), this.loadedUrls.push(r.src));
-    });
-  }
-  templateImagePrefetch(t) {
-    t.querySelectorAll("template").forEach((r) => {
-      this.imagePrefetch(r.content);
+    this._addObserverToLinks(t, async (t) => {
+      await this._prefetchRequest(t.href);
     });
   }
   _addObserverToLinks(t, e) {
-    const r = this._getIntersectionObserver(e);
-    t.querySelectorAll(`a[${m}]:not([${m}="none"]):not([${L}])`).forEach(
-      (a) => {
-        if (this._isLocalLink(a)) {
-          if (this._isAlreadyPrefetched(a)) {
-            a.setAttribute(L, "true");
-            return;
-          }
-          r.observe(a);
-        }
-      },
-    );
+    const n = this._getIntersectionObserver(e);
+    t.querySelectorAll(
+      `a[${r}]:not([${r}="none"]):not([${s}]):not([target]):not([href^="${location.origin}"]):not([download]), link[${r}]:not([${r}="none"]):not([${s}]):not([href^="${location.origin}"])`,
+    ).forEach((t) => {
+      this._isLocalLink(new URL(t.href)) &&
+        (this._isAlreadyPrefetched(t)
+          ? t.setAttribute(s, "true")
+          : n.observe(t));
+    });
   }
   _getIntersectionObserver(t) {
     return new IntersectionObserver((e) => {
-      e.forEach((r) => {
-        if (r.isIntersecting) {
-          const o = r.target;
-          if ((o.setAttribute(L, "true"), this._isAlreadyPrefetched(o))) return;
-          (t(o), this.loadedUrls.push(o.href));
+      e.forEach((e) => {
+        if (e.isIntersecting) {
+          const n = e.target;
+          if ((n.setAttribute(s, "true"), this._isAlreadyPrefetched(n))) return;
+          (t(n), this.loadedUrls.push(n.href));
         }
       });
     });
@@ -365,12 +231,12 @@ class k {
     return this.htmlLoader.load(t);
   }
 }
-class $ {
+class v {
   constructor() {
-    l(this, "currentPath");
-    l(this, "cumulativePaths");
-    l(this, "allLinks");
-    ((this.currentPath = this.normalizePath(window.location.pathname)),
+    (e(this, "currentPath"),
+      e(this, "cumulativePaths"),
+      e(this, "allLinks"),
+      (this.currentPath = this.normalizePath(window.location.pathname)),
       (this.cumulativePaths = this.getCumulativePaths()),
       (this.allLinks = document.querySelectorAll("a")));
   }
@@ -383,10 +249,10 @@ class $ {
   getCumulativePaths() {
     return this.currentPath
       .split("/")
-      .filter((e) => e !== "")
-      .reduce((e, r) => {
-        const o = e.length > 0 ? e[e.length - 1] : "";
-        return (e.push(`${o}/${r}`), e);
+      .filter((t) => "" !== t)
+      .reduce((t, e) => {
+        const n = t.length > 0 ? t[t.length - 1] : "";
+        return (t.push(`${n}/${e}`), t);
       }, []);
   }
   getMatchingLinks() {
@@ -394,212 +260,301 @@ class $ {
       ? Array.from(this.allLinks).filter((t) => {
           const e = new URL(t.href, window.location.origin);
           if (e.origin !== window.location.origin) return !1;
-          const r = this.normalizePath(e.pathname),
-            o = this.ensureIndexPath(r),
-            a = this.ensureIndexPath(this.currentPath);
-          return this.cumulativePaths.includes(r) || o === a;
+          const n = this.normalizePath(e.pathname),
+            i = this.ensureIndexPath(n),
+            o = this.ensureIndexPath(this.currentPath);
+          return this.cumulativePaths.includes(n) || i === o;
         })
       : [];
   }
   clearPreviousMatches() {
     var t;
-    (t = this.allLinks) == null ||
-      t.forEach((e) => e.classList.remove("pl-path-match"));
+    null == (t = this.allLinks) ||
+      t.forEach((t) => t.classList.remove("pl-path-match"));
   }
   highlightMatchingLinks(t) {
     ((this.currentPath = this.normalizePath(window.location.pathname)),
       (this.cumulativePaths = this.getCumulativePaths()),
       (this.allLinks = t.querySelectorAll("a")),
-      this.clearPreviousMatches(),
-      this.getMatchingLinks().forEach((r) => {
-        r.classList.add("pl-path-match");
-      }));
+      this.clearPreviousMatches());
+    this.getMatchingLinks().forEach((t) => {
+      t.classList.add("pl-path-match");
+    });
   }
 }
-class D {
+class E {
   constructor() {
-    l(this, "startAnimationTimeout", null);
+    e(this, "startAnimationTimeout", null);
   }
   startLoadingAnimation() {
-    document.body.classList.contains(s.IsLoading) ||
-      document.body.classList.contains(s.BeforeLoading) ||
-      document.body.classList.contains(s.IsIndeterminate) ||
+    document.body.classList.contains(d.IsLoading) ||
+      document.body.classList.contains(d.BeforeLoading) ||
+      document.body.classList.contains(d.IsIndeterminate) ||
       (this.startAnimationTimeout &&
         (clearTimeout(this.startAnimationTimeout),
         (this.startAnimationTimeout = null)),
-      document.body.classList.add(s.BeforeLoading),
+      document.body.classList.add(d.BeforeLoading),
       (this.startAnimationTimeout = setTimeout(() => {
-        (h(W), this.triggerLoadingAnimation());
+        (m("loading-started"), this.triggerLoadingAnimation());
       }, 200)));
   }
   triggerLoadingAnimation() {
-    (document.body.classList.add(s.IsLoading),
-      document.body.classList.remove(s.BeforeLoading),
+    (document.body.classList.add(d.IsLoading),
+      document.body.classList.remove(d.BeforeLoading),
       (this.startAnimationTimeout = setTimeout(() => {
-        document.body.classList.add(s.IsIndeterminate);
+        document.body.classList.add(d.IsIndeterminate);
       }, 2e3)));
   }
   stopLoadingAnimation() {
     (this.startAnimationTimeout &&
       (clearTimeout(this.startAnimationTimeout),
       (this.startAnimationTimeout = null)),
-      (document.body.classList.contains(s.IsLoading) ||
-        document.body.classList.contains(s.IsIndeterminate)) &&
-        (document.body.classList.add(s.AfterLoading),
+      (document.body.classList.contains(d.IsLoading) ||
+        document.body.classList.contains(d.IsIndeterminate)) &&
+        (document.body.classList.add(d.AfterLoading),
         setTimeout(() => {
-          document.body.classList.remove(s.AfterLoading);
+          document.body.classList.remove(d.AfterLoading);
         }, 500)),
-      document.body.classList.remove(s.IsLoading),
-      document.body.classList.remove(s.BeforeLoading),
-      document.body.classList.remove(s.IsIndeterminate),
-      h(K));
+      document.body.classList.remove(d.IsLoading),
+      document.body.classList.remove(d.BeforeLoading),
+      document.body.classList.remove(d.IsIndeterminate),
+      m("loading-finished"));
   }
 }
-const q = new O(),
-  i = new X(),
-  _ = new H(),
-  Z = new k(q),
-  j = new $(),
-  f = new D();
-async function J() {
+const _ = new p(),
+  b = new (class {
+    constructor() {
+      (e(this, "currentLayouts", []), e(this, "loadedLayouts", []));
+    }
+    resetLayouts() {
+      ((this.currentLayouts = []), (this.loadedLayouts = []));
+    }
+    render(t, e, n) {
+      const i = this._formatTag(e);
+      if (!n) throw new Error("layout is required");
+      (this.currentLayouts.push(i),
+        this.isAlreadyRendered(i) ||
+          (this.loadedLayouts.push(i),
+          this._copyElementAttributes(n.body, t.body),
+          this._replaceContent(n.body, t.body)));
+    }
+    markAsRendered(t) {
+      this.currentLayouts.push(this._formatTag(t));
+    }
+    replaceSlotContents(t) {
+      document.querySelectorAll("slot").forEach((e) => {
+        const n = e.getAttribute("name") || "default",
+          i = t.find((t) => t.slot === n);
+        i && e.innerHTML !== i.content.innerHTML && h(i.content, e);
+      });
+    }
+    isAlreadyRendered(t) {
+      return this.loadedLayouts.includes(t);
+    }
+    getSlotsContents(t) {
+      const e = [];
+      return (
+        t.querySelectorAll(`slot, [slot], [${n}]`).forEach((t) => {
+          const i = t.getAttribute("slot") || t.getAttribute(n) || "default";
+          e.push({ slot: i, content: t });
+        }),
+        e
+      );
+    }
+    _copyElementAttributes(t, e) {
+      Array.from(t.attributes).forEach((t) => {
+        e.setAttribute(t.name, t.value);
+      });
+    }
+    mergeHeads(t, e) {
+      const n = t.head,
+        i = e.head;
+      n.innerHTML &&
+        (!n.innerHTML || i.innerHTML ? this._mergeElements(n, i) : h(n, i));
+    }
+    _mergeElements(t, e) {
+      const n = e.innerHTML;
+      Array.from(t.children).forEach((t) => {
+        if (this._elementIsPapelScript(t)) return;
+        const i = t.outerHTML;
+        n.includes(i) || e.appendChild(t);
+      });
+    }
+    consolidateLayouts() {
+      const t = new Set(this.currentLayouts),
+        e = new Set(this.loadedLayouts);
+      (this.currentLayouts
+        .filter((t) => !e.has(t))
+        .forEach((t) => {
+          const e = document.querySelector(`link[href$="${t}"]`);
+          null == e || e.remove();
+        }),
+        (this.loadedLayouts = Array.from(t)),
+        (this.currentLayouts = []));
+    }
+    _replaceContent(t, e) {
+      const n = e.querySelectorAll(`[${i}]`),
+        o = new Map();
+      (n.forEach((t, e) => {
+        const n = t.getAttribute(i) ?? `preserve-${e}`;
+        o.set(n, t);
+      }),
+        h(t, e),
+        o.forEach((t, n) => {
+          const o = e.querySelector(`[${i}="${n}"]`);
+          o ? o.replaceWith(t) : e.insertBefore(t, e.firstChild);
+        }));
+    }
+    _elementIsPapelScript(t) {
+      var e;
+      return (
+        "SCRIPT" === t.tagName &&
+        !!(null == (e = t.getAttribute("src")) ? void 0 : e.includes("papel"))
+      );
+    }
+    _formatTag(t) {
+      return t.endsWith(".html") ? t : `${t.replace(/\/$/, "")}/index.html`;
+    }
+  })(),
+  T = new w(),
+  P = new A(_),
+  k = new v(),
+  S = new E();
+async function I(t) {
   try {
-    f.startLoadingAnimation();
-    const n = i.getSlotsContents(document),
-      t = x(document),
-      e = t.shift();
-    (e && (await B(e)),
-      await Promise.all(t.map((r) => G(r))),
-      i.replaceSlotContents(n),
-      i.consolidateLayouts(),
-      F(document),
-      h(d.EVENTS.PAGE_LOADED));
-  } catch (n) {
-    (console.error("Error loading page:", n),
-      h(d.EVENTS.PAGE_LOAD_ERROR, { error: n }));
-  } finally {
-    f.stopLoadingAnimation();
-  }
-}
-async function U(n) {
-  try {
-    (f.startLoadingAnimation(), i.resetLayouts());
-    const t = await P(n.toString()),
-      e = i.getSlotsContents(t),
-      r = x(t),
-      o = r.shift();
-    (o && (await B(o)),
-      await Promise.all(r.map((a) => G(a))),
-      await Q(async () => {
-        (i.replaceSlotContents(e),
-          i.consolidateLayouts(),
-          F(document),
-          h(d.EVENTS.PAGE_LOADED));
+    (S.startLoadingAnimation(), b.resetLayouts());
+    const e = await C(t.toString()),
+      n = b.getSlotsContents(e),
+      i = R(e),
+      o = i.shift(),
+      a = [];
+    (o && a.push(C(O(o))),
+      i.forEach((t) => {
+        a.push(C(O(t)));
       }));
-  } catch (t) {
-    (console.error("Error loading fetched page:", t),
-      h(d.EVENTS.PAGE_LOAD_ERROR, { error: t }));
+    const r = await Promise.all(a);
+    await (function (t) {
+      if (T.isNavigationAvailable())
+        return void document.startViewTransition(t);
+      t();
+    })(async () => {
+      if (o) {
+        const t = r.shift();
+        (b.render(document, o, t),
+          b.mergeHeads(t, document),
+          m(L.LAYOUT_RENDERED, { layoutUrl: o }));
+      }
+      (i.forEach((t, e) => {
+        const n = r[e],
+          i = b.getSlotsContents(n);
+        (b.markAsRendered(t),
+          b.replaceSlotContents(i),
+          b.mergeHeads(n, document),
+          m(L.LAYOUT_RENDERED, { layoutUrl: t }));
+      }),
+        b.replaceSlotContents(n),
+        b.consolidateLayouts(),
+        $(document),
+        m(L.PAGE_LOADED));
+    });
+  } catch (e) {
+    ((window.location.href = f), m(L.PAGE_LOAD_ERROR, { error: e }));
   } finally {
-    f.stopLoadingAnimation();
+    S.stopLoadingAnimation();
   }
 }
-async function P(n) {
-  const t = await q.load(n);
-  return M(t);
+async function C(t) {
+  return u(await _.load(t));
 }
-function x(n, t = !0) {
-  const e = n.querySelectorAll(d.SELECTORS.LAYOUT_LINKS),
-    r = Array.from(e)
-      .map((o) => o.getAttribute("href") ?? "")
-      .filter((o) => o.length > 0);
-  return (r.length && t && e.forEach((o) => o.remove()), r);
+function R(t, e = !0) {
+  const n = t.querySelectorAll(y.LAYOUT_LINKS),
+    i = Array.from(n)
+      .map((t) => t.getAttribute("href") ?? "")
+      .filter((t) => t.length > 0);
+  return (i.length && e && n.forEach((t) => t.remove()), i);
 }
-function Q(n) {
-  if (_.isNavigationAvailable()) {
-    document.startViewTransition(n);
-    return;
-  }
-  n();
+function O(t) {
+  return t.endsWith(".html") ? t : `${t.replace(/\/$/, "")}/index.html`;
 }
-function V(n) {
-  return n.endsWith(".html") ? n : `${n.replace(/\/$/, "")}/index.html`;
+function $(t) {
+  (T.startInterception(t),
+    T.onNavigate(I),
+    P.startPrefetch(t),
+    k.highlightMatchingLinks(t));
 }
-async function B(n) {
-  if (i.isAlreadyRendered(n)) {
-    i.markAsRendered(n);
-    return;
-  }
-  try {
-    const t = await P(V(n));
-    (i.render(document, n, t),
-      i.mergeHeads(t, document),
-      h(d.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
-  } catch (t) {
-    throw (console.error(`Error rendering base layout ${n}:`, t), t);
-  }
+let M, D, N, H, U;
+function q() {
+  return (M || (M = new p()), M);
 }
-async function G(n) {
-  if (i.isAlreadyRendered(n)) {
-    i.markAsRendered(n);
-    return;
-  }
-  try {
-    const t = await P(V(n)),
-      e = i.getSlotsContents(t);
-    (i.markAsRendered(n),
-      i.replaceSlotContents(e),
-      i.mergeHeads(t, document),
-      h(d.EVENTS.LAYOUT_RENDERED, { layoutUrl: n }));
-  } catch (t) {
-    throw (console.error(`Error rendering partial layout ${n}:`, t), t);
-  }
+function x() {
+  return (D || (D = new w()), D);
 }
-function F(n) {
-  (_.startInterception(n),
-    _.onNavigate(U),
-    Z.startPrefetch(n),
-    j.highlightMatchingLinks(n));
+function G() {
+  return (U || (U = new E()), U);
 }
-let y, E, A, T, w;
-function tt() {
-  return (y || (y = new O()), y);
-}
-function v() {
-  return (E || (E = new H()), E);
-}
-function et() {
-  return (A || (A = new k(tt())), A);
-}
-function nt() {
-  return (T || (T = new $()), T);
-}
-function N() {
-  return (w || (w = new D()), w);
-}
-const rt = {
-  interceptLinks(n) {
-    (v().startInterception(n), v().onNavigate(U));
+const B = {
+  interceptLinks(t) {
+    (x().startInterception(t), x().onNavigate(I));
   },
-  prefetchLinks(n) {
-    et().startPrefetch(n);
+  prefetchLinks(t) {
+    (N || (N = new A(q())), N).startPrefetch(t);
   },
-  highlightMatchingLinks(n) {
-    nt().highlightMatchingLinks(n);
+  highlightMatchingLinks(t) {
+    (H || (H = new v()), H).highlightMatchingLinks(t);
   },
-  navigate(n) {
-    v().navigate(n);
+  navigate(t) {
+    x().navigate(t);
   },
   startLoading() {
-    N().startLoadingAnimation();
+    G().startLoadingAnimation();
   },
   stopLoading() {
-    N().stopLoadingAnimation();
+    G().stopLoadingAnimation();
+  },
+  clearCache() {
+    q().clearCache();
   },
 };
-window.addEventListener(
+(window.addEventListener(
   "load",
   () => {
-    J();
+    !(async function () {
+      try {
+        S.startLoadingAnimation();
+        const t = b.getSlotsContents(document),
+          e = R(document),
+          n = e.shift(),
+          i = [];
+        (n && i.push(C(O(n))),
+          e.forEach((t) => {
+            i.push(C(O(t)));
+          }));
+        const o = await Promise.all(i);
+        if (n) {
+          const t = o.shift();
+          (b.render(document, n, t),
+            b.mergeHeads(t, document),
+            m(L.LAYOUT_RENDERED, { layoutUrl: n }));
+        }
+        (e.forEach((t, e) => {
+          const n = o[e],
+            i = b.getSlotsContents(n);
+          (b.markAsRendered(t),
+            b.replaceSlotContents(i),
+            b.mergeHeads(n, document),
+            m(L.LAYOUT_RENDERED, { layoutUrl: t }));
+        }),
+          b.replaceSlotContents(t),
+          b.consolidateLayouts(),
+          $(document),
+          m(L.PAGE_LOADED));
+      } catch (t) {
+        m(L.PAGE_LOAD_ERROR, { error: t });
+      } finally {
+        S.stopLoadingAnimation();
+      }
+    })();
   },
   { once: !0 },
-);
-window.papel = rt;
+),
+  (window.papel = B));

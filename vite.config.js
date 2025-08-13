@@ -27,7 +27,7 @@ const htmlFiles = getAllHtmlFiles(path.resolve(__dirname, "src")).reduce(
     entries[name] = file;
     return entries;
   },
-  {}
+  {},
 );
 
 export default defineConfig({
@@ -40,8 +40,20 @@ export default defineConfig({
   build: {
     outDir: "../pages",
     emptyOutDir: true,
+    minify: "terser",
     rollupOptions: {
       input: htmlFiles,
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+      mangle: true,
+      module: true,
+      output: {
+        comments: false,
+      },
     },
   },
   css: {
