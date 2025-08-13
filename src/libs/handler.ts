@@ -22,13 +22,39 @@ export async function loadPage(): Promise<void> {
     const layoutUrls = getLayoutUrls(document);
     const baseLayoutUrl = layoutUrls.shift();
 
+    // Primera fase: Fetch de todos los layouts
+    const layoutPromises: Promise<Document>[] = [];
+
     if (baseLayoutUrl) {
-      await renderBaseLayout(baseLayoutUrl);
+      layoutPromises.push(fetchDocument(normalizeLayoutUrl(baseLayoutUrl)));
     }
 
-    await Promise.all(
-      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
-    );
+    layoutUrls.forEach((layoutUrl) => {
+      layoutPromises.push(fetchDocument(normalizeLayoutUrl(layoutUrl)));
+    });
+
+    const fetchedLayouts = await Promise.all(layoutPromises);
+
+    // Segunda fase: Renderizado de todos los layouts
+    if (baseLayoutUrl) {
+      const baseLayout = fetchedLayouts.shift()!;
+      layoutManager.render(document, baseLayoutUrl, baseLayout);
+      layoutManager.mergeHeads(baseLayout, document);
+      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, {
+        layoutUrl: baseLayoutUrl,
+      });
+    }
+
+    // Renderizar layouts parciales
+    layoutUrls.forEach((layoutUrl, index) => {
+      const layout = fetchedLayouts[index];
+      const slotContents = layoutManager.getSlotsContents(layout);
+
+      layoutManager.markAsRendered(layoutUrl);
+      layoutManager.replaceSlotContents(slotContents);
+      layoutManager.mergeHeads(layout, document);
+      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
+    });
 
     layoutManager.replaceSlotContents(slotContents);
     layoutManager.consolidateLayouts();
@@ -52,13 +78,39 @@ export async function loadFetchedPage(url: URL): Promise<void> {
     const layoutUrls = getLayoutUrls(partialDocument);
     const baseLayoutUrl = layoutUrls.shift();
 
+    // Primera fase: Fetch de todos los layouts
+    const layoutPromises: Promise<Document>[] = [];
+
     if (baseLayoutUrl) {
-      await renderBaseLayout(baseLayoutUrl);
+      layoutPromises.push(fetchDocument(normalizeLayoutUrl(baseLayoutUrl)));
     }
 
-    await Promise.all(
-      layoutUrls.map((layoutUrl) => renderPartialLayout(layoutUrl)),
-    );
+    layoutUrls.forEach((layoutUrl) => {
+      layoutPromises.push(fetchDocument(normalizeLayoutUrl(layoutUrl)));
+    });
+
+    const fetchedLayouts = await Promise.all(layoutPromises);
+
+    // Segunda fase: Renderizado de todos los layouts
+    if (baseLayoutUrl) {
+      const baseLayout = fetchedLayouts.shift()!;
+      layoutManager.render(document, baseLayoutUrl, baseLayout);
+      layoutManager.mergeHeads(baseLayout, document);
+      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, {
+        layoutUrl: baseLayoutUrl,
+      });
+    }
+
+    // Renderizar layouts parciales
+    layoutUrls.forEach((layoutUrl, index) => {
+      const layout = fetchedLayouts[index];
+      const slotContents = layoutManager.getSlotsContents(layout);
+
+      layoutManager.markAsRendered(layoutUrl);
+      layoutManager.replaceSlotContents(slotContents);
+      layoutManager.mergeHeads(layout, document);
+      dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
+    });
 
     await startViewTransition(async () => {
       layoutManager.replaceSlotContents(slotContents);
@@ -112,44 +164,6 @@ function normalizeLayoutUrl(layoutUrl: string): string {
   return layoutUrl.endsWith(".html")
     ? layoutUrl
     : `${layoutUrl.replace(/\/$/, "")}/index.html`;
-}
-
-async function renderBaseLayout(layoutUrl: string): Promise<void> {
-  if (layoutManager.isAlreadyRendered(layoutUrl)) {
-    layoutManager.markAsRendered(layoutUrl);
-    return;
-  }
-
-  try {
-    const layout = await fetchDocument(normalizeLayoutUrl(layoutUrl));
-
-    layoutManager.render(document, layoutUrl, layout);
-    layoutManager.mergeHeads(layout, document);
-    dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
-  } catch (error) {
-    console.error(`Error rendering base layout ${layoutUrl}:`, error);
-    throw error;
-  }
-}
-
-async function renderPartialLayout(layoutUrl: string): Promise<void> {
-  if (layoutManager.isAlreadyRendered(layoutUrl)) {
-    layoutManager.markAsRendered(layoutUrl);
-    return;
-  }
-
-  try {
-    const layout = await fetchDocument(normalizeLayoutUrl(layoutUrl));
-    const slotContents = layoutManager.getSlotsContents(layout);
-
-    layoutManager.markAsRendered(layoutUrl);
-    layoutManager.replaceSlotContents(slotContents);
-    layoutManager.mergeHeads(layout, document);
-    dispatchCustomEvent(CONFIG.EVENTS.LAYOUT_RENDERED, { layoutUrl });
-  } catch (error) {
-    console.error(`Error rendering partial layout ${layoutUrl}:`, error);
-    throw error;
-  }
 }
 
 function enhanceRenderedContent(target: Document | Element): void {
